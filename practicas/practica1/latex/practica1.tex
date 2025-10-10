@@ -1,0 +1,113 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{float}
+
+% Establecer márgenes
+\geometry{a4paper, margin=1in, top=1.2in, headheight=15pt}
+
+% Configurar hipervínculos
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,
+    citecolor=blue,
+    urlcolor=blue,
+    pdftitle={Práctica 1},
+    pdfauthor={Renato Bedriñana Cárdenas, Hugo Blanco Demelo},
+    pdfsubject={Práctica 1 - Sampling and Quantization},
+}
+
+% Configuración de encabezado y pie de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize Práctica 1}
+\fancyhead[R]{\footnotesize Sampling and Quantization}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Formato de títulos
+\titleformat{\section}
+  {\normalfont\large\bfseries\color{blue!70!black}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries\color{blue!60!black}}
+  {\thesubsection}{1em}{}
+
+% Espacio después de secciones
+\titlespacing*{\section}{0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+% Definición de comandos para matemáticas
+\newcommand{\dB}{\text{dB}}
+\newcommand{\dBFS}{\text{dBFS}}
+
+% Información del documento
+\title{\vspace{-1.5cm}\Large\textbf{Práctica 1: Sampling and Quantization}}
+\author{\normalsize Renato Bedriñana Cárdenas \and \normalsize Hugo Blanco Demelo}
+\date{\normalsize\today}
+
+\begin{document}
+
+\maketitle
+\section{Task 1}
+\textbf{Question: Give your interpretation of the resulting graphs. Do the quantization levels correspond with the values you had expected?}
+
+Both graphics start at the -FS point, increase the number of bits, decrease the error and add more values we can get.
+
+
+\textbf{Question: For both cases, represent the quantization error as a function of input amplitude in the range $[-7, +7]$ and comment on your results. Is this error always within the $[-\Delta /2, +\Delta /2]$ interval?}
+
+The $[-\Delta /2, +\Delta /2]$ in each case is as follows:
+\begin{itemize}
+    \item For N = 2 the $\Delta$ value we get is $\Delta = 3.5$, so the interval should be $[-1.75, 1.75]$.
+    \item For N = 4 the $\Delta$ value we get is $\Delta = 0.875$, so the interval should be $[-0.4375, 0.4375]$.
+\end{itemize}
+So yes, the error is always inside the range.
+
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{error1.png}
+%     \caption{Error de cuantificación en función de la amplitud de entrada para N=2.}
+%     \label{fig:error_cuantificacion}
+% \end{figure}
+
+\section{Task 2}
+\textbf{Question: Assume a full-scale sinusoidal input and plot the histogram of the quantization error. Do you observe what you expected, or not?}
+
+$\Delta= \frac{2*FS}{2^N} = 0.0098$, so the $[-\frac{\Delta}{2}, +\frac{\Delta}{2}]$ interval should be $[-0.0049, +0.0049]$.
+In the histogram we can see that in that interval the error is uniformly distributed, but there is an error tail in the positive extreme.
+It means that there is \textbf{clipping} in the positive.
+
+\textbf{Question: Explain the operation of the Matlab command var. Estimate the variance of the quantization error using var,
+    and compare it to its theoretical value. Estimate the value (in dB) of the Signal to-Quantization Noise Ratio (SQNR)
+    and compare it to its theoretical value (1).
+}
+ADD
+
+\section{Task 3}
+\textbf{Question: Suppose that you have an N-bit A/D converter with tunable FS, and you know that your input samples follow
+    a symmetric triangular pdf in some interval $[-x_0,x_0]$. Intuitively, how would you set the FS value of your converter?
+    What would the resulting rms value $\sigma_x$ in dBFS be?
+}
+
+The value of FS should be $x_0$. And the value of $\sigma_x = \frac{x_0}{\sqrt{2}}$ and in dBFS would be $20\log_{10}(\sqrt{2})$ dBFS.
+
+\textbf{Question: Explain how to generate in Matlab samples of a random variable following a symmetric triangular pdf with
+    zero mean and rms value $\sigma_0$. Check the histogram and use the commands mean and var to validate your approach
+}
+
+Rand function allows to give a distribution to generate the values following that distribution. So we need to create that distribution and then give it to rand().
+\end{document}
