@@ -6,15 +6,15 @@ N = 10 * 2^10;
 samples = random(pd, N, 1);
 
 FS = x0;
-N = 3;
+Nbits = 3;
 
-q_samples = quanti(samples,FS,N);
+q_samples = quanti(samples,FS,Nbits);
 
 figure;
 histogram(samples-q_samples,40);
 xlabel('Error');
 ylabel('Count');
-title('Histogram of Quantization Error with N=',N);
+title('Histogram of Quantization Error with N=',Nbits);
 
 %  σx varying in the range [−50,0]
 sigma_db = -50 : 0.1 : 0;
