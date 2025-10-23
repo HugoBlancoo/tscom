@@ -4,7 +4,7 @@ fs = 100e6;
 Nbits = 12;
 blocks = 15;
 FS = 1;
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 Nsamples = blocks * M;
 
 %% Generar FS sinusoidal

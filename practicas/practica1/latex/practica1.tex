@@ -83,6 +83,8 @@
 \title{\vspace{-1.5cm}\Large\textbf{Práctica 1: Sampling and Quantization}}
 \author{\normalsize Renato Bedriñana Cárdenas \and \normalsize Hugo Blanco Demelo}
 \date{\normalsize\today}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 
 \begin{document}
 
@@ -97,7 +99,7 @@ We represent the original continuous signal x (blue) and the 2 quantized version
 \textbf{Question: For both cases, represent the quantization error as a function of input amplitude in the range $[-7, +7]$ and comment on your results. Is this error always within the $[-\Delta /2, +\Delta /2]$ interval?}
 
 \vspace{0.5cm}
-The magnitude of the error decreases as the number of bits increases, since a smaller quantization step 
+The magnitude of the error decreases as the number of bits increases, since a smaller quantization step
 $\Delta$ reduces the maximum deviation between the input and its quantized version.
 The $[-\Delta /2, +\Delta /2]$ in each case is as follows:
 \begin{itemize}
@@ -300,5 +302,9 @@ ADD
     Does this agree with your intuition (see first point above)?
 }
 \vspace{0.5cm}
+
+\section{Task 4}
+\input{task4}
+
 
 \end{document}

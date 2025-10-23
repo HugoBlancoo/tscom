@@ -1,0 +1,23 @@
+\textbf{Assume a full-scale sinusoidal input with $f_0 = 37.1094 MHz$, and let the FFT size be M = 1024.
+    Generate $15 \cdot M$ samples of $x(t)$ (at fs = 100 MHz) and quantize them to N = 12 bits. Break
+    the vector xq of quantized samples into 15 size-M blocks using, e.g., the command reshape:}
+
+\vspace{0.5cm}
+
+\begin{lstlisting}[language=Matlab]
+    xqblocks = reshape(xq, M, 15);
+\end{lstlisting}
+
+\textbf{so that each column of the $M \times 15$ matrix xqblocks will contain the corresponding block of size
+    M . Now, since the fft command computes the FFT columnwise, in order to apply an M -point
+    FFT to each block, we simply make
+}
+\begin{lstlisting}[language=Matlab]
+    X = fft(xqblocks, M);
+\end{lstlisting}
+
+\textbf{Average the squared magnitude of the DFT coefficients over the 15 blocks and plot the results
+    between 0 and fs/2, in dBFS.
+    Observe the location and peak value of the principal frequency component, as well as the value
+    of the noise floor. Do your observations agree (quantitatively) with what you would expect?
+}

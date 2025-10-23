@@ -1,0 +1,387 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.10.9)  23 OCT 2025 18:48
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**/home/hugo/master/TSCOM/practicas/practica1/latex/task4.tex
+(/home/hugo/master/TSCOM/practicas/practica1/latex/task4.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-22>
+
+/home/hugo/master/TSCOM/practicas/practica1/latex/task4.tex:3: LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.3 ...M blocks using, e.g., the command reshape:}
+                                                  
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (59.00949pt too wide) in paragraph at lines 3--4
+[]\OT1/cmr/bx/n/10 Assume
+ []
+
+
+Overfull \hbox (5.59023pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 a
+ []
+
+
+Overfull \hbox (20.1249pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 full-
+ []
+
+
+Overfull \hbox (23.70262pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 scale
+ []
+
+
+Overfull \hbox (11.56381pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 si-
+ []
+
+
+Overfull \hbox (16.29158pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 nu-
+ []
+
+
+Overfull \hbox (28.65398pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 soidal
+ []
+
+
+Overfull \hbox (13.4166pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 in-
+ []
+
+
+Overfull \hbox (17.24991pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 put
+ []
+
+
+Overfull \hbox (22.361pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 with
+ []
+
+
+Overfull \hbox (9.26384pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 f0
+ []
+
+
+Overfull \hbox (8.9444pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 =
+ []
+
+
+Overfull \hbox (37.69424pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 37.1094
+ []
+
+
+Overfull \hbox (28.22208pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 MHz,
+ []
+
+
+Overfull \hbox (18.36794pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 and
+ []
+
+
+Overfull \hbox (12.93744pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 let
+ []
+
+
+Overfull \hbox (16.13187pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 the
+ []
+
+
+Overfull \hbox (22.47209pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 FFT
+ []
+
+
+Overfull \hbox (18.1124pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 size
+ []
+
+
+Overfull \hbox (11.97911pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 be
+ []
+
+
+Overfull \hbox (10.91661pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 M
+ []
+
+
+Overfull \hbox (8.9444pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 =
+ []
+
+
+Overfull \hbox (26.1943pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 1024.
+ []
+
+
+Overfull \hbox (24.53459pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 Gen-
+ []
+
+
+Overfull \hbox (13.84023pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 er-
+ []
+
+
+Overfull \hbox (15.33324pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 ate
+ []
+
+
+Overfull \hbox (11.49994pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 15
+ []
+
+
+Overfull \hbox (2.74933pt too wide) in paragraph at lines 3--4
+\TS1/cmr/bx/n/10 ·
+ []
+
+
+Overfull \hbox (10.91661pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 M
+ []
+
+
+Overfull \hbox (23.5429pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 sam-
+ []
+
+
+Overfull \hbox (19.39017pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 ples
+ []
+
+
+Overfull \hbox (9.26384pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 of
+ []
+
+
+Overfull \hbox (19.48601pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 x(t)
+ []
+
+
+Overfull \hbox (14.53462pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 (at
+ []
+
+
+Overfull \hbox (8.04994pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 fs
+ []
+
+
+Overfull \hbox (8.9444pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 =
+ []
+
+
+Overfull \hbox (17.24991pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 100
+ []
+
+
+Overfull \hbox (29.49985pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 MHz)
+ []
+
+
+Overfull \hbox (18.36794pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 and
+ []
+
+
+Overfull \hbox (28.27066pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 quan-
+ []
+
+
+Overfull \hbox (18.04852pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 tize
+ []
+
+
+Overfull \hbox (25.71515pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 them
+ []
+
+
+Overfull \hbox (10.22217pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 to
+ []
+
+
+Overfull \hbox (8.99995pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 N
+ []
+
+
+Overfull \hbox (8.9444pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 =
+ []
+
+
+Overfull \hbox (11.49994pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 12
+ []
+
+
+Overfull \hbox (21.78598pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 bits.
+ []
+
+
+Overfull \hbox (29.84706pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 Break
+ []
+
+
+Overfull \hbox (16.13187pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 the
+ []
+
+
+Overfull \hbox (19.96518pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 vec-
+ []
+
+
+Overfull \hbox (14.95827pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 tor
+ []
+
+
+Overfull \hbox (12.13882pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 xq
+ []
+
+
+Overfull \hbox (9.26384pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 of
+ []
+
+
+Overfull \hbox (28.27066pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 quan-
+ []
+
+
+Overfull \hbox (24.43738pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 tized
+ []
+
+
+Overfull \hbox (23.5429pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 sam-
+ []
+
+
+Overfull \hbox (19.39017pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 ples
+ []
+
+
+Overfull \hbox (19.48601pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 into
+ []
+
+
+Overfull \hbox (11.49994pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 15
+ []
+
+
+Overfull \hbox (21.94571pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 size-
+ []
+
+
+Overfull \hbox (10.91661pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 M
+ []
+
+
+Overfull \hbox (31.04982pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 blocks
+ []
+
+
+Overfull \hbox (14.75824pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 us-
+ []
+
+
+Overfull \hbox (18.52768pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 ing,
+ []
+
+
+Overfull \hbox (20.60406pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 e.g.,
+ []
+
+
+Overfull \hbox (16.13187pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 the
+ []
+
+
+Overfull \hbox (24.27765pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 com-
+ []
+
+
+Overfull \hbox (27.95122pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 mand
+ []
+
+
+Overfull \hbox (13.84023pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 re-
+ []
+
+
+Overfull \hbox (31.68869pt too wide) in paragraph at lines 3--4
+\OT1/cmr/bx/n/10 shape: 
+ []
+
+)
+! Emergency stop.
+<*> ...r/TSCOM/practicas/practica1/latex/task4.tex
+                                                  
+*** (job aborted, no legal \end found)
+
+ 
+Here is how much of TeX's memory you used:
+ 23 strings out of 476120
+ 600 string characters out of 5793657
+ 1923975 words of memory out of 5000000
+ 22129 multiletter control sequences out of 15000+600000
+ 558717 words of font info for 38 fonts, out of 8000000 for 9000
+ 40 hyphenation exceptions out of 8191
+ 18i,1n,20p,199b,102s stack positions out of 10000i,1000n,20000p,200000b,200000s
+!  ==> Fatal error occurred, no output PDF file produced!
