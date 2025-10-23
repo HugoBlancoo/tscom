@@ -1,0 +1,46 @@
+\textbf{Question: Plot $g_\gamma(x)$ vs. $x$ in the range $x\in [-{\rm FS},{\rm FS}]$ for $\gamma = 0$, $1$ and $2$. For input signals whose values are always much smaller than $\rm FS$ (in absolute value), what will be the effect of the nonlinearity?
+}
+\vspace{0.5cm}
+
+xd
+
+\vspace{1cm}
+\textbf{Question: Modify the code in {\tt quanti.m} and write a Matlab function {\tt dquanti.m} implementing this nonuniform quantizer. The format should be similar to that of {\tt quanti.m}, but including an additional input parameter {\tt gama}:}
+\begin{center}
+{\tt xq = dquanti( x, FS, Nbits, gama ); }
+\end{center} 
+\vspace{0.5cm}
+
+xd
+
+\vspace{1cm}
+\textbf{Question: Generate  samples (at 100 MHz) of a full-scale sinusoid with $f_0 = 6.8359$ MHz.
+Quantize them to $N=11$ bits using $\gamma = 0.003$ in {\tt dquanti}. 
+Determine the SFDR in dBFS using an FFT size $M=2048$, and then with $M=512$. 
+Does the SFDR depend on the FFT size? Does the noise floor depend on the FFT size? How do you explain this?
+}
+\vspace{0.5cm}
+
+xd
+
+\vspace{1cm}
+\textbf{Question: Using $M=2048$, repeat the previous step for $\gamma = 0.01$ and $0.1$. Are the spectral spurs located where you would expect?
+}
+\vspace{0.5cm}
+
+xd
+
+\vspace{1cm}
+\textbf{Question: Set now the amplitude to $\frac{\rm FS}{3}$. Using $M=2048$, measure the SFDR and express it in both dBFS and dBc for $\gamma=0.005$, $0.05$ and $0.1$. Will these values change if you repeat the analysis with $M=512$?
+}
+\vspace{0.5cm}
+
+xd
+
+\vspace{1cm}
+\textbf{Question: Consider now samples (at 100 MHz and with 11-bit resolution) of a sinusoid with frequency $3.3202$ MHz and amplitude $\frac{\rm FS}{2}$. Obtain the THD for this nonuniform ADC with $\gamma = 0.3$ under the IEEE 1241-2000 specification, expressed in both dB and percentage.
+}
+\vspace{0.5cm}
+
+xd
+

@@ -126,7 +126,7 @@ In both cases, the error remains bounded within the theoretical interval $[-\Del
 \textbf{Question: Assume a full-scale sinusoidal input and plot the histogram of the quantization error. Do you observe what you expected, or not?}
 
 \vspace{0.5cm}
-$\Delta= \frac{2*FS}{2^N} = 0.0098$, so the $[-\frac{\Delta}{2}, +\frac{\Delta}{2}]$ interval should be $[-0.0049, +0.0049]$.
+Due we have an amplitude equal to FS we can expect clipping. We have $\Delta= \frac{2*FS}{2^N} = 0.0098$, the $[-\frac{\Delta}{2}, +\frac{\Delta}{2}]$ interval should be uniformly distributed (while the input does not get clipped) between $[-0.0049, +0.0049]$.
 In the histogram we can see that in that interval the error is uniformly distributed, but there is an error tail in the positive extreme.
 It means that there is \textbf{clipping} in the positive.
 
@@ -140,20 +140,17 @@ It means that there is \textbf{clipping} in the positive.
 \vspace{1cm}
 \textbf{Question: Explain the operation of the Matlab command var. Estimate the variance of the quantization error using var,
     and compare it to its theoretical value. Estimate the value (in dB) of the Signal to-Quantization Noise Ratio (SQNR)
-    and compare it to its theoretical value (1).
+    and compare it to its theoretical value.
 }
 
 \vspace{0.5cm}
 The MATLAB command \texttt{var} computes the variance of a set of values. For a vector $x$, it calculates:
-$\text{var}(x) = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2$, where $\bar{x}$ is the mean of the values in $x$.
+$\text{var}(x) = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2$, where $\bar{x}$ is the mean of the values in $x$ and $n$ is the total number of samples.
+We used \texttt{var(x,1)} to compute the population variance (divide by n).
 
-ADD
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{img/task2_2.png}
-    % \caption{Description of your image}
-    \label{fig:task2_2}
-\end{figure}
+The empiral value of the variance of the quantization error we got is $8.72123e-06$, and the theoretical value is $\frac{\Delta^2}{12} = 7.94729e-06$.
+
+The estimated value of the SQNR in dB we got is $61.5633$ dB, and the theoretical value is $61.9597$ dB.
 
 \vspace{1cm}
 \textbf{Question: Repeat the previous steps for sinusoids with different amplitudes, and with decreasing resolutions
@@ -171,20 +168,27 @@ ADD
         \hline
         $N$         & theory                                         & measured                                        & theory                                 & measured                                        & theory & measured & theory & measured \\
         \hline\hline
-        12          & 61.96                                          & 62.02                                           & 67.98                                  & 68.03                                           & 71.50  & 71.54    & 74.00  & 73.70    \\
-        \hline
-        10          & 49.92                                          & 50.01                                           & 55.94                                  & 56.01                                           & 59.46  & 59.53    & 61.96  & 61.56    \\
-        \hline
-        8           & 37.88                                          & 38.07                                           & 43.90                                  & 44.04                                           & 47.42  & 47.53    & 49.92  & 49.15    \\
-        \hline
-        6           & 25.84                                          & 26.22                                           & 31.86                                  & 32.13                                           & 35.38  & 35.60    & 37.88  & 36.52    \\
-        \hline
-        4           & 13.80                                          & 14.59                                           & 19.82                                  & 20.37                                           & 23.34  & 23.78    & 25.84  & 23.63    \\
+        12          & 67.98                                          & 68.03                                           & 71.5                                   & 71.54                                           & 74.00  & 73.7    & 74.26  & 38.47    \\
+        \hline                                   
+        10          & 55.94                                          & 56.01                                           & 59.46                                  & 59.53                                            & 61.96  & 61.56    & 62.22  & 38.19    \\
+        \hline                                   
+        8           & 43.90                                          & 44.04                                           & 47.42                                  & 47.53                                            & 49.92  & 49.15    & 50.18  & 36.97    \\
+        \hline                                   
+        6           & 31.86                                          & 32.13                                           & 35.38                                  & 35.6                                             & 37.88  & 36.52    & 38.14  & 32.27    \\
+        \hline                                   
+        4           & 19.82                                          & 20.37                                           & 23.34                                  & 23.78                                            & 25.8397  & 23.63    & 26.1  & 22.53    \\
         \hline
     \end{tabular}
     \caption{Pertaining to Task 2.}
     \label{tab:task2}
 \end{table}
+
+For amplitudes below FS (0.5*FS and 0.75*FS) the empirical SQNR values closely match the theoretical predictions.
+For an amplitude equal to FS, the empirical values still align well with theory, indicating minimal clipping effects.
+However, as the amplitude exceeds FS (1.03*FS), discrepancies arise due to clipping effects, SQNR collapses and even adding more bits does not solve the problem.
+
+As the number of bits decreases the variance of the error grows roughly as expected and SQNR drops approximately 6 dB/bit.
+For moderate amplitudes the theory remains a good approximation down to mid-low N (but deviations increases as N gets smaller).
 
 \section{Task 3}
 \textbf{Question: Suppose that you have an N-bit A/D converter with tunable FS, and you know that your input samples follow
@@ -295,6 +299,7 @@ We have two options to do it:
     \end{equation}
     Are there any differences between the theoretical and empirical curves? If so, how do you explain them?}
 \vspace{0.5cm}
+
 ADD
 
 \vspace{1cm}
@@ -303,8 +308,26 @@ ADD
 }
 \vspace{0.5cm}
 
+ADD
+
+\vspace{1cm}
+\textbf{Question: Repeat the previous points, but now using normally distributed input samples with zero mean and standard deviation $\sigma_x$.
+}
+\vspace{0.5cm}
+
+ADD
+
+\vspace{0.5cm}
 \section{Task 4}
 \input{task4}
+
+\vspace{0.5cm}
+\section{Task 5}
+\input{task5}
+
+\vspace{0.5cm}
+\section{Task 6}
+\input{task6}
 
 
 \end{document}
