@@ -414,14 +414,98 @@ We reach a point where optimum $\sigma_x$ value (where SQNR is maximized) approa
 }
 \vspace{0.5cm}
 
-ADD
+We can see in the previous plots~\ref{fig:task3_tri_sqnr_vs_sigma} (see the green lines) that the optimum values of $\sigma_x$ (where SQNR is maximized) for different resolutions are:
+\begin{itemize}
+    \item N=3 bits: $\sigma_{opt}$ = -6.60 dBFS
+    \item N=4 bits: $\sigma_{opt}$ = -7.20 dBFS
+    \item N=5 bits: $\sigma_{opt}$ = -7.30 dBFS
+    \item N=6 bits: $\sigma_{opt}$ = -7.30 dBFS
+\end{itemize}
+Those are the points where the empirical SQNR reaches its maximum value and then starts to decrease.
+
+The value we calculated in the first point was -7.78 dBFS, which is close to the optimum values we obtained empirically.
+If we increase the number of bits, the optimum value gets closer.
 
 \vspace{1cm}
 \textbf{Question: Repeat the previous points, but now using normally distributed input samples with zero mean and standard deviation $\sigma_x$.
 }
 \vspace{0.5cm}
 
-ADD
+In a Gaussian distribution, we can not set the $[-x_0,x_0]$ limit as in the triangular distribution. So it is a parameter that we can not control and clipping will always occur for some samples no matter how we set FS.
+But, we can still set FS to optimize SQNR. Following the definition of dBFS, we can set FS to be some multiple of $\sigma_x$.
+
+\[
+\sigma_x = 20\log_{10}\frac{\sigma_x}{\rm FS} = -20\log_{10}{k} \implies FS = k \cdot \sigma_x
+\]
+
+To decide which k value is the best, we have to see the clip probability for each k.
+To express the clipping probability in terms of the standard normal CDF, we normalize the Gaussian variable as $Z = X / \sigma_x$, so that $Z \sim \mathcal{N}(0,1)$. Then:
+\[
+P(X > FS) = P\!\left(Z > \frac{FS}{\sigma_x}\right) = 1 - \Phi\!\left(k\right),
+\]
+where $\Phi(k)$ is the cumulative distribution function of the standard normal distribution. Therefore, considering both tails, the total clipping probability is:
+\[
+p_{\text{clip}} = 2(1 - \Phi(k)), \quad \text{with } k = \frac{FS}{\sigma_x}.
+\]
+
+So we have the next posible values for k:
+
+\begin{itemize}
+    \item k = 1: $\sigma_x$ = 0 dBFS (clipping prob = 31.73\%)
+    \item k = 2: $\sigma_x$ = -6.02 dBFS (clipping prob = 4.55\%)
+    \item k = 3: $\sigma_x$ = -9.54 dBFS (clipping prob = 0.27\%)
+    \item k = 4: $\sigma_x$ = -12.04 dBFS (clipping prob = 0.000063\%)
+\end{itemize}
+
+A good trade-off between clipping probability and SQNR can be achieved with k = 3, which gives a good compromise between dynamic range usage and distortion.
+
+To generate normally distributed samples we can use the Matlab command \texttt{randn}, which generates samples from a standard normal distribution (mean 0, variance 1).
+And then we scale the samples to get the desired standard deviation $\sigma_x$. The output plot is visible in the Figure~\ref{fig:task3_normal_dist}.
+
+% use el código task3_normal_dist_set.m
+The result of the mean and var commands are as follows:
+\begin{itemize}
+    \item Empirical mean: -0.000265784, close to our target mean.
+    \item Empirical variance [dB]: -9.56729, again, close to the value we expected.
+\end{itemize}
+    
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/task3_normal_dist.png}
+    \caption{Gaussian distribution (normalized)}
+    \label{fig:task3_normal_dist}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task3_normal_n3.png}
+    \caption{N=3 bits - $\sigma_{opt}$=-7.90 dBFS, SQNR=14.03 dB}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task3_normal_n4.png}
+    \caption{N=4 bits - $\sigma_{opt}$=-8.50 dBFS, SQNR=19.44 dB}
+  \end{subfigure}
+
+  \medskip
+
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task3_normal_n5.png}
+    \caption{N=5 bits - $\sigma_{opt}$=-9.20 dBFS, SQNR=24.79 dB}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task3_normal_n6.png}
+    \caption{N=6 bits - $\sigma_{opt}$=-10.50 dBFS, SQNR=30.16 dB}
+  \end{subfigure}
+
+  \caption{SQNR vs $\sigma_x$ (dBFS) for normal distribution input at different quantization resolutions.}
+  \label{fig:task3_normal_sqnr_vs_sigma}
+\end{figure}
 
 \vspace{0.5cm}
 \section{Task 4}
