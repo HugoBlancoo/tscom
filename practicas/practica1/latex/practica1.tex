@@ -469,6 +469,12 @@ The result of the mean and var commands are as follows:
     \item Empirical variance [dB]: -9.56729, again, close to the value we expected.
 \end{itemize}
 
+Analyzing the SQNR vs $\sigma_x$ curves in different N levels, we obtain similar outputs as the triangular distribution.
+We can check them in the Figure~\ref{fig:task3_normal_sqnr_vs_sigma}, we observe that the empirical SQNR values deviate from the theoretical predictions, especially at higher $\sigma_x$ values.
+
+But we need more level of $\sigma_x$ to reach the optimum point, because of the clipping that occurs in the Gaussian distribution, and we get a fewer maximum SQNR value than in the triangular distribution.
+This is produced because the Gaussian distribution has heavier tails, leading to more frequent clipping events at higher $\sigma_x$ levels.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{img/task3_normal_dist.png}

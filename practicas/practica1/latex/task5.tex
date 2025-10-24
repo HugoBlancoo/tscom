@@ -2,7 +2,11 @@
 }
 \vspace{0.5cm}
 
-xd
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/task5_1.png}
+    \label{fig:task5_1}
+\end{figure}
 
 \vspace{1cm}
 \textbf{Question: Modify the code in {\tt quanti.m} and write a Matlab function {\tt dquanti.m} implementing this nonuniform quantizer. The format should be similar to that of {\tt quanti.m}, but including an additional input parameter {\tt gama}:}
@@ -11,7 +15,25 @@ xd
 \end{center} 
 \vspace{0.5cm}
 
-xd
+We change the code as follows:
+\begin{lstlisting}[language=Matlab]
+    function y = dquanti(x, FS, Nbits, gama)
+    if gama == 0
+        g_x = x; % Si gama=0, no hay distorsion (g(x) = x)
+    else
+        g_x = sign(x) .* (FS / log(1 + gama)) .* log(1 + gama .* abs(x) / FS);
+        g_x(x == 0) = 0;
+    end
+
+    FS    = abs(FS);
+    FSbin = 2^(Nbits-1);
+    LSB   = FS/FSbin;  
+
+        y = round(g_x/LSB); 
+        y = min(y, FSbin-1); 
+        y = max(y, -FSbin); 
+        y = y * LSB;
+\end{lstlisting}
 
 \vspace{1cm}
 \textbf{Question: Generate  samples (at 100 MHz) of a full-scale sinusoid with $f_0 = 6.8359$ MHz.

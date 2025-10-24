@@ -1,9 +1,8 @@
 rng(0)
 
-x0=1;
 Nsamples = 10 * 2^10;
 
-FS = x0;
+FS = 3;
 
 sigma_db = -50 : 0.1 : 0;
 Nbits_list = [3,4,5,6];
@@ -26,7 +25,7 @@ for iN = 1:length(Nbits_list)
         sigma_x = FS * 10^(sigma_dB/20);    % convertir dBFS -> lineal
 
         % generar muestras gaussianas con varianza sigma_x
-        samples = sigma_x * randn(1, Nsamples);
+        samples = sigma_x * randn(Nsamples, 1);
         S_all(:,j) = samples;
 
         % fprintf('Vemos clipping en %d',Nbits);

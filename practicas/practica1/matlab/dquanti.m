@@ -11,10 +11,7 @@ function y = dquanti(x, FS, Nbits, gama)
 %
 % output: 
 %   y      - quantized vector
-
-% --- INICIO DE LA MODIFICACIÓN ---
-% PASO 1: Aplicar la distorsión no lineal g(x)
-% a la entrada 'x' para obtener 'g_x'
+% Aplicar la distorsión no lineal g(x) a la entrada 'x' para obtener 'g_x'
 if gama == 0
     g_x = x; % Si gama=0, no hay distorsión (g(x) = x)
 else

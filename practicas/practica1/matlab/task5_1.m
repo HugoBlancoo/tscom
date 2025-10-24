@@ -19,7 +19,7 @@ hold on;
 plot(x, g_1, 'r', 'LineWidth', 2); % gama=1
 plot(x, g_2, 'g', 'LineWidth', 2); % gama=2
 grid on;
-xlabel('Entrada x');
-ylabel('Salida g(x)');
-title('Función de Distorsión g_\gamma(x)');
+xlabel('x');
+ylabel('g(x)');
+title('Distortion Function g_\gamma(x)');
 legend('\gamma = 0 (Ideal)', '\gamma = 1', '\gamma = 2');
