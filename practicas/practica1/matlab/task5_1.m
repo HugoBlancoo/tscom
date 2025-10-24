@@ -14,10 +14,10 @@ g_2(x == 0) = 0;
 
 % --- Dibujar ---
 figure;
-plot(x, g_0, 'b', 'LineWidth', 2); % gama=0 (la recta)
+plot(x, g_0, 'b', 'LineWidth', 2);
 hold on;
-plot(x, g_1, 'r', 'LineWidth', 2); % gama=1
-plot(x, g_2, 'g', 'LineWidth', 2); % gama=2
+plot(x, g_1, 'r', 'LineWidth', 2);
+plot(x, g_2, 'g', 'LineWidth', 2);
 grid on;
 xlabel('x');
 ylabel('g(x)');
