@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{mathtools}
 \usepackage{geometry}
@@ -366,7 +367,46 @@ We have two options to do it:
     Are there any differences between the theoretical and empirical curves? If so, how do you explain them?}
 \vspace{0.5cm}
 
-ADD
+\begin{figure}[H]
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task3_tri_n3.png}
+    \caption{N=3 bits - $\sigma_{opt}$=-6.60 dBFS, SQNR=15.36 dB}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task3_tri_n4.png}
+    \caption{N=4 bits - $\sigma_{opt}$=-7.20 dBFS, SQNR=21.56 dB}
+  \end{subfigure}
+
+  \medskip
+
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task3_tri_n5.png}
+    \caption{N=5 bits - $\sigma_{opt}$=-7.30 dBFS, SQNR=27.52 dB}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task3_tri_n6.png}
+    \caption{N=6 bits - $\sigma_{opt}$=-7.30 dBFS, SQNR=33.47 dB}
+  \end{subfigure}
+
+  \caption{SQNR vs $\sigma_x$ (dBFS) for triangularly distributed input at different quantization resolutions.}
+  \label{fig:task3_tri_sqnr_vs_sigma}
+\end{figure}
+
+The comparison between theoretical and empirical SQNR curves for triangularly distributed inputs is shown in Figure~\ref{fig:task3_tri_sqnr_vs_sigma}.
+The red line represents the theoretical SQNR curve, while the blue line represents the empirical SQNR values obtained from quantizing the triangularly distributed samples.
+
+Empirical curves deviate from the straight theoretical line for two practical reasons. At very small $\sigma_x$ values, quantization noise is no longer uniformly distributed and we have no enough bits for quantization.
+At large $\sigma_x$ values, clipping occurs, distorting the signal and reducing SQNR below theoretical predictions.
+Otherweise, in the mid-range of $\sigma_x$ values, empirical results closely follow theoretical expectations and reaches the maximum SQNR (marked in the description of each image).
+
+When we increase the number of bits N, the curve starts to follow the theorical curve with smaller values of $\sigma_x$.
+We reach a point where optimum $\sigma_x$ value (where SQNR is maximized) approaches the theoretical value of -7.78 dBFS calculated earlier.
 
 \vspace{1cm}
 \textbf{Question: In view of your results, what are the optimum values (regarding SQNR) of $\sigma_x$ (in dBFS), and for the different resolutions analyzed (3 to 6 bits)?

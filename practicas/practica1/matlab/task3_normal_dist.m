@@ -50,7 +50,7 @@ for iN = 1:length(Nbits_list)
     sigma_opt = sigma_db(idx_opt);
     clip_opt = clip_prob_emp(iN, idx_opt);
 
-     % figura mínima: SQNR y marca sigma_opt
+     % plot SQNR y marca sigma_opt
     figure;
     plot(sigma_db, SQNR_emp(iN,:), 'b', sigma_db, SQNR_theo(iN,:), 'r--','LineWidth',1.2); hold on;
     xline(sigma_opt,'--g','LineWidth',1.2);
