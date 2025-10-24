@@ -157,5 +157,29 @@ The comparison between $M = 2048$ and $M = 512$ shows that the FFT size does not
 }
 \vspace{0.5cm}
 
-xd
+We only got 7 armonics above the noise floor in the FFT plot shown in Figure~\ref{fig:task5_thd}, so we calculated the THD using these harmonics.
+The other armonics appear past the 50 MHz marked.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/task5_thd.png}
+    \caption{FFT with $M=2048$, $N=11$, $\gamma=0.3$}
+    \label{fig:task5_thd}
+\end{figure}
+
+The Total Harmonic Distortion (THD) according to the IEEE 1241-2000 specification is defined as:
+
+\[
+\mathrm{THD} = 10 \log_{10}
+\left(
+    \frac{A_2^2 + A_3^2 + \cdots + A_{10}^2}{A_1^2}
+\right) \, \mathrm{[dB]}
+\]
+
+where \(A_1\) is the amplitude of the fundamental component, and \(A_2, A_3, \ldots, A_{10}\) are the amplitudes of the first nine harmonics.
+
+From the measured spectrum, the obtained value is:
+
+\[
+\mathrm{THD} = 2,44~\mathrm{dB}
+\]

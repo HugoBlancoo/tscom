@@ -5,7 +5,7 @@ fs = 100e6;
 FS = 1;
 gamma = 0.3;
 Nbits = 11;
-M = 2048*8;
+M = 2048;
 blocks = 15;
 
 Nsamples = blocks * M;
