@@ -376,6 +376,11 @@ INPUT ./task6.tex
 INPUT ./task6.tex
 INPUT ./task6.tex
 INPUT task6.tex
+INPUT ./appendix.tex
+INPUT ./appendix.tex
+INPUT ./appendix.tex
+INPUT ./appendix.tex
+INPUT appendix.tex
 INPUT practica1.aux
 INPUT ./practica1.out
 INPUT ./practica1.out
