@@ -2,6 +2,66 @@
 \section{Appendix: MATLAB scripts and data}
 \label{app:matlab}
 
+\subsection{Task 1}
+\subsubsection{task1.m}
+
+\begin{lstlisting}[language=Matlab]
+x = linspace(-7,7,1000);
+xq = quanti(x,7,2);
+xq_4 = quanti(x,7,4);
+
+figure;
+plot(x,x,'b',x,xq,'r',x,xq_4,'y');
+grid on
+
+quantized_error = x - xq;
+quantized_error_4b = x - xq_4;
+
+figure;
+plot(x,quantized_error, 'r', x, quantized_error_4b, 'y');
+title('Quantization Error as a Function of Input Amplitude');
+xlabel('Input Amplitude');
+ylabel('Quantization Error');
+grid on;
+\end{lstlisting}
+
+\subsection{Task 2}
+\subsubsection{task2.m}
+
+\begin{lstlisting}[language=Matlab]
+FS = 5;
+fs = 100e6;
+f0 = 18.17e6;
+M = 15 * 2^10;
+t = (0:M-1)/fs;
+
+A_list = [0.5, 0.75, 1.0, 1.03] * FS;
+Nbits_list = [12, 10, 8, 6, 4];
+
+results = [];
+
+for A = A_list
+    x = A * cos(2*pi*f0*t);
+    sigma_x = A / sqrt(2);
+    var_x_emp = var(x,1);
+    for Nbits = Nbits_list
+        LSB = FS / 2^(Nbits-1);
+        xq = quanti(x, FS, Nbits);
+
+        e = x - xq;
+        var_e_emp = var(e,1);
+        var_e_theor = LSB^2 / 12;
+
+        SQNR_emp = 10*log10(var_x_emp / var_e_emp);
+        SQNR_theor_formula = 6.02*Nbits + 4.77 - 20 * log10(FS / sigma_x);
+
+        % Save
+        results = [results; A, Nbits, var_e_emp, var_e_theor, SQNR_emp, SQNR_theor_formula];
+    end
+end
+\end{lstlisting}
+
+
 \subsection{Task 3}
 \subsubsection{task3\_2.m}
 
