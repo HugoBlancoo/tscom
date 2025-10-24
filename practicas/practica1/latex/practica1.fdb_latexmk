@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1761337823.18897 "/home/hugo/master/TSCOM/practicas/practica1/latex/practica1.tex" "practica1.pdf" "practica1" 1761337824.17744 0
+["pdflatex"] 1761338517.21729 "/home/hugo/master/TSCOM/practicas/practica1/latex/practica1.tex" "practica1.pdf" "practica1" 1761338518.26022 0
   "/etc/texmf/web2c/texmf.cnf" 1760033360.04897 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/hugo/master/TSCOM/practicas/practica1/latex/practica1.tex" 1761336612.25046 24958 4e8b377e46f3d3d760dd3a48512266ab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -157,7 +157,7 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1760033395.04417 128028 f533b797fba58d231669ea19e894e23e ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1760034050 6822858 7b980e28c192a2fb1b9b8dc9479f8bff ""
-  "appendix.tex" 1761337822.98082 10389 cf8642b7d18ee75746ad822bb2b81e5d ""
+  "appendix.tex" 1761338517.00926 12695 8448732a12158d32c5126d8a4bb4824d ""
   "img/task1_2.png" 1760197153.57932 58751 ce2e8febbc0a062d6f721fefa99dd554 ""
   "img/task1_2_2.png" 1760197408.32042 104555 8c3e42abe373a510cfa070bfd830e91d ""
   "img/task2_1.png" 1760197435.11325 94840 96d5f6b235d12e9720a849f5f94dc552 ""
@@ -179,12 +179,14 @@
   "img/task4_3_n8.png" 1761331451.2359 75389 a9ceb07148b2c76f1ce8b813222aaebf ""
   "img/task4_5.png" 1761331451.2359 42996 308f68d81c31ffb318f1230fdfed232e ""
   "img/task5_1.png" 1761336594.77914 51708 b8b1005ef916b290aa4c48782d668737 ""
-  "practica1.aux" 1761337824.11781 6763 500f46bb0d0e4da014e8663b1249393a "pdflatex"
-  "practica1.out" 1761337824.1188 3956 b675284428e33d6eb2fb74f2f8db86f7 "pdflatex"
+  "img/task6_3_01ps.png" 1761338193.30166 72378 b2de7076e5bc81c8297733449f0c702b ""
+  "img/task6_3_10ps.png" 1761338172.43879 55854 f844c6fa7bd67ddcab655189e795f463 ""
+  "practica1.aux" 1761338518.20126 7013 4bbacce6234b0000471e82e20e3e16f8 "pdflatex"
+  "practica1.out" 1761338518.20226 4180 92e8b5817c5e9e56cbbbcc61e9a7ceb8 "pdflatex"
   "practica1.tex" 1761336612.25046 24958 4e8b377e46f3d3d760dd3a48512266ab ""
   "task4.tex" 1761331451.2369 6644 b53e63c6bc86796dbf933a3407553cfd ""
   "task5.tex" 1761336594.77914 2425 17b6e43a7cb1c3d65999b9b5a256eb7d ""
-  "task6.tex" 1761333541.57339 1807 80e82b47c3a8099534cbc15f9f027bb5 ""
+  "task6.tex" 1761338271.15224 2302 3d7bcf1a4bc690731278511b8ed187f4 ""
   (generated)
   "practica1.aux"
   "practica1.log"

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.10.9)  24 OCT 2025 22:30
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.10.9)  24 OCT 2025 22:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -620,12 +620,12 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10.95> on input line 97.
-<img/task1_2.png, id=132, 2325.68875pt x 1195.46625pt>
+<img/task1_2.png, id=140, 2325.68875pt x 1195.46625pt>
 File: img/task1_2.png Graphic file (type png)
 <use img/task1_2.png>
 Package pdftex.def Info: img/task1_2.png  used on input line 114.
 (pdftex.def)             Requested size: 452.9679pt x 232.83223pt.
-<img/task1_2_2.png, id=134, 2375.87625pt x 1263.72125pt>
+<img/task1_2_2.png, id=142, 2375.87625pt x 1263.72125pt>
 File: img/task1_2_2.png Graphic file (type png)
 <use img/task1_2_2.png>
 Package pdftex.def Info: img/task1_2_2.png  used on input line 121.
@@ -633,7 +633,7 @@ Package pdftex.def Info: img/task1_2_2.png  used on input line 121.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc} <./img/task1_2.png>]
-<img/task2_1.png, id=148, 1889.0575pt x 962.59625pt>
+<img/task2_1.png, id=156, 1889.0575pt x 962.59625pt>
 File: img/task2_1.png Graphic file (type png)
 <use img/task2_1.png>
 Package pdftex.def Info: img/task2_1.png  used on input line 136.
@@ -652,7 +652,7 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 22
  (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-<img/task3_tri_mkdist.png, id=170, 556.9608pt x 370.986pt>
+<img/task3_tri_mkdist.png, id=178, 556.9608pt x 370.986pt>
 File: img/task3_tri_mkdist.png Graphic file (type png)
 <use img/task3_tri_mkdist.png>
 Package pdftex.def Info: img/task3_tri_mkdist.png  used on input line 232.
@@ -667,13 +667,13 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 239.
  [4{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc} <./img/task3_tri_mkdist.png (PNG copy)>] [5]
-<img/task3_tri_sum2uniform.png, id=215, 556.9608pt x 370.986pt>
+<img/task3_tri_sum2uniform.png, id=223, 556.9608pt x 370.986pt>
 File: img/task3_tri_sum2uniform.png Graphic file (type png)
 <use img/task3_tri_sum2uniform.png>
 Package pdftex.def Info: img/task3_tri_sum2uniform.png  used on input line 311.
 (pdftex.def)             Requested size: 452.9679pt x 301.72539pt.
  [6 <./img/task3_tri_sum2uniform.png (PNG copy)>]
-<img/task3_tri_n3.png, id=228, 560.3334pt x 375.804pt>
+<img/task3_tri_n3.png, id=236, 560.3334pt x 375.804pt>
 File: img/task3_tri_n3.png Graphic file (type png)
 <use img/task3_tri_n3.png>
 Package pdftex.def Info: img/task3_tri_n3.png  used on input line 373.
@@ -683,7 +683,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 374--374
 []\T1/lmr/m/n/10 (+20) (a) |N=3 bits - $\OML/lmm/m/it/10 ^^[[]$\T1/lmr/m/n/10 (+20) =-6.60 dBFS,
  []
 
-<img/task3_tri_n4.png, id=229, 560.3334pt x 375.804pt>
+<img/task3_tri_n4.png, id=237, 560.3334pt x 375.804pt>
 File: img/task3_tri_n4.png Graphic file (type png)
 <use img/task3_tri_n4.png>
 Package pdftex.def Info: img/task3_tri_n4.png  used on input line 379.
@@ -693,7 +693,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 380--380
 []\T1/lmr/m/n/10 (+20) (b) |N=4 bits - $\OML/lmm/m/it/10 ^^[[]$\T1/lmr/m/n/10 (+20) =-7.20 dBFS,
  []
 
-<img/task3_tri_n5.png, id=230, 560.3334pt x 375.804pt>
+<img/task3_tri_n5.png, id=238, 560.3334pt x 375.804pt>
 File: img/task3_tri_n5.png Graphic file (type png)
 <use img/task3_tri_n5.png>
 Package pdftex.def Info: img/task3_tri_n5.png  used on input line 387.
@@ -703,7 +703,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 388--388
 []\T1/lmr/m/n/10 (+20) (c) |N=5 bits - $\OML/lmm/m/it/10 ^^[[]$\T1/lmr/m/n/10 (+20) =-7.30 dBFS,
  []
 
-<img/task3_tri_n6.png, id=231, 560.3334pt x 375.804pt>
+<img/task3_tri_n6.png, id=239, 560.3334pt x 375.804pt>
 File: img/task3_tri_n6.png Graphic file (type png)
 <use img/task3_tri_n6.png>
 Package pdftex.def Info: img/task3_tri_n6.png  used on input line 393.
@@ -714,12 +714,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 394--394
  []
 
 [7] [8 <./img/task3_tri_n3.png (PNG copy)> <./img/task3_tri_n4.png (PNG copy)> <./img/task3_tri_n5.png (PNG copy)> <./img/task3_tri_n6.png (PNG copy)>] [9]
-<img/task3_normal_dist.png, id=289, 556.9608pt x 370.986pt>
+<img/task3_normal_dist.png, id=297, 556.9608pt x 370.986pt>
 File: img/task3_normal_dist.png Graphic file (type png)
 <use img/task3_normal_dist.png>
 Package pdftex.def Info: img/task3_normal_dist.png  used on input line 480.
 (pdftex.def)             Requested size: 452.9679pt x 301.72539pt.
-<img/task3_normal_n3.png, id=290, 560.3334pt x 375.804pt>
+<img/task3_normal_n3.png, id=298, 560.3334pt x 375.804pt>
 File: img/task3_normal_n3.png Graphic file (type png)
 <use img/task3_normal_n3.png>
 Package pdftex.def Info: img/task3_normal_n3.png  used on input line 488.
@@ -729,7 +729,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 489--489
 []\T1/lmr/m/n/10 (+20) (a) |N=3 bits - $\OML/lmm/m/it/10 ^^[[]$\T1/lmr/m/n/10 (+20) =-7.90 dBFS,
  []
 
-<img/task3_normal_n4.png, id=291, 560.3334pt x 375.804pt>
+<img/task3_normal_n4.png, id=299, 560.3334pt x 375.804pt>
 File: img/task3_normal_n4.png Graphic file (type png)
 <use img/task3_normal_n4.png>
 Package pdftex.def Info: img/task3_normal_n4.png  used on input line 494.
@@ -739,7 +739,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 495--495
 []\T1/lmr/m/n/10 (+20) (b) |N=4 bits - $\OML/lmm/m/it/10 ^^[[]$\T1/lmr/m/n/10 (+20) =-8.50 dBFS,
  []
 
-<img/task3_normal_n5.png, id=292, 560.3334pt x 375.804pt>
+<img/task3_normal_n5.png, id=300, 560.3334pt x 375.804pt>
 File: img/task3_normal_n5.png Graphic file (type png)
 <use img/task3_normal_n5.png>
 Package pdftex.def Info: img/task3_normal_n5.png  used on input line 502.
@@ -749,7 +749,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 503--503
 []\T1/lmr/m/n/10 (+20) (c) |N=5 bits - $\OML/lmm/m/it/10 ^^[[]$\T1/lmr/m/n/10 (+20) =-9.20 dBFS,
  []
 
-<img/task3_normal_n6.png, id=293, 560.3334pt x 375.804pt>
+<img/task3_normal_n6.png, id=301, 560.3334pt x 375.804pt>
 File: img/task3_normal_n6.png Graphic file (type png)
 <use img/task3_normal_n6.png>
 Package pdftex.def Info: img/task3_normal_n6.png  used on input line 508.
@@ -764,29 +764,29 @@ Overfull \hbox (5.08557pt too wide) in paragraph at lines 34--38
 []\T1/lmr/m/n/10.95 (-20) To cal-cu-la-te the theo-re-ti-cal SQNR we ha-ve the for-mu-la $\OML/lmm/m/it/10.95 SQNR \OT1/lmr/m/n/10.95 (-20) = 6[]02\OML/lmm/m/it/10.95 N \OT1/lmr/m/n/10.95 (-20) + 4[]77 \OMS/lmsy/m/n/10.95 ^^@ \OT1/lmr/m/n/10.95 (-20) 20\OML/lmm/m/it/10.95 log[]\OT1/lmr/m/n/10.95 (-20) (\OML/lmm/m/it/10.95 FS=^^[[]\OT1/lmr/m/n/10.95 (-20) )$
  []
 
-<img/task4_1.png, id=307, 666.8112pt x 438.9198pt>
+<img/task4_1.png, id=316, 666.8112pt x 438.9198pt>
 File: img/task4_1.png Graphic file (type png)
 <use img/task4_1.png>
 Package pdftex.def Info: img/task4_1.png  used on input line 50.
 (pdftex.def)             Requested size: 452.9679pt x 298.16682pt.
 [12 <./img/task4_1.png (PNG copy)>]
-<img/task4_2.png, id=314, 671.6292pt x 438.9198pt>
+<img/task4_2.png, id=322, 671.6292pt x 438.9198pt>
 File: img/task4_2.png Graphic file (type png)
 <use img/task4_2.png>
 Package pdftex.def Info: img/task4_2.png  used on input line 81.
 (pdftex.def)             Requested size: 452.9679pt x 296.01697pt.
  [13 <./img/task4_2.png (PNG copy)>]
-<img/task4_3_n10.png, id=321, 671.6292pt x 438.9198pt>
+<img/task4_3_n10.png, id=329, 671.6292pt x 438.9198pt>
 File: img/task4_3_n10.png Graphic file (type png)
 <use img/task4_3_n10.png>
 Package pdftex.def Info: img/task4_3_n10.png  used on input line 121.
 (pdftex.def)             Requested size: 226.48395pt x 148.00513pt.
-<img/task4_3_n8.png, id=322, 671.6292pt x 438.9198pt>
+<img/task4_3_n8.png, id=330, 671.6292pt x 438.9198pt>
 File: img/task4_3_n8.png Graphic file (type png)
 <use img/task4_3_n8.png>
 Package pdftex.def Info: img/task4_3_n8.png  used on input line 126.
 (pdftex.def)             Requested size: 226.48395pt x 148.00513pt.
-<img/task4_3_n6.png, id=323, 671.6292pt x 438.9198pt>
+<img/task4_3_n6.png, id=331, 671.6292pt x 438.9198pt>
 File: img/task4_3_n6.png Graphic file (type png)
 <use img/task4_3_n6.png>
 Package pdftex.def Info: img/task4_3_n6.png  used on input line 131.
@@ -797,18 +797,34 @@ Overfull \hbox (2.43333pt too wide) in paragraph at lines 119--134
  []
 
 [14 <./img/task4_3_n10.png (PNG copy)> <./img/task4_3_n8.png (PNG copy)> <./img/task4_3_n6.png (PNG copy)>]
-<img/task4_5.png, id=329, 671.6292pt x 438.9198pt>
+<img/task4_5.png, id=337, 671.6292pt x 438.9198pt>
 File: img/task4_5.png Graphic file (type png)
 <use img/task4_5.png>
 Package pdftex.def Info: img/task4_5.png  used on input line 161.
 (pdftex.def)             Requested size: 452.9679pt x 296.01697pt.
 ) (./task5.tex
-<img/task5_1.png, id=330, 561.297pt x 373.395pt>
+<img/task5_1.png, id=338, 561.297pt x 373.395pt>
 File: img/task5_1.png Graphic file (type png)
 <use img/task5_1.png>
 Package pdftex.def Info: img/task5_1.png  used on input line 7.
 (pdftex.def)             Requested size: 452.9679pt x 301.33727pt.
- [15 <./img/task4_5.png (PNG copy)>] [16 <./img/task5_1.png (PNG copy)>]) (./task6.tex [17]) (./appendix.tex [18] [19] [20] [21] [22] [23] [24] [25]) [26] (./practica1.aux
+ [15 <./img/task4_5.png (PNG copy)>] [16 <./img/task5_1.png (PNG copy)>]) (./task6.tex [17]
+<img/task6_3_10ps.png, id=370, 671.6292pt x 442.2924pt>
+File: img/task6_3_10ps.png Graphic file (type png)
+<use img/task6_3_10ps.png>
+Package pdftex.def Info: img/task6_3_10ps.png  used on input line 41.
+(pdftex.def)             Requested size: 226.48395pt x 149.14238pt.
+<img/task6_3_01ps.png, id=371, 666.8112pt x 442.2924pt>
+File: img/task6_3_01ps.png Graphic file (type png)
+<use img/task6_3_01ps.png>
+Package pdftex.def Info: img/task6_3_01ps.png  used on input line 46.
+(pdftex.def)             Requested size: 226.48395pt x 150.2222pt.
+
+Overfull \hbox (2.43333pt too wide) in paragraph at lines 39--49
+[][] [] 
+ []
+
+) (./appendix.tex [18 <./img/task6_3_10ps.png (PNG copy)> <./img/task6_3_01ps.png (PNG copy)>] [19] [20] [21] [22] [23] [24] [25] [26] [27]) [28] (./practica1.aux
 LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 )
@@ -817,21 +833,21 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `practica1.out' has not changed.
-(rerunfilecheck)             Checksum: B675284428E33D6EB2FB74F2F8DB86F7;3956.
+(rerunfilecheck)             Checksum: 92E8B5817C5E9E56CBBBCC61E9A7CEB8;4180.
  ) 
 Here is how much of TeX's memory you used:
- 20573 strings out of 476120
- 322986 string characters out of 5793657
- 2262975 words of memory out of 5000000
- 41549 multiletter control sequences out of 15000+600000
+ 20703 strings out of 476120
+ 325172 string characters out of 5793657
+ 2271975 words of memory out of 5000000
+ 41586 multiletter control sequences out of 15000+600000
  634180 words of font info for 181 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
  75i,13n,79p,1056b,2713s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi6.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi7.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb>
-Output written on practica1.pdf (26 pages, 1536345 bytes).
+Output written on practica1.pdf (28 pages, 1672513 bytes).
 PDF statistics:
- 1015 PDF objects out of 1200 (max. 8388607)
- 920 compressed objects within 10 object streams
- 582 named destinations out of 1000 (max. 500000)
- 43370 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 1142 PDF objects out of 1200 (max. 8388607)
+ 1042 compressed objects within 11 object streams
+ 675 named destinations out of 1000 (max. 500000)
+ 43396 words of extra memory for PDF output out of 51595 (max. 10000000)
 

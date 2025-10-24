@@ -466,3 +466,95 @@ legend('PSD (avg)');
 grid on;
 
 \end{lstlisting}
+
+\subsection{Task 6}
+\subsubsection{task6\_3.m}
+\begin{lstlisting}[language=Matlab]
+fs = 100e6;
+Nbits = 12;
+FS = 1;
+M = 1024;
+blocks = 100;
+Nsamples = M * blocks;
+
+k0 = 410;
+fc = k0 * fs / M;
+
+
+sigma_list_ps = [10, 0.1];
+
+f_axis = (0:M/2) * fs / M;
+
+Pq_dBFS = -(6.02 * Nbits + 1.76);
+Pq_linear = 10^(Pq_dBFS / 10);
+FFT_gain_dB = 10 * log10(M / 2);
+
+for sigma_ps = sigma_list_ps
+    sigma_tau = sigma_ps * 1e-12;
+    
+    SNR_jitter_dB = 20 * log10(1 / (2 * pi * fc * sigma_tau));
+    Pj_dBFS = -SNR_jitter_dB;
+    Pj_linear = 10^(Pj_dBFS / 10);
+    
+    P_total_linear = Pq_linear + Pj_linear;
+    P_total_dBFS = 10 * log10(P_total_linear);
+    
+    Expected_Floor_dBFS = P_total_dBFS - FFT_gain_dB;
+    
+    fprintf('--- Caso sigma = %.1f ps ---\n', sigma_ps);
+    fprintf('  P_cuantizacion (Pq): %.2f dBFS\n', Pq_dBFS);
+    fprintf('  P_jitter (Pj):       %.2f dBFS\n', Pj_dBFS);
+    fprintf('  P_ruido_total:       %.2f dBFS\n', P_total_dBFS);
+    fprintf('  Piso FFT Esperado:   %.2f dBFS\n', Expected_Floor_dBFS);
+    
+    if sigma_ps == 10
+        floor_10ps = Expected_Floor_dBFS;
+    else
+        floor_0_1ps = Expected_Floor_dBFS;
+    end
+end
+
+
+for sigma_ps = sigma_list_ps
+    sigma_tau = sigma_ps * 1e-12;
+    
+    n = (0:Nsamples-1)';
+    t_ideal = n / fs;
+    
+    a = sigma_tau * sqrt(3);
+    tau_n = -a + (2 * a) * rand(Nsamples, 1);
+    
+    t_jittered = t_ideal + tau_n;
+    
+    xt = FS * cos(2 * pi * fc * t_jittered);
+    
+    xq = quanti(xt, FS, Nbits);
+    
+    xq_blocks = reshape(xq, M, blocks);
+    
+    X_fft = fft(xq_blocks, M);
+    P_avg = mean(abs(X_fft).^2, 2);
+    
+    norm_const = (M / 2)^2;
+    P_dbfs = 10 * log10(P_avg / norm_const);
+    
+    figure;
+    plot(f_axis / 1e6, P_dbfs(1:M/2 + 1));
+    hold on;
+    
+    if sigma_ps == 10
+        yline(floor_10ps, 'r--', 'LineWidth', 2, ...
+            'Label', sprintf('Piso Teorico (%.1f dBFS)', floor_10ps));
+    else
+        yline(floor_0_1ps, 'r--', 'LineWidth', 2, ...
+            'Label', sprintf('Piso Teorico (%.1f dBFS)', floor_0_1ps));
+    end
+    
+    grid on;
+    title(sprintf('Efecto del Jitter (\\sigma_{\\tau} = %.1f ps), M=1024', sigma_ps));
+    xlabel('Frecuencia (MHz)');
+    ylabel('Potencia (dBFS)');
+    ylim([-140, 10]);
+    legend('Espectro Simulado', 'Piso Teorico Esperado');
+end
+\end{lstlisting}
