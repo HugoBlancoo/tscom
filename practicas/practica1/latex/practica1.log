@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.10.9)  24 OCT 2025 20:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.10.9)  24 OCT 2025 21:14
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -768,15 +768,15 @@ Package rerunfilecheck Info: File `practica1.out' has not changed.
 (rerunfilecheck)             Checksum: D1620F9833F2211180E9CD256B86CAC1;1732.
  ) 
 Here is how much of TeX's memory you used:
- 19987 strings out of 476120
- 313504 string characters out of 5793657
+ 19989 strings out of 476120
+ 313539 string characters out of 5793657
  2229975 words of memory out of 5000000
- 41430 multiletter control sequences out of 15000+600000
+ 41432 multiletter control sequences out of 15000+600000
  634014 words of font info for 179 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
  75i,13n,79p,1056b,2713s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi6.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi7.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb>
-Output written on practica1.pdf (15 pages, 1144740 bytes).
+Output written on practica1.pdf (15 pages, 1147712 bytes).
 PDF statistics:
  357 PDF objects out of 1000 (max. 8388607)
  287 compressed objects within 3 object streams
