@@ -50,5 +50,5 @@ for i = 1:length(Nbits_list)
     title(sprintf('Espectro (N = %d bits, M = 1024)', Nbits));
     ylim([-140, 10]);
     legend('Espectro medido', ...
-           sprintf('Piso teórico (%.2f dBFS)', piso_ruido_teorico));
+           sprintf('Noise Floor (%.2f dBFS)', piso_ruido_teorico));
 end

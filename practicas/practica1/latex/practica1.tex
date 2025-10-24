@@ -164,20 +164,20 @@ The estimated value of the SQNR in dB we got is $61.5633$ dB, and the theoretica
     \centering
     \begin{tabular}{|c||c|c|c|c|c|c|c|c|}
         \hline
-                    & \multicolumn{2}{c|}{$A=0.5\cdot\text{\tt FS}$} & \multicolumn{2}{c|}{$A=0.75\cdot\text{\tt FS}$} & \multicolumn{2}{c|}{$A=\text{\tt FS}$} & \multicolumn{2}{c|}{$A=1.03\cdot\text{\tt FS}$}                                         \\
-        \cline{2-9} & \multicolumn{2}{ |c| }{SQNR (dB)}              & \multicolumn{2}{ |c| }{SQNR (dB)}               & \multicolumn{2}{ |c| }{SQNR (dB)}      & \multicolumn{2}{ |c| }{SQNR (dB)}                                                       \\
+                    & \multicolumn{2}{c|}{$A=0.5\cdot\text{\tt FS}$} & \multicolumn{2}{c|}{$A=0.75\cdot\text{\tt FS}$} & \multicolumn{2}{c|}{$A=\text{\tt FS}$} & \multicolumn{2}{c|}{$A=1.03\cdot\text{\tt FS}$}                                          \\
+        \cline{2-9} & \multicolumn{2}{ |c| }{SQNR (dB)}              & \multicolumn{2}{ |c| }{SQNR (dB)}               & \multicolumn{2}{ |c| }{SQNR (dB)}      & \multicolumn{2}{ |c| }{SQNR (dB)}                                                        \\
         \hline
-        $N$         & theory                                         & measured                                        & theory                                 & measured                                        & theory & measured & theory & measured \\
+        $N$         & theory                                         & measured                                        & theory                                 & measured                                        & theory  & measured & theory & measured \\
         \hline\hline
-        12          & 67.98                                          & 68.03                                           & 71.5                                   & 71.54                                           & 74.00  & 73.7    & 74.26  & 38.47    \\
-        \hline                                   
-        10          & 55.94                                          & 56.01                                           & 59.46                                  & 59.53                                            & 61.96  & 61.56    & 62.22  & 38.19    \\
-        \hline                                   
-        8           & 43.90                                          & 44.04                                           & 47.42                                  & 47.53                                            & 49.92  & 49.15    & 50.18  & 36.97    \\
-        \hline                                   
-        6           & 31.86                                          & 32.13                                           & 35.38                                  & 35.6                                             & 37.88  & 36.52    & 38.14  & 32.27    \\
-        \hline                                   
-        4           & 19.82                                          & 20.37                                           & 23.34                                  & 23.78                                            & 25.8397  & 23.63    & 26.1  & 22.53    \\
+        12          & 67.98                                          & 68.03                                           & 71.5                                   & 71.54                                           & 74.00   & 73.7     & 74.26  & 38.47    \\
+        \hline
+        10          & 55.94                                          & 56.01                                           & 59.46                                  & 59.53                                           & 61.96   & 61.56    & 62.22  & 38.19    \\
+        \hline
+        8           & 43.90                                          & 44.04                                           & 47.42                                  & 47.53                                           & 49.92   & 49.15    & 50.18  & 36.97    \\
+        \hline
+        6           & 31.86                                          & 32.13                                           & 35.38                                  & 35.6                                            & 37.88   & 36.52    & 38.14  & 32.27    \\
+        \hline
+        4           & 19.82                                          & 20.37                                           & 23.34                                  & 23.78                                           & 25.8397 & 23.63    & 26.1   & 22.53    \\
         \hline
     \end{tabular}
     \caption{Pertaining to Task 2.}
@@ -203,7 +203,7 @@ reach the limits. Therefore, the value of FS should be $x_0$.
 
 To reach the variance of a symmetric triangular distribution we need to make some calculations:
 \[
-Var(x) = E[x^2] - (E[x])^2 = E[x^2] + 0 = \int_{-x_0}^{x_0} x^2 f(x) dx = x_0^2/6
+    Var(x) = E[x^2] - (E[x])^2 = E[x^2] + 0 = \int_{-x_0}^{x_0} x^2 f(x) dx = x_0^2/6
 \]
 
 $\sigma_x = \sqrt{var(x)} = \frac{x_0}{\sqrt{6}}$ and in dBFS (with $x_0$ = FS) would be $20\log_{10}(1/\sqrt{6}) = -7,78$ dBFS.
@@ -218,23 +218,23 @@ We have two options to do it:
 \begin{itemize}
     % uso task3_2.m
     \item Option 1: The easiest way to generate a random variable with triangular pdf is using the function \textit{makedist} from Matlab.
-    The function spects the parameters A, B and C that define the triangular distribution.
-    So we set the function parameters to get a symmetric triangular distribution centered at 0: \texttt{makedist('Triangular','A',-x0,'B',x0,'C',0)}
-    
-    The result of the mean and var commands are as follows:
-    \begin{itemize}
-        \item Empirical mean: -4.58885e-05, wich is near to 0, very close to our target mean.
-        \item Empirical rms value [dBFS]: -7.78072, wich is very close to our target variance.
-    \end{itemize}
-    
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=1\textwidth]{img/task3_tri_mkdist.png}
-        \label{fig:task3_tri_mkdist}
-    \end{figure}
+          The function spects the parameters A, B and C that define the triangular distribution.
+          So we set the function parameters to get a symmetric triangular distribution centered at 0: \texttt{makedist('Triangular','A',-x0,'B',x0,'C',0)}
 
-    To do it, we can use the following code:
-        \begin{lstlisting}[language=Matlab]
+          The result of the mean and var commands are as follows:
+          \begin{itemize}
+              \item Empirical mean: -4.58885e-05, wich is near to 0, very close to our target mean.
+              \item Empirical rms value [dBFS]: -7.78072, wich is very close to our target variance.
+          \end{itemize}
+
+          \begin{figure}[H]
+              \centering
+              \includegraphics[width=1\textwidth]{img/task3_tri_mkdist.png}
+              \label{fig:task3_tri_mkdist}
+          \end{figure}
+
+          To do it, we can use the following code:
+          \begin{lstlisting}[language=Matlab]
             x0 = 2;
             A = -x0; B = 0; C = +x0; % simetria = media 0
 
@@ -267,53 +267,53 @@ We have two options to do it:
             hold off
         \end{lstlisting}
 
-    % uso task3_tri.m
+          % uso task3_tri.m
     \item Option 2: Another way we can generate samples of a random variable following a symmetric triangular pdf as the sum of two independent random variables $X_1$ and $X_2$ from a uniform distribution.
-    When two independent random variables with uniform distributions are added, the resulting probability density function (PDF) becomes triangular. This can be understood both intuitively and mathematically.
+          When two independent random variables with uniform distributions are added, the resulting probability density function (PDF) becomes triangular. This can be understood both intuitively and mathematically.
 
-    Intuitively, if each variable is uniform on \([-a,a]\), there are many pairs that sum near zero but only a few that produce sums near the extremes \(\pm 2a\). Hence the PDF peaks at zero and decreases linearly towards the edges.
-    
-    Mathematically, let \(Z = X_1 + X_2\) with \(X_1,X_2\) independent and uniform on \([-a,a]\). The PDF of \(Z\) is the convolution of the two uniform PDFs:
-    \[
-    f_Z(z) = (f_{X_1} * f_{X_2})(z) = \int_{-\infty}^{\infty} f_{X_1}(t)\, f_{X_2}(-t + z)\, dt.
-    \]
-    Carrying out the convolution yields the triangular PDF supported on \([-2a,2a]\):
-    \[
-    f_Z(z) = \frac{2a - |z|}{4a^{2}}, \qquad |z|\le 2a.
-    \]
-    If we want the triangular distribution to have support \([-x_0,x_0]\), we must choose \(a = x_0/2\). In that case the PDF simplifies to
-    \[
-    f_Z(z)=\frac{x_0 - |z|}{x_0^2}, \qquad |z|\le x_0,
-    \]
-    Adding two uniform random variables with 0 mean, results in another random variable with 0 mean.
+          Intuitively, if each variable is uniform on \([-a,a]\), there are many pairs that sum near zero but only a few that produce sums near the extremes \(\pm 2a\). Hence the PDF peaks at zero and decreases linearly towards the edges.
 
-    \[
-    E[Z] = E[X_1 + X_2] = E[X_1] + E[X_2] = 0 + 0 = 0.
-    \]
+          Mathematically, let \(Z = X_1 + X_2\) with \(X_1,X_2\) independent and uniform on \([-a,a]\). The PDF of \(Z\) is the convolution of the two uniform PDFs:
+          \[
+              f_Z(z) = (f_{X_1} * f_{X_2})(z) = \int_{-\infty}^{\infty} f_{X_1}(t)\, f_{X_2}(-t + z)\, dt.
+          \]
+          Carrying out the convolution yields the triangular PDF supported on \([-2a,2a]\):
+          \[
+              f_Z(z) = \frac{2a - |z|}{4a^{2}}, \qquad |z|\le 2a.
+          \]
+          If we want the triangular distribution to have support \([-x_0,x_0]\), we must choose \(a = x_0/2\). In that case the PDF simplifies to
+          \[
+              f_Z(z)=\frac{x_0 - |z|}{x_0^2}, \qquad |z|\le x_0,
+          \]
+          Adding two uniform random variables with 0 mean, results in another random variable with 0 mean.
 
-    The variance of the sum of two independent random variables is the sum of their variances.
-    So if we want a triangular distribution with variance $\sigma_x$ (in dBFS), we need to set the variance of each uniform variable to $\sigma_x/2$.
-    
-    \[
-    Var(Z) = Var(X_1 + X_2) = Var(X_1) + Var(X_2) = \sigma_x/2 + \sigma_x/2 = \sigma_x.
-    \]
+          \[
+              E[Z] = E[X_1 + X_2] = E[X_1] + E[X_2] = 0 + 0 = 0.
+          \]
 
-    For a uniform on \([-a,a]\) we have \(\mathrm{Var}(X_i)=a^{2}/3\). Taking \(a=x_0/2\) gives \(\mathrm{Var}(Z)=2\cdot (x_0/2)^2/3 = x_0^2/6 = \sigma_x\), as required.
+          The variance of the sum of two independent random variables is the sum of their variances.
+          So if we want a triangular distribution with variance $\sigma_x$ (in dBFS), we need to set the variance of each uniform variable to $\sigma_x/2$.
 
-    The result of the mean and var commands are as follows:
-    \begin{itemize}
-        \item Empirical mean: 0.00003, wich is close to 0, very close to our target mean.
-        \item Empirical variance [dB]: -7.80701, wich is very close to our target variance.
-    \end{itemize}
-    
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=1\textwidth]{img/task3_tri_sum2uniform.png}
-        \label{fig:task3_tri_sum2uniform}
-    \end{figure}
+          \[
+              Var(Z) = Var(X_1 + X_2) = Var(X_1) + Var(X_2) = \sigma_x/2 + \sigma_x/2 = \sigma_x.
+          \]
 
-    we can doit as follows: REVISAR!!
-        \begin{lstlisting}[language=Matlab]
+          For a uniform on \([-a,a]\) we have \(\mathrm{Var}(X_i)=a^{2}/3\). Taking \(a=x_0/2\) gives \(\mathrm{Var}(Z)=2\cdot (x_0/2)^2/3 = x_0^2/6 = \sigma_x\), as required.
+
+          The result of the mean and var commands are as follows:
+          \begin{itemize}
+              \item Empirical mean: 0.00003, wich is close to 0, very close to our target mean.
+              \item Empirical variance [dB]: -7.80701, wich is very close to our target variance.
+          \end{itemize}
+
+          \begin{figure}[H]
+              \centering
+              \includegraphics[width=1\textwidth]{img/task3_tri_sum2uniform.png}
+              \label{fig:task3_tri_sum2uniform}
+          \end{figure}
+
+          we can doit as follows: REVISAR!!
+          \begin{lstlisting}[language=Matlab]
             x0=2;
             sigma0 = x0/sqrt(2);
             N = 100000;
@@ -368,34 +368,34 @@ We have two options to do it:
 \vspace{0.5cm}
 
 \begin{figure}[H]
-  \begin{subfigure}[t]{.4\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{img/task3_tri_n3.png}
-    \caption{N=3 bits - $\sigma_{opt}$=-6.60 dBFS, SQNR=15.36 dB}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{.4\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{img/task3_tri_n4.png}
-    \caption{N=4 bits - $\sigma_{opt}$=-7.20 dBFS, SQNR=21.56 dB}
-  \end{subfigure}
+    \begin{subfigure}[t]{.4\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/task3_tri_n3.png}
+        \caption{N=3 bits - $\sigma_{opt}$=-6.60 dBFS, SQNR=15.36 dB}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{.4\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/task3_tri_n4.png}
+        \caption{N=4 bits - $\sigma_{opt}$=-7.20 dBFS, SQNR=21.56 dB}
+    \end{subfigure}
 
-  \medskip
+    \medskip
 
-  \begin{subfigure}[t]{.4\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{img/task3_tri_n5.png}
-    \caption{N=5 bits - $\sigma_{opt}$=-7.30 dBFS, SQNR=27.52 dB}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{.4\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{img/task3_tri_n6.png}
-    \caption{N=6 bits - $\sigma_{opt}$=-7.30 dBFS, SQNR=33.47 dB}
-  \end{subfigure}
+    \begin{subfigure}[t]{.4\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/task3_tri_n5.png}
+        \caption{N=5 bits - $\sigma_{opt}$=-7.30 dBFS, SQNR=27.52 dB}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{.4\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/task3_tri_n6.png}
+        \caption{N=6 bits - $\sigma_{opt}$=-7.30 dBFS, SQNR=33.47 dB}
+    \end{subfigure}
 
-  \caption{SQNR vs $\sigma_x$ (dBFS) for triangularly distributed input at different quantization resolutions.}
-  \label{fig:task3_tri_sqnr_vs_sigma}
+    \caption{SQNR vs $\sigma_x$ (dBFS) for triangularly distributed input at different quantization resolutions.}
+    \label{fig:task3_tri_sqnr_vs_sigma}
 \end{figure}
 
 The comparison between theoretical and empirical SQNR curves for triangularly distributed inputs is shown in Figure~\ref{fig:task3_tri_sqnr_vs_sigma}.

@@ -29,5 +29,5 @@ plot(f_axis(1:M/2 + 1) / 1e6, P_dbfs(1:M/2 + 1));
 grid on;
 xlabel('Frequency (MHz)');
 ylabel('Power (dBFS)');
-title('Espectro de Potencia Promedio (N=12 bits, M=1024)');
+title('Espectro de Potencia Promedio (N=16 bits, M=1024)');
 ylim([-140, 10]); % Ajusta el límite Y para ver mejor el piso de ruido

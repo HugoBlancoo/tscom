@@ -7,4 +7,5 @@ INPUT /home/hugo/master/TSCOM/practicas/practica1/latex/task4.tex
 OUTPUT task4.log
 INPUT /usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcbx1000.tfm
+OUTPUT task4.pdf
+INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
