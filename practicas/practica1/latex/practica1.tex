@@ -94,7 +94,17 @@
 \textbf{Question: Give your interpretation of the resulting graphs. Do the quantization levels correspond with the values you had expected?}
 
 \vspace{0.5cm}
-We represent the original continuous signal x (blue) and the 2 quantized version using 2 (red) and 4 (yellow) bits. As expected, the 2 bit quantization produces fewer discrete levels than the 4 bits quantization. Increase the number of bits decreases $\Delta$, resulting in smaller steps and a quantized signal that follows the input more closely.
+
+In Figure~\ref{fig:task1_2}, we can observe the continuous signal x (blue) and the 2 quantized version using 2 (red) and 4 (yellow) bits.
+As expected, the 2 bit quantization produces fewer discrete levels than the 4 bits quantization.
+Increase the number of bits decreases $\Delta$, resulting in smaller steps and a quantized signal that follows the input more closely.
+
+\begin{figure}[H]  % H is fot NOT letting latex insert the image in another place
+    \centering
+    \includegraphics[width=1\textwidth]{img/task1_2.png}
+    \caption{Quantization error for N=2 (red) and N=4 (yellow)}
+    \label{fig:task1_2}
+\end{figure}
 
 \vspace{1cm}
 \textbf{Question: For both cases, represent the quantization error as a function of input amplitude in the range $[-7, +7]$ and comment on your results. Is this error always within the $[-\Delta /2, +\Delta /2]$ interval?}
@@ -109,14 +119,7 @@ The $[-\Delta /2, +\Delta /2]$ in each case is as follows:
 \end{itemize}
 In both cases, the error remains bounded within the theoretical interval $[-\Delta /2, +\Delta /2]$.
 
-\begin{figure}[H]  % H is fot NOT letting latex insert the image in another place
-    \centering
-    \includegraphics[width=1\textwidth]{img/task1_2.png}
-    % \caption{Description of your image}
-    \label{fig:task1_2}
-\end{figure}
-
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=1\textwidth]{img/task1_2_2.png}
     % \caption{Description of your image}
