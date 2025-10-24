@@ -200,18 +200,40 @@ For moderate amplitudes the theory remains a good approximation down to mid-low 
 If you set $FS < x_0$ any imput $|x|$ greater than FS will be clipped. If $FS > x_0$,we would be wasting the converter's since the signal would never
 reach the limits. Therefore, the value of FS should be $x_0$.
 
-$\sigma_x = \sqrt{var(x)} = \frac{x_0}{\sqrt{6}}$ and in dBFS would be $20\log_{10}(1/\sqrt{6}) = -7,78$ dBFS.
+To reach the variance of a symmetric triangular distribution we need to make some calculations:
+\[
+Var(x) = E[x^2] - (E[x])^2 = E[x^2] + 0 = \int_{-x_0}^{x_0} x^2 f(x) dx = x_0^2/6
+\]
+
+$\sigma_x = \sqrt{var(x)} = \frac{x_0}{\sqrt{6}}$ and in dBFS (with $x_0$ = FS) would be $20\log_{10}(1/\sqrt{6}) = -7,78$ dBFS.
 
 \vspace{1cm}
 \textbf{Question: Explain how to generate in Matlab samples of a random variable following a symmetric triangular pdf with
-    zero mean and rms value $\sigma_0$. Check the histogram and use the commands mean and var to validate your approach
+    zero mean and rms value $\sigma_x$. Check the histogram and use the commands mean and var to validate your approach
 }
 
 \vspace{0.5cm}
 We have two options to do it:
 \begin{itemize}
-    \item Option 1: We can do it using \textit{makedist} function. To do it, we can use the following code:
-          \begin{lstlisting}[language=Matlab]
+    % uso task3_2.m
+    \item Option 1: The easiest way to generate a random variable with triangular pdf is using the function \textit{makedist} from Matlab.
+    The function spects the parameters A, B and C that define the triangular distribution.
+    So we set the function parameters to get a symmetric triangular distribution centered at 0: \texttt{makedist('Triangular','A',-x0,'B',x0,'C',0)}
+    
+    The result of the mean and var commands are as follows:
+    \begin{itemize}
+        \item Empirical mean: -4.58885e-05, wich is near to 0, very close to our target mean.
+        \item Empirical rms value [dBFS]: -7.78072, wich is very close to our target variance.
+    \end{itemize}
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth]{img/task3_tri_mkdist.png}
+        \label{fig:task3_tri_mkdist}
+    \end{figure}
+
+    To do it, we can use the following code:
+        \begin{lstlisting}[language=Matlab]
             x0 = 2;
             A = -x0; B = 0; C = +x0; % simetria = media 0
 
@@ -243,10 +265,54 @@ We have two options to do it:
             title('Triangular (media 0) -- muestras vs PDF')
             hold off
         \end{lstlisting}
-    \item Option 2: we can generate samples of a random variable following a symmetric triangular pdf as the sum of two independent
-          random variables $X_1$ and $X_2$  from a uniform distribution.
-          we can doit as follows: REVISAR!!
-          \begin{lstlisting}[language=Matlab]
+
+    % uso task3_tri.m
+    \item Option 2: Another way we can generate samples of a random variable following a symmetric triangular pdf as the sum of two independent random variables $X_1$ and $X_2$ from a uniform distribution.
+    When two independent random variables with uniform distributions are added, the resulting probability density function (PDF) becomes triangular. This can be understood both intuitively and mathematically.
+
+    Intuitively, if each variable is uniform on \([-a,a]\), there are many pairs that sum near zero but only a few that produce sums near the extremes \(\pm 2a\). Hence the PDF peaks at zero and decreases linearly towards the edges.
+    
+    Mathematically, let \(Z = X_1 + X_2\) with \(X_1,X_2\) independent and uniform on \([-a,a]\). The PDF of \(Z\) is the convolution of the two uniform PDFs:
+    \[
+    f_Z(z) = (f_{X_1} * f_{X_2})(z) = \int_{-\infty}^{\infty} f_{X_1}(t)\, f_{X_2}(-t + z)\, dt.
+    \]
+    Carrying out the convolution yields the triangular PDF supported on \([-2a,2a]\):
+    \[
+    f_Z(z) = \frac{2a - |z|}{4a^{2}}, \qquad |z|\le 2a.
+    \]
+    If we want the triangular distribution to have support \([-x_0,x_0]\), we must choose \(a = x_0/2\). In that case the PDF simplifies to
+    \[
+    f_Z(z)=\frac{x_0 - |z|}{x_0^2}, \qquad |z|\le x_0,
+    \]
+    Adding two uniform random variables with 0 mean, results in another random variable with 0 mean.
+
+    \[
+    E[Z] = E[X_1 + X_2] = E[X_1] + E[X_2] = 0 + 0 = 0.
+    \]
+
+    The variance of the sum of two independent random variables is the sum of their variances.
+    So if we want a triangular distribution with variance $\sigma_x$ (in dBFS), we need to set the variance of each uniform variable to $\sigma_x/2$.
+    
+    \[
+    Var(Z) = Var(X_1 + X_2) = Var(X_1) + Var(X_2) = \sigma_x/2 + \sigma_x/2 = \sigma_x.
+    \]
+
+    For a uniform on \([-a,a]\) we have \(\mathrm{Var}(X_i)=a^{2}/3\). Taking \(a=x_0/2\) gives \(\mathrm{Var}(Z)=2\cdot (x_0/2)^2/3 = x_0^2/6 = \sigma_x\), as required.
+
+    The result of the mean and var commands are as follows:
+    \begin{itemize}
+        \item Empirical mean: 0.00003, wich is close to 0, very close to our target mean.
+        \item Empirical variance [dB]: -7.80701, wich is very close to our target variance.
+    \end{itemize}
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth]{img/task3_tri_sum2uniform.png}
+        \label{fig:task3_tri_sum2uniform}
+    \end{figure}
+
+    we can doit as follows: REVISAR!!
+        \begin{lstlisting}[language=Matlab]
             x0=2;
             sigma0 = x0/sqrt(2);
             N = 100000;

@@ -1,6 +1,6 @@
 rng(0)
 
-x0=1;
+x0 = 1;
 Nsamples = 10 * 2^10;
 
 FS = x0;
@@ -11,9 +11,6 @@ Nbits_list = [3,4,5,6];
 % Prealocar
 SQNR_emp = zeros(length(Nbits_list), length(sigma_db));
 SQNR_theo = zeros(size(SQNR_emp));
-% Hay que tener en cuenta el clipping debido a las 'colas' de la gaussiana
-clip_prob = zeros(size(SQNR_emp));
-clip_prob_emp = zeros(size(SQNR_emp));
 
 S_all = zeros(Nsamples, length(sigma_db));
 
@@ -25,14 +22,22 @@ for iN = 1:length(Nbits_list)
         sigma_dB = sigma_db(j);
         sigma_x = FS * 10^(sigma_dB/20);    % convertir dBFS -> lineal
 
-        % generar muestras gaussianas con varianza sigma_x
-        samples = sigma_x * randn(1, Nsamples);
+        % ---------------------------
+        % GENERATE TRIANGULAR SAMPLES
+        % sum of two independent U(-c,c)
+        % c chosen so that Var(sum) = sigma_x^2
+        c = sigma_x * sqrt(3/2);
+        u1 = (2*rand(Nsamples,1) - 1) * c;   % uniform(-c,c), column
+        u2 = (2*rand(Nsamples,1) - 1) * c;
+        samples = u1 + u2;                   % triangular, column vector
+        % ---------------------------
+
         S_all(:,j) = samples;
 
-        % fprintf('Vemos clipping en %d',Nbits);
-        % mean(abs(samples) >= FS) %ver clipping
+        % empirical clipping probability
         clip_prob_emp(iN,j) = mean(abs(samples) >= FS);
 
+        % quantize (quanti should accept column vectors)
         xq = quanti(samples, FS, Nbits);
 
         var_x = var(samples,1);
@@ -41,7 +46,7 @@ for iN = 1:length(Nbits_list)
         % SQNR empírico
         SQNR_emp(iN,j) = 10*log10(var_x / var_err);
 
-        % SQNR teórico
+        % SQNR teórico (same formula as before; valid under uniform error hypothesis)
         SQNR_theo(iN,j) = 6.02*Nbits + 4.77 - 20*log10(FS / sigma_x);
     end
 
@@ -62,21 +67,13 @@ for iN = 1:length(Nbits_list)
     samples_opt = S_all(:, idx_opt);
     xq_opt = quanti(samples_opt, FS, Nbits);
     err_opt = samples_opt - xq_opt;
-    figure;
+    figure('Color','w');
     histogram(err_opt,40);
     xlabel('Error (samples - xq)'); ylabel('Counts');
-    title(sprintf('Error histogram (N=%d, \\sigma=%.2f dBFS)', Nbits, sigma_opt));
+    title(sprintf('Error histogram (N=%d, \\sigma=%.2f dBFS) — triangular input', Nbits, sigma_opt));
     grid on;
 
-    % printeamos un resumen
-    fprintf('N=%d: sigma_opt=%.2f dBFS, SQNR_emp=%.3f dB, SQNR_theo=%.3f dB, clip_emp=%.6f\n', Nbits, sigma_opt, SQNR_max, SQNR_theo(iN, idx_opt), clip_opt);
+    % imprimir resumen por N (para copiar en el informe)
+    fprintf('N=%d: sigma_opt=%.2f dBFS, SQNR_emp=%.3f dB, SQNR_theo=%.3f dB, clip_emp=%.6f\n', ...
+            Nbits, sigma_opt, SQNR_max, SQNR_theo(iN, idx_opt), clip_opt);
 end
-
-% % Encontrar sigma que maximiza SQNR empírico para cada N
-% opt_sigma_dB = zeros(1,length(Nbits_list));
-% for iN=1:length(Nbits_list)
-%     [~, idxmax] = max(SQNR_emp(iN,:));
-%     fprintf('Para N: %d -> Mejor sigma: %.4f [dB]\n',Nbits_list(iN),sigma_db(idxmax));
-%     fprintf('SQNR Teórico: %.4f [dB], SQNR Empírico: %.4f [dB]\n\n',SQNR_theo(iN,idxmax),SQNR_emp(iN,idxmax));
-%     opt_sigma_dB(iN) = sigma_db(idxmax);
-% end

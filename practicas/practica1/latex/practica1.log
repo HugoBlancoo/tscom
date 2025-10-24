@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.23)  23 OCT 2025 23:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.23)  24 OCT 2025 12:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -650,27 +650,47 @@ Package microtype Info: Loading generic protrusion settings for font family
 pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.209 
-      ] (C:\Users\renato\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
+l.206 \]
+        ]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 225.
+ (C:\Users\renato\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+<img/task3_tri_mkdist.png, id=62, 675.9654pt x 408.0846pt>
+File: img/task3_tri_mkdist.png Graphic file (type png)
+<use img/task3_tri_mkdist.png>
+Package pdftex.def Info: img/task3_tri_mkdist.png  used on input line 231.
+(pdftex.def)             Requested size: 452.9679pt x 273.46506pt.
+ (C:\Users\renato\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 216.
+(Font)              <10> on input line 238.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 216.
+(Font)              <7> on input line 238.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 216.
+(Font)              <5> on input line 238.
 
 
-[4]
+[4{C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc} <./img/task3_tri_mkdist.png (PNG copy)>]
 
-[5] (task4.tex) (task5.tex
+[5]
+<img/task3_tri_sum2uniform.png, id=105, 556.9608pt x 370.986pt>
+File: img/task3_tri_sum2uniform.png Graphic file (type png)
+<use img/task3_tri_sum2uniform.png>
+Package pdftex.def Info: img/task3_tri_sum2uniform.png  used on input line 310.
+(pdftex.def)             Requested size: 452.9679pt x 301.72539pt.
 
-[6]) (task6.tex
 
-[7])
+[6 <./img/task3_tri_sum2uniform.png (PNG copy)>]
 
-[8] (practica1.aux
+[7] (task4.tex) (task5.tex
+
+[8]) (task6.tex
+
+[9])
+
+[10] (practica1.aux
 LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 )
@@ -682,17 +702,17 @@ Package rerunfilecheck Info: File `practica1.out' has not changed.
 (rerunfilecheck)             Checksum: EE390E8EB7B474B5E1B88767136643E9;456.
  ) 
 Here is how much of TeX's memory you used:
- 18717 strings out of 468081
- 293066 string characters out of 5425304
- 1339568 words of memory out of 5000000
- 46890 multiletter control sequences out of 15000+600000
- 701785 words of font info for 164 fonts, out of 8000000 for 9000
+ 18793 strings out of 468081
+ 294841 string characters out of 5425304
+ 1228513 words of memory out of 5000000
+ 46941 multiletter control sequences out of 15000+600000
+ 702908 words of font info for 174 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,13n,79p,1138b,2153s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,13n,79p,1138b,2723s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmex10.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi6.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr6.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr9.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users/renato/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt10.pfb>
-Output written on practica1.pdf (8 pages, 514615 bytes).
+Output written on practica1.pdf (10 pages, 582929 bytes).
 PDF statistics:
- 250 PDF objects out of 1000 (max. 8388607)
- 95 named destinations out of 1000 (max. 500000)
- 41024 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 265 PDF objects out of 1000 (max. 8388607)
+ 97 named destinations out of 1000 (max. 500000)
+ 43082 words of extra memory for PDF output out of 51595 (max. 10000000)
 
