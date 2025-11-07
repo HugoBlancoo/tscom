@@ -1,0 +1,483 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage[isolatin]{inputenc}
+%\usepackage[spanish]{babel}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{multirow,textcomp}
+
+%\spanishdecimal{.}
+
+\topmargin 0truein
+\topskip 0truein
+\headheight 0truein
+\headsep 0truein
+%\footheight 0truein
+%\oddsidemargin 0.0in
+%\evensidemargin 0.0in
+%\textwidth 7in
+\textheight 9in
+
+\addtolength{\oddsidemargin}{-.9in}
+\addtolength{\evensidemargin}{-.9in}
+\addtolength{\textwidth}{1.8in}
+
+
+
+\newenvironment{algorithm}[1]
+{\vspace{0.3in}
+\begin{center}
+\parbox{6in}{#1}
+\end{center}
+\vspace{0.15in}
+\hrule
+\begin{enumerate}}{
+\end{enumerate}
+\hrule
+\vspace{0.3in}}
+
+\newenvironment{program}[1]
+{
+\vspace{0.2in}
+\hrule
+\vspace{0.1in}
+\begin{center}
+\parbox{6in}{\sf #1}
+\end{center}
+\vspace{-0.05in}
+\hrule
+\vspace{-0.05in}
+\begin{tabbing}}
+{\end{tabbing}
+\vspace{-0.1in}
+\hrule
+\vspace{0.2in}
+}
+
+\newcounter{ntask}
+\newtheorem{task}[ntask]{$\Box$ Task}
+\newenvironment{Task}
+{\begin{task}\end{task} \vspace{-0.1in}\sf}
+{\hfill \QED}
+
+
+\newcommand{\q}[1]{\mbox{$q^{- #1}$}}
+\newcommand{\bbm}[1]{\mathop{\bar{\bm #1}}}
+\newcommand{\tbm}[1]{\mathop{\tilde{\bm #1}}}
+\newcommand{\re}{\mathop{\rm Re}}
+\newcommand{\im}{\mathop{\rm Im}}
+\newcommand{\cov}{\mathop{\rm Cov}}
+\newcommand{\diag}{\mathop{\rm diag}}
+\newcommand{\snr}{\mathop{\rm SNR}}
+\newcommand{\sinc}{\mathop{\rm sinc}}
+\newcommand{\sign}{\mathop{\rm sign}}
+\newcommand{\GM}{\mathop{\rm GM}}
+\newcommand{\ce}{\mathop{\Sigma_{k/k-1}}}
+\newcommand{\ts}{\tt\scriptsize}
+\def\QED{~\rule[-1pt]{5pt}{5pt}\par\medskip}
+\def\figurename{Figure}
+\def\refname{References}
+\newtheorem{lemma}{Lemma}
+
+\begin{document}
+\setlength{\baselineskip}{16pt}
+\title{\underline{Signal Processing for Communications} \\ Lab Assignment 2: OFDM Modulation}
+\author{}
+\date{}
+\maketitle
+\noindent
+
+\vspace*{-1.5cm}
+
+
+In this assignment we explore the key features of the orthogonal frequency division multiplexing (OFDM) multicarrier modulation technique, whose special structure allows for low-complexity equalization at the receiver. Several commercial wireless systems have adopted OFDM modulation including wireless LAN standards such as IEEE 802.11g, IEEE 802.11a, and IEEE 802.11n; broadband wireless access including IEEE 802.16 (WiMax); mobile broadband wireless known as IEEE 802.20; terrestrial digital video broadcasting (DVB-T/T2); as well as several releases of the 3GPP cellular standards: 4G Long Term Evolution (LTE) and 5G New Radio (NR). 3GPP has recently decided that OFDM will be used in 6G as well.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{OFDM transmitter description}
+
+The block diagram of a basic OFDM system is shown in Fig.~\ref{fig:OFDM}.
+OFDM is a type of digital modulation where information
+is modulated into discrete-time sinusoids. With OFDM, the information bits to be transmitted are mapped to a sequence of symbols belonging to a discrete constellation (e.g., QPSK, 16-QAM, etc.), denoted by $\{S[n]\}_{n=-\infty}^\infty$, which are regarded as being in the {\em frequency domain,} for reasons that will become clear shortly.
+OFDM operates block-by-block on groups of these symbols; each of these blocks is often called an {\em OFDM symbol.} 
+
+The IFFT size is given by $N$, typically (but not necessarily) a power of 2.
+Assume for the time being that the {\em number of null tones} is $K=0$, so that all of the $N$ subcarriers are used to transmit data\footnote{Some of them may be used to carry pilot signals, i.e., signals which are known by the receiver and therefore do not carry data, in order to aid the receiver with tasks such as channel estimation and synchronization.}. In that case, there are $N$ frequency-domain symbols in one OFDM symbol, and the transmitter
+operates as follows. First, the sequence $\{S[n]\}$ is chopped into blocks of $N$ elements, an operation usually denoted "serial-to-parallel conversion". The $i$-th block is denoted by
+\begin{equation}
+ S_i[k] = S[iN+k], \qquad k=0,1,\ldots,N-1. 
+\end{equation}
+Then, the transmitter generates a block of $N+L_c$ {\em time-domain} samples given by
+\begin{equation}\label{eq:wi}
+w_i[n] = \frac{1}{N}\sum_{k=0}^{N-1}S_i[k]e^{j\frac{2\pi}{N}k(n-L_c)},\qquad 
+n = 0,1,\ldots,N + L_c-1,
+\end{equation}
+
+\noindent
+which is passed to the transmit pulse-shaping filter. Note that the $N$ samples 
+$w_i[L_c]$, $w_i[L_c+1]$,\ldots,$w_i[N+L_c-1]$ are the output of the $N$-point inverse discrete Fourier transform (IDFT) of the $i$-th input block $\{S_i[k]\}^{N-1}_{k=0}$; this is usually implemented using the (inverse)  fast Fourier transform (IFFT) algorithm.
+In addition, observe that
+\begin{equation}
+w_i[n]=w_i[n+N], \qquad n=0,1,...,L_c-1.
+\end{equation}
+
+
+%---------------------------
+\begin{figure}[t!]
+\centerline{\includegraphics[height=21cm]{OFDMblock.png}}
+\caption{Block diagram of a basic OFDM system.}
+\label{fig:OFDM}
+\end{figure} 
+%---------------------------
+
+\newpage
+
+\noindent
+Therefore, the first $L_c$ samples of $\{w_i[n]\}_{n=0}^{N+L_c-1}$ take the same values as the last $L_c$ samples. The first $L_c$ samples are known as the {\em cyclic prefix} (CP). 
+As we will see, the CP length $L_c$ should be at least as long as the effective channel length. This will ensure that there is no interference between consecutive OFDM symbols (i.e., the CP ``guards'' against inter-symbol interference). The CP serves another important purpose: it helps convert (part of) the linear convolution of the transmitted signal and the channel impulse response into a {\em circular} convolution.
+
+
+%---------------------------
+\begin{figure}[t]
+\centerline{\includegraphics[width=0.8\textwidth]{ofdm_blocks}}
+\caption{Representation of the time-domain OFDM signal $w[n]$.}
+\label{fig:tdblocks}
+\end{figure} 
+%---------------------------
+
+\subsection*{Digital-to-analog conversion}
+The time-domain blocks $\{w_i[n]\}_{n=0}^{N+L_c-1}$ (with their corresponding CPs) are concatenated (or "parallel-to-serial converted") to form the sequence
+\begin{equation}\label{eq:w}
+w[n] = \sum_{i=-\infty}^\infty w_i[n-i(N+L_c)]
+\end{equation}
+(see Fig.~\ref{fig:tdblocks}),
+from which an analog signal is generated\footnote{Sometimes the blocks $\{w_i[n]\}$ are multiplied by a {\em window function} in order to shape the spectrum. We will not consider windowing in this assignment.}, sending one sample each $T$ seconds by pulse-amplitude-modulation with a transmit pulse $g_{\rm TX}(t)$:
+\begin{equation} \label{eq:xt}
+x(t) = \sum_m w[m] g_{\rm TX}(t-mT). 
+\end{equation}
+Note that this is equivalent to our concept of D/A conversion\footnote{In view of \eqref{eq:wi}, it is clear that the samples $w[n]$ are complex-valued; thus, \eqref{eq:xt} actually requires {\em two} D/A converters: one for the real part and another for the imaginary part. Note that $x(t)$ represents the {\em lowpass equivalent} of the bandpass signal to be transmitted.}. The sampling rate associated to the samples $w[n]$ is $\frac{1}{T}$; thus, if we define the "sampled signal"
+\begin{equation}
+w_s(t) = \sum_m w[m] \delta(t-mT),
+\end{equation}
+and then filter $w_s(t)$ with an analog {\em reconstruction filter} with impulse response $g_{\rm TX}(t)$, we obtain (the symbol $\star$ denotes convolution):
+\begin{eqnarray}
+w_s(t) \star g_{\rm TX}(t) &=& \left(\sum_m w[m] \delta(t-mT) \right) \star g_{\rm TX}(t)  \nonumber\\
+&=&  \sum_m w[m] \left(\delta(t-mT) \star g_{\rm TX}(t) \right) 
+\;=\;  \sum_m w[m] g_{\rm TX}(t-mT) ,  \label{eq:xt2}
+\end{eqnarray}
+which is exactly $x(t)$ in \eqref{eq:xt}.  It follows that the impulse response $g_{\rm TX}(t)$ must correspond to a lowpass filter with cutoff frequency of half the sampling rate, i.e., $\frac{1}{2T}$.
+\\
+
+Recall that the purpose of the analog reconstruction filter of a D/A converter is to eliminate the unwanted spectral replicas centered at $f=\pm \frac{m}{T}$, $m\geq 1$, while preserving the desired replica at $f=0$. But if the bandwidth of this desired replica is close to $\frac{1}{2T}$, then the desired replica and the neighboring unwanted replicas will be very close to each other, so that an analog reconstruction filter with a very sharp transfer function will be needed. This is very difficult to achieve in practice.  
+
+To alleviate the requirement on the analog reconstruction filter, we may increase the sampling rate in the discrete-time domain to $\frac{L}{T}$ samples/s, where $L>1$ is an integer known as the {\em oversampling factor.} In this way, the separation between adjacent spectral replicas will increase. Thus, let us denote the new sampling interval as $T_x = T/L$; then, note that the samples of $x(t)$ in \eqref{eq:xt} (or \eqref{eq:xt2}) at the time instants $t=nT_x$ are given by
+\begin{eqnarray}
+x(nT_x) &=& \sum_m w[m] g_{\rm TX}(nT_x - mT) \;= \;\sum_m w[m] g_{\rm TX}((n-mL)T_x) \nonumber \\
+&=& \sum_\ell \bar w[\ell] g_{\rm TX}((n-\ell)T_x) \quad \,=\; \bar w[n] \star g_{\rm TX}[n],
+\end{eqnarray}
+where  $g_{\rm TX}[n] = g_{\rm TX}(nT_x)$, and $\bar w[n]$ is the sequence obtained by inserting $L-1$ zeros between the samples of the sequence $w[n]$ (a process known as {\em upsampling}):
+\begin{equation} \label{eq:upsample}
+\bar w[n] = \left\{ \begin{array}{cc} w[n/L], & \mbox{if $n$ is an integer multiple of $L$,} \\ 0, & \mbox{otherwise.} \end{array}\right.
+\end{equation}
+Thus, $x(t)$ can be obtained by the following process:
+\begin{enumerate}
+\item Upsampling the sequence $w[n]$ by a factor of $L$ to produce the sequence $\bar w[n]$; 
+\item Passing the resulting sequence through a digital filter with impulse response $g_{\rm TX}[n]$; 
+\item Feeding the resulting samples to a D/A converter with sample rate $1/T_x = L/T$.
+\end{enumerate}
+Note that the discrete-time filter $g_{\rm TX}[n]$ operates at $\frac{L}{T}$ samples/s and must be lowpass with cutoff frequency $\frac{1}{2T}$ Hz.
+
+\begin{Task}
+\begin{itemize}
+\item Is there any loss of information in the process described by \eqref{eq:upsample}?
+\item Show that if the Discrete-Time Fourier Transform (DTFT) of $w[n]$ is $W(e^{j\omega})$, then the DTFT of $\bar w[n]$ in \eqref{eq:upsample} is $\bar W(e^{j\omega}) = W(e^{j\omega L})$. 
+\item Let $A>0$ and $\omega_0 = \frac{\pi}{2}$, and consider
+\begin{equation}
+W(e^{j\omega}) = \left\{\begin{array}{cl} A\cdot\left(1-\frac{\omega}{\omega_0}\right), & |\omega| \leq \omega_0, \\
+0, &  \omega_0 \leq |\omega| \leq \pi, \end{array}\right. 
+\end{equation}
+ Sketch $W(e^{j\omega})$, and also $\bar W(e^{j\omega}) $ for $L=2$ and $L=3$.
+\item For $L=2$ and $L=3$, sketch the transfer function $G_{\rm TX}(e^{j\omega})$ of the discrete-time filter $g_{\rm TX}[n]$. 
+\end{itemize}
+\end{Task}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{OFDM system parameters}
+The three fundamental parameters of the OFDM transmitter are:
+\begin{enumerate}
+\item The IFFT size, $N$.
+\item The cyclic prefix length in samples, $L_c$. 
+\item The sample interval at the IFFT output, $T$ (seconds).
+\end{enumerate}
+From these, we can define the following parameters of interest:
+\begin{itemize}
+\item The duration of an OFDM symbol, $(N+L_c)T$ (seconds).
+\item The guard interval, or cyclic prefix duration, $L_cT$ (seconds).
+\item The subcarrier spacing, $\Delta_c = \frac{1}{NT}$ (Hz).
+\end{itemize}
+
+\noindent
+A brief discussion of the impact of these system parameters is given next.
+
+\begin{itemize}
+
+\item In practice, it is common to not use all of the $N$ available subcarriers in the OFDM system. Some subcarriers are usually ``nulled'' or ``zeroed out'' in the frequency domain at the transmitted. For instance, if we know that some narrowband interfering signal is present at some frequency inside our signal passband, we may decide not to use the subcarriers within that frequency region. Also, guard bands (i.e., frequencies at the edges of the spectrum of $x(t)$, corresponding to IFFT indices around $k=N/2$) are commonly nulled to prevent interference with signals in adjacent frequency bands. In this assignment we will assume that $K$ subcarriers are zeroed, with their locations being specified separately.
+
+\item The occupied bandwidth $B$ depends on the number and distribution of modulated subcarriers. If all $N$ subcarriers are modulated, then $B\approx N \Delta_c$ (Hz). On the other hand, if we null $K/2$ subcarriers at each edge of the spectrum, then $B \approx (N-K) \Delta_c$. Note that these are approximations, because the power spectral density of the OFDM is not perfectly bandlimited.
+
+\item The length of the cyclic prefix $L_c$ should be at least equal to the number of taps of the channel impulse response minus one, i.e., $L_c \geq L_h-1$. This ensures that there is no intersymbol interference between adjacent OFDM symbols. Note that if $L_h = 1$, that is, if the channel has a single tap and therefore is nondispersive, then $L_c=0$ is sufficient: no CP is required.
+
+On the other hand, the guard interval is a form of overhead, and it reduces the transmitted data rate by a factor $\frac{N}{N+L_c} < 1$ with respect to a reference OFDM transmitter using $L_c=0$ while keeping the same remaining parameters.
+
+\item The guard interval serves to separate different OFDM symbols, hence its
+name. In practice, it is determined by the maximum delay
+spread of the channel (the typical duration of its impulse response), $\Delta\tau$ (seconds), so it is important to have some idea about the behavior of the expected channel impulse responses for the particular application at hand. For example, in cellular communications, the larger the cell, the longer the expected channel impulse responses. Also note that there is a relation between the delay spread $\Delta\tau$ of the {\em continuous-time} channel, and the length $L_h$ of the {\em discrete-time} equivalent channel. Can you figure out what this relation is?
+
+\item The subcarrier spacing refers to the separation between adjacent subcarriers as measured
+on a spectrum analyzer. For small subcarrier spacing, the OFDM system becomes more sensitive to phase noise\footnote{Practical oscillators used in mixers generate signals of the form $\cos(2\pi f_ct + \phi(t))$, where $f_c$ is the carrier frequency and $\phi(t)$, known as {\em phase noise,} fluctuates randomly. If $\phi(t)$ remained constant through time, the oscillator would be ideal (no phase noise). The presence of phase noise degrades link performance, especially for OFDM.} and carrier frequency offsets. On the other hand, the duration of the {\em useful part} of the OFDM symbol (i.e., without taking the CP into account) is the inverse of the subcarrier spacing. Therefore, if we increase the subcarrier spacing while keeping the same guard interval (to deal with the channel delay spread), the corresponding overhead becomes excessive.
+
+\item Usually, communication standards based on OFDM specify the subcarrier spacing and the cyclic prefix overhead (ratio of the CP time duration to the duration of the useful part of the OFDM symbol, i.e., not counting the CP). For example, in LTE one has $\Delta_c = 15$ kHz and 7\% CP overhead. This means that the duration of the OFDM symbol (including the CP) is $\frac{1.07}{0.015\,\text{MHz}} = 71.33$ $\mu$s. The choice of sampling interval $T$ and IFFT size $N$ are left to the designer; they just must be chosen to satisfy $\frac{1}{NT}=\Delta_c$, with $N$ large enough to accommodate the maximum number of modulated subcarriers contemplated in the standard. In LTE, this maximum number is 1200, so it is common to take the IFFT size as $N=2048$ and then the sampling period as $T \approx 32.6$ ns.
+
+\end{itemize} 
+
+
+\begin{Task}
+An OFDM transceiver has 85 MHz of available RF bandwidth, of which 80 MHz can be occupied for data transmission, leaving $2.5$ MHz at each side as guard bands. The subcarrier spacing is $20$ kHz, and the delay spread of the channel almost never exceeds 6 $\mu$s.
+\begin{itemize}
+\item What is the smallest possible CP overhead of this system, in percentage?
+\item Explain why it is not feasible to use a value of $2^{10}$ for the IFFT size.
+\item Assume an IFFT size of $2^{13}$. What would be the value of the sampling rate at the IFFT output?
+\item What is the data rate (in Mbits/s) of this system, when all active subcarriers are used to carry data and a QPSK constellation is used? 
+\item Repeat the previous point for a 16-QAM constellation when 100 of the active subcarriers are used to send training sequences to aid synchronization and channel estimation at the receiver.
+\item Now assume that we decide to implement an IFFT with size $4 096$, and redo the previous two points.
+\end{itemize}
+\end{Task}
+
+\begin{figure}[t]
+\begin{program}{OFDMmod.m}
+\ts \% function [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos) \\
+\ts \% \\
+\ts \% Simulates OFDM modulation \\
+\ts \% Input:  \\
+\ts \%  ~~~data    = row vector with (frequency-domain) data to be modulated \\
+\ts \%  ~~~N       = IFFT size \\
+\ts \%  ~~~Lc      = length of cyclic prefix, in samples \\
+\ts \%  ~~~OF      = oversampling factor (sinc pulse shaping) \\
+\ts \%  ~~~nullpos = vector with indices (within 1:N) of null subcarriers \\
+\ts \% The data vector will be zero-padded if necessary in order to construct  an integer number of OFDM symbols. \\
+\ts \% Output: \\
+\ts \%  ~~~x = ~~filtered time domain samples ( OF*(N+Lc) samples per OFDM symbol ) \\
+\ts \%  ~~~u = unfiltered time domain samples ( OF*(N+Lc) samples per OFDM symbol ) \\
+\ts \%  ~~~w = ~~~~~~~~~~~time domain samples (~~~~(N+Lc) samples per OFDM symbol )
+\end{program}
+\caption{Header of {\tt OFDMmod.m}}
+\label{fig:OFDMmod}
+\end{figure} 
+
+%\newpage
+
+
+\begin{Task}
+In this task you will implement a simple version of the OFDM modulator described above and shown in Fig.~\ref{fig:OFDM}. 
+To this end, you should write a Matlab function {\tt OFDMmod.m } whose header is shown in Fig.~\ref{fig:OFDMmod} and specifies the input and output parameters. As starting point, you may use the template provided in {\tt OFDMmod\_template.m} .
+
+A simple way to test your code: note that if {\tt N=4} and {\tt Lc=2} with no null subcarriers inserted, then for {\tt data = [4 -1 4 -1 1 4i -1 2i]}, the output {\tt w} should be {\tt w = [ 2.5 0 1.5 0 2.5 0 -1.5i 1 1.5i 0 -1.5i 1 ]} (Why?). The output {\tt x} will depend on the oversampling factor specified.
+
+\begin{itemize}
+
+\item Explain what the differences are between the outputs {\tt x} and {\tt w}.
+
+\item Simulate an OFDM system using an IFFT size of $N=512$, subcarrier spacing $31.250$ kHz, and $6.55$\% cyclic prefix redundancy. Generate a sequence of $10,000$ random QPSK data symbols to modulate using {\tt OFDMmod.m} . Assume all $N$ subcarriers are used and an oversampling factor of $2$. Using the Matlab function {\tt pwelch}, visualize an estimate of the power spectral density of the transmitted signal $x(t)$, for example by executing
+\[ \texttt{pwelch(x, 512, [], 512, Fs);} \]
+where {\tt x} is the output of {\tt OFDMmod.m}, and you should set the sampling frequency {\tt Fs} to its appropriate value. Explain what you observe, and compare with the result of executing
+\[ \texttt{pwelch(x, 512, [], 512, Fs, \textquotesingle centered\textquotesingle);} \]
+\item Now execute
+\[ \texttt{pwelch(sqrt(OF)*u, 512, [], 512, Fs, \textquotesingle centered\textquotesingle);} \]
+and set the X and Y axis to the same values as in the previous figure.
+Discuss what you observe, for which you may want to represent the transfer function of the interpolation filter.
+\item Repeat for an oversampling factor of $3$.
+
+\item Consider again an oversampling factor of 2. Null out an appropriate set of subcarriers to make sure that the PSD falls at least 25 dB (with respect to the peak value within the passband) at $\pm 7$ MHz from the carrier frequency. How many available subcarriers are left?
+
+\item Repeat the previous point if we want the PSD to fall at least 30 dB at $\pm 7$ MHz from the carrier frequency. 
+\end{itemize}
+\end{Task}
+
+Observe that in order to generate the upsampled signal {\tt x}, in {\tt OFDMmod\_template.m} we use a delayed-and-truncated sinc pulse-shaping filter $g_{\rm TX}[n]$ with a total of {\tt 2*(OF*P)+1} coefficients (it is instructive to plot {\tt gtx}). This filter introduces a delay of {\tt OF*P} samples which we will have to take into account in following tasks.
+
+
+
+
+%\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{OFDM receiver description}
+
+At the receiver side, the operations implemented by the transmitter are reversed. Let $z(t)$ be the lowpss equivalent of the continuous-time received signal in the baseband, i.e., after demodulation (so its real and imaginary parts correspond to the in-phase and quadrature components of the bandpass received signal). Assuming perfect carrier synchronization, and in the absence of noise and other interferences, we have $z(t) = x(t) \star \tilde h(t)$, where $\tilde h(t)$ is the impulse response of the lowpass-equivalent channel.
+
+The signal $z(t)$ is sampled at a rate $1/T_z=M/T$ (note that the oversampling factor at the receiver need not be the same as that at the transmitter), passed through a filter with impulse response $g_{\rm RX}[m]$, and downsampled by  a factor $M$ (i.e., only one out of each $M$ samples is retained). Let $y[n]$ be the sequence obtained after these operations (note that the rate of $y[n]$ is $1/T$ samples/s). Then
+\begin{eqnarray}
+y[n] = (z(t) \star g_{\rm RX}(t))\Big|_{t=nT} &=& (x(t) \star \tilde h(t) \star g_{\rm RX}(t))\Big|_{t=nT} \nonumber\\
+&=& \sum_\ell w[\ell] g_{\rm TX}(t-\ell T) \star \tilde h(t) \star g_{\rm RX}(t) \Big|_{t=nT}\nonumber \\
+&=& \sum_\ell w[\ell] h(t-\ell T)  \Big|_{t=nT} 
+\quad = \quad \sum_\ell w[\ell] h[n-\ell], \label{eq:ywh}
+\end{eqnarray}
+where $h(t) = g_{\rm TX}(t) \star \tilde h(t) \star g_{\rm RX}(t)$ and $h[n]=h(nT)$.
+Thus, the samples $y[n]$ are given by the {\em linear} convolution of the original transmitted sequence $w[n]$ and the overall channel impulse response $h[n]$. In practice, we will have an additive noise component $v[n]$, so that
+\begin{equation} \label{eq:yhw}
+y[n]=\sum_{\ell=0}^{L_h-1}h[\ell]w[n-\ell]+v[n].
+\end{equation}
+Although going from \eqref{eq:ywh} to \eqref{eq:yhw} seems perfectly harmless, there is an important hidden assumption: we have taken for granted that the window of $L_h$ nonzero samples of $h[n]$ goes precisely from $n=0$ to $n=L_h-1$. This is implicitly assuming that {\em frame synchronization} has been established\footnote{In practice, those nonzero samples will be located at $n=d,d+1,\ldots, d+L_h-1$ with $d$ unknown. Frame synchronization is the process of estimating $d$ and correcting for it.}.
+
+
+
+The receiver operates now on a block-by-block basis. It divides the received sequence $y[n]$ in blocks of size $N+L_c$ samples, and discards the first $L_c$ samples of each block, which correspond to the CP. Mathematically, using \eqref{eq:w}, the $N$ samples of the $j$-th block are given (neglecting noise) by
+\begin{eqnarray}
+\bar y_j[n] &=& y[n+L_c + j(N+L_c)], \qquad n=0,1,\ldots, N-1, \nonumber \\
+&=& \sum_{\ell=0}^{L_h-1} h[\ell]\sum_{i} w_i[n+L_c-\ell +(j-i)(N+L_c)] \nonumber \\
+&=& \sum_{\ell=0}^{L_h-1} h[\ell] w_j[n+L_c-\ell],
+\end{eqnarray}
+where the last step holds as long as $L_h-1 \leq L_c$. Now, using \eqref{eq:wi},
+\begin{eqnarray}
+\bar y_j[n] &=& \frac{1}{N} \sum_{\ell=0}^{L_h-1} h[\ell] \sum_{k=0}^{N-1} S_j[k] e^{j\frac{2\pi k}{N}(n+L_c-\ell-L_c)} \nonumber \\
+&=& \frac{1}{N} \sum_{k=0}^{N-1} 
+       \underbrace{\left(\sum_{\ell=0}^{L_h-1} h[\ell]  e^{-j\frac{2\pi k \ell}{N}} \right)}_{=H[k]}
+S_j[k] e^{j\frac{2\pi k n}{N}}, \qquad n=0,1,\ldots, N-1,
+\end{eqnarray}
+which is just the $N$-point IDFT of the block $\{H[k]S_j[k]\}_{k=0}^{N-1}$. Therefore,
+the receiver takes the $N$-point DFT of $\{\bar y_j[n]\}_{n=0}^{N-1}$ to obtain 
+\begin{equation}\label{eq:OFDMfreq}
+\bar Y_j[k] = {\rm DFT}\{ \bar y[n]\} = H[k] S_j[k] + V_j[k], \qquad k=0,1,\ldots,N-1,
+\end{equation}
+where $V_j[k]$ is the noise contribution. Note that
+\begin{equation} \label{eq:Hk}
+H[k]=\sum_{\ell=0}^{L_h-1} h[\ell]e^{-j2\pi\frac{k\ell}{N}}
+\end{equation}
+is just the $N$-point DFT of the zero-padded channel impulse response $h[n]$. 
+
+The frequency domain interpretation
+of OFDM comes from \eqref{eq:OFDMfreq}. Essentially, information is sent on
+discrete-time sinusoids, or subcarriers. The information on the $k$-th discrete-time
+sinusoid experiences the channel response determined by $H[k]$, which is just a multiplicative (complex) constant, plus noise. Thus, equalization can be easily implemented by simply dividing $\bar{Y}_j[k]$ by $H[k]$. We refer to this as the {\em frequency domain equalizer} (FEQ).
+
+
+\begin{Task}
+In this task you will implement the OFDM demodulator as described above and in Fig.~\ref{fig:OFDM}, by writing a Matlab function \verb+OFDMdem.m+ . 
+You may assume that the channel is known to the receiver and that there is no frame timing mismatch, so you do not need to implement the channel estimation algorithm or extract frame timing. 
+
+The header of this function is shown in Fig.~\ref{fig:OFDMdem}, where the input and output parameters are specified.
+The input parameter {\tt H} contains the $N$-point frequency domain response of the overall equivalent channel, $H[k]$; see \eqref{eq:Hk}.  The demodulator should perform FEQ based on this channel frequency response. 
+As starting point, you can use the template provided in {\tt OFDMdem\_template.m} .
+\begin{itemize}
+\item Verify that your code is working properly by generating an OFDM signal with {\tt OFDMmod.m} and then demodulating it with {\tt OFDMdem.m} , assuming for the time being an ideal channel.  For instance,
+\[ \texttt{x = OFDMmod(data, N, Lc, OF, nullpos);}  \]
+\[ \texttt{dem\_data = OFDMdem(x, N, Lc, OF, ones(N,1), nullpos);} \]
+Using Matlab's {\tt scatter} function, check if the transmitted and received constellations reflect the appropriate modulation scheme (QPSK, 16-QAM,\ldots) you have chosen. 
+
+\item Consider an OFDM transmitter with the same $N$, $L_c$ and $\Delta_c$ parameters as in Task 3, and transmitting QPSK data. Represent the scatter plot of the received data  when the transmitter uses all $N$ subcarriers. Repeat for the cases in which the transmitter respectively turns off 5, 20 and 40 subcarriers at each edge of the passband, and comment on the results. What do you think is causing the observed differences?
+
+\item On occasion, you will see that the scatter plot of the demodulated data includes some points near the origin of the complex plane. Can you explain this?
+
+\end{itemize}
+
+\end{Task}
+
+
+\begin{figure}[t]
+\begin{program}{OFDMdem.m}
+\ts \% function data = OFDMdem(r, N, Lc, OF, H, nullpos) \\
+\ts \% \\
+\ts \% Simulates OFDM modulation \\
+\ts \% Input:  \\
+\ts \% ~~~ r       = row vector with received signal samples  ( OF*(N+Lc) samples/OFDM symbol ) \\
+\ts \% ~~~ N       = IFFT size \\
+\ts \% ~~~ Lc      = length of cyclic prefix, in samples \\
+\ts \% ~~~ OF      = oversampling factor \\
+\ts \% ~~~ H       = column vector with N-point frequency-domain channel response, to be used in FEQ \\
+\ts \% ~~~ nullpos = vector with indices (within 1:N) of null subcarriers \\
+\ts \% If the number of received samples (after taking into account the delays of the pulse-shaping and \\
+\ts \% matched filters) is not an integer multiple of N+Lc,  the last samples will be discarded.  \\
+\ts \% Output: \\
+\ts \% ~~~ data = row vector with demodulated data (data in null subcarriers is discarded) \\
+\end{program}
+\vspace*{-0.5cm}
+\caption{Header of {\tt OFDMdem.m}}
+\label{fig:OFDMdem}
+\end{figure} 
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Frequency selectivity of wireless channels}
+
+In many wireless systems the propagation channel can be modeled as a linear time-varying system. For communication over short bursts, though, a linear time invariant (LTI) model is often sufficient.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=7cm]{canal.png}}
+\vspace*{-0.5cm}
+\caption{Model for a frequency selective LTI channel.}
+\label{fig:channel}
+\end{figure} 
+
+An LTI frequency selective channel is illustrated in Fig.~\ref{fig:channel}. The channel is
+called frequency selective because its Fourier transform $\tilde H(f)$ is not flat in general. 
+With specular multipath, the impulse response of a channel created from a finite number 
+of reflections can be expressed as
+\begin{equation}\label{eq:multipath}
+\tilde h(t)=\sum_\ell\alpha_\ell e^{j\phi_\ell} \delta(t-\tau_\ell).
+\end{equation}
+This gives the appropriate intuition: the channel creates a superposition of multiple copies of the transmitted signal $x(t)$, each delayed by $\tau_\ell$, attenuated by $\alpha_\ell$, 
+and shifted in phase by $\phi_\ell$.
+
+Reasonable assumptions are that (i) $\tilde h(t)$ is causal ($\tau_\ell>0$ for all $\ell$); and (ii) the number of terms in the summation in \eqref{eq:multipath} is finite. 
+Causality is due to the fact that, naturally, the propagation channel cannot predict the future. 
+A finite number of terms in \eqref{eq:multipath} follows because (i) there are no perfectly reflecting environments, 
+and (ii) the signal energy decays as a function of distance between the transmitter and receiver. Essentially, every
+time the signal is reflected, the reflector absorbs some of the energy (reflection is lossy). Additionally, as the signal is propagating, it loses power as it spreads in the environment. Eventually, weak multipaths will fall below the noise threshold and be imperceptible. 
+
+The receiver is only concerned with the effective overall channel in discrete-time, that is, the discrete-time lowpass-equivalent channel $h[n] = h(nT)$, where $h(t) = g_{\rm TX}(t) \star \tilde h(t) \star g_{\rm RX}(t)$ is the convolution of the physical channel $\tilde h(t)$ and the transmit and receive filters.
+
+\begin{Task}
+Consider the following parameters: 16-QAM, IFFT size $N=64$, CP redundancy $9.375$\%, sample interval $T=0.25$ $\mu$s, null tones $k\in\{29,30,31,32,33,34\}$ (note that $k$ ranges from $0$ to $N-1$). 
+Generate samples of the transmit signal $x(t)$ by modulating a sequence of $10,000$ symbols.
+Consider the channel
+\begin{equation}
+\tilde h(t) = \sum_{\ell=1}^4 \alpha_\ell e^{j\phi_\ell}\delta(t-\tau_\ell) \qquad \mbox{with} \quad
+\left\{\begin{array}{rcl} \{\tau_1,\ldots,\tau_4\} &=& \{0, 2T, 3T, 4T\} \\
+	\{\alpha_1,\ldots,\alpha_4\} &=& \{1, 0.7, 0.4, 0.5\} \\
+	\{\phi_1,\ldots,\phi_4\} &=& \{0, -\frac{\pi}{2}, \frac{\pi}{4}, \frac{\pi}{2}\} \end{array}\right.
+\end{equation}
+\begin{itemize}
+\item Assuming a sampling rate of $10/T$ Hz, generate a vector {\tt heq} of samples of $h(t) = g_{\rm TX}(t) \star \tilde h(t) \star g_{\rm RX}(t)$.  Compute the FFT  {\tt Heq = fft(heq,8192)} and plot its magnitude by means of {\tt plot(linspace(-20,20,8192), 20*log10(abs(fftshift(Heq))))}. Zoom in on the OFDM signal bandwidth.  Comment on the results. Is the effective channel frequency-flat within the passband? What is the largest difference (in dB) between passband points of the channel transfer function's magnitude?
+
+\item Assuming no noise, generate the samples (at $10/T$ samples/s) of the signal $z(t)$ at the receiver.
+
+\item Suppose that the receiver wrongly assumes that the channel is not frequency-selective, i.e., set the parameter {\tt channel = 1} when you call {\tt OFDMdem.m} . Plot all the demodulated data (i.e., the recovered QAM symbols) in the I/Q plane (1 dot per symbol) and comment on your observations.
+
+\item In a different figure, plot again the demodulated data, but only those received on subcarrier $k=10$. Repeat for subcarrier $k=46$. Comment on your results.
+
+\item Now suppose that the receiver is smarter, and has somehow estimated the channel perfectly. Given the $\tilde h(t)$ above, which is the value of the {\tt H} parameter that you should pass to {\tt OFDMdem} ?
+
+\item Plot now the demodulated data in the I/Q plane (1 dot per symbol) and comment on your observations. Is equalization something that we can neglect at the receiver?
+
+\item Consider now the following channel:
+\begin{equation}
+\tilde h(t) = \delta(t) -0.8\delta(t-5T) +0.7\delta(t-10T).
+\end{equation}
+Set {\tt P = 150}, and plot again the demodulated data in the I/Q plane (1 dot per symbol). Comment on your observations.
+
+\end{itemize}
+\end{Task}
+
+
+
+
+\end{document}

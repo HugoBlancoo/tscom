@@ -1,0 +1,48 @@
+function [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos)
+
+% function [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos)
+%
+% Simulates OFDM modulation
+% Input: 
+%  data    = row vector with (frequency-domain) data to be modulated
+%  N       = IFFT size
+%  Lc      = length of cyclic prefix, in samples
+%  OF      = oversampling factor (sinc pulse shaping)
+%  nullpos = vector with indices (within 1:N) of null subcarriers
+% The data vector will be zero-padded if necessary in order to construct 
+% an integer number of OFDM symbols.
+% Output:
+%  x = filtered   time domain samples ( OF*(N+Lc) samples per OFDM symbol )
+%  u = unfiltered time domain samples ( OF*(N+Lc) samples per OFDM symbol )
+%  w = time domain samples            (    (N+Lc) samples per OFDM symbol )
+
+if nargin==4
+    K = 0; 
+    datapos = [1:N];
+else
+    K = length(nullpos);                % no. of null subcarriers
+    datapos = setdiff([1:N], nullpos);  % indices of data subcarriers
+end
+
+Nu = N-K;   % No. of useful subcarriers
+
+%% Format data for IFFT
+    % hint: you may want to use 'reshape'
+
+%% N-point IFFT operation
+
+
+
+%% Add Cyclic Prefix
+
+
+%% Parallel to serial
+    % hint: you may want to use 'reshape'
+
+%% Upsample
+u = zeros(1,OF*length(w));
+u(1:OF:end) = w;
+
+P = 150;
+gtx = srrc(0, P, OF);
+x = filter(gtx,1,u);
