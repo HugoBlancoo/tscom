@@ -28,15 +28,23 @@ Nu = N-K;   % No. of useful subcarriers
 
 %% Format data for IFFT
     % hint: you may want to use 'reshape'
-data_IFFT = zeros(1, N);
-data_IFFT(datapos) = data;
+Nsymbols = ceil( length(data) / Nu );
+
+% Zero-padding del vector de datos si es necesario
+data_padded = [data, zeros(1, Nsymbols * Nu - data_len)];
+
+data_blocks = reshape(data_padded, Nu, Nsymbols).';  % Reshape para organizar los datos en bloques de Nu símbolos (uno por símbolo OFDM)
+
+data_IFFT = zeros(Nsymbols, N);
+data_IFFT(:, datapos) = data_blocks;
 
 %% N-point IFFT operation
 
-out_IFFT = ifft(data_IFFT);
+out_IFFT = ifft(data_IFFT, N, 2);
 
 %% Add Cyclic Prefix
 
+CP = out_IFFT(:, end-Lc+1:end);
 
 %% Parallel to serial
     % hint: you may want to use 'reshape'
