@@ -7,8 +7,8 @@ Repositorio con las prácticas del curso "Signal Processing for Communications" 
 
 ## Resumen / Summary
 
-Aquí se subirán las prácticas (informes, código Matlab/Octave y ficheros LaTeX) realizadas para la asignatura TSCOM.  
-This repository contains lab assignments (reports, Matlab/Octave code and LaTeX sources) for the TSCOM course.
+Aquí se subirán las prácticas (informes, código Matlab y ficheros LaTeX) realizadas para la asignatura TSCOM.  
+This repository contains lab assignments (reports, Matlab code and LaTeX sources) for the TSCOM course.
 
 ## Estructura principal / Main structure
 
@@ -21,7 +21,7 @@ This repository contains lab assignments (reports, Matlab/Octave code and LaTeX 
 - Compilar el informe LaTeX (ejemplo para práctica 1):
   - desde la carpeta correspondiente ejecutar un compilador LaTeX (p. ej. latexmk o pdflatex):
     - latexmk -pdf practicas/practica1/latex/practica1.tex
-- Ejecutar scripts Matlab/Octave:
+- Ejecutar scripts Matlab:
   - Abrir Matlab en la carpeta del proyecto y ejecutar los scripts en practicas/practicaX/matlab/, p. ej.:
     - run('practicas/practica1/matlab/task3.m')
   - Las funciones de cuantización relevantes están en [`practicas/practica1/matlab/quanti.m`](practicas/practica1/matlab/quanti.m) y [`practicas/practica1/matlab/dquanti.m`](practicas/practica1/matlab/dquanti.m).
