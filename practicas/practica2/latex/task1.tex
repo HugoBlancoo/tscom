@@ -13,15 +13,27 @@ by taking one sample out of every $L$ samples (i.e., by discarding the inserted 
         0,      & \text{otherwise.}
     \end{cases}
 \end{equation}
-
+\vspace{1cm}
 \textbf{Question: Show that if the Discrete-Time Fourier Transform (DTFT) of $w[n]$ is $W(e^{jw})$, then the DTFT of..?
 }
 \vspace{0.5cm}
 
-\textbf{Question: Let A?
-}
+\vspace{1cm}
+\noindent\textbf{Question:} Let $A>0$ and $\omega_0 = \frac{\pi}{2}$, and consider
+\begin{equation}
+    W(e^{j\omega}) = \begin{cases}
+        A\left(1-\frac{\omega}{\omega_0}\right) & \text{if } |\omega| \leq \omega_0          \\
+        0                                       & \text{if } \omega_0 \leq |\omega| \leq \pi
+    \end{cases}
+\end{equation}
+Sketch $W(e^{j\omega})$, and also $\overline{W(e^{j\omega})}$ for $L=2$ and $L=3$.
 \vspace{0.5cm}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{img/task1_3.png}
+\end{figure}
 
-\textbf{Question: Let L?
+\vspace{1cm}
+\textbf{Question: For $L=2$ and $L=3$, sketch the transfer function $G_{\rm TX}(e^{j\omega})$ of the discrete-time filter $g_{\rm TX}[n]$.?
 }
 \vspace{0.5cm}
