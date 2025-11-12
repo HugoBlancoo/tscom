@@ -1,3 +1,3 @@
-https://img.shields.io/github/contributors/HugoBlancoo/tscom
+![GitHub contributors](https://img.shields.io/github/contributors/HugoBlancoo/tscom)
 
 # TSCOM
