@@ -1,6 +1,18 @@
-\textbf{Question: Is there any loss of information in the process described by (9)?
-}
+\textbf{Question: Is there any loss of information in the process described by (9)?}
 \vspace{0.5cm}
+
+No, there is no loss of information in the process described by (9).
+The upsampling operation in \eqref{eq:upsample} simply inserts $(L-1)$ zeros between consecutive samples of $w[n]$.
+Therefore, the original sequence $w[n]$ can be perfectly recovered from the upsampled sequence $\bar{w}[n]$
+by taking one sample out of every $L$ samples (i.e., by discarding the inserted zeros).
+
+\begin{equation} \label{eq:upsample}
+    \bar{w}[n] =
+    \begin{cases}
+        w[n/L], & \text{if } n \text{ is an integer multiple of } L, \\[4pt]
+        0,      & \text{otherwise.}
+    \end{cases}
+\end{equation}
 
 \textbf{Question: Show that if the Discrete-Time Fourier Transform (DTFT) of $w[n]$ is $W(e^{jw})$, then the DTFT of..?
 }
