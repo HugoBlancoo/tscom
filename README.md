@@ -1,7 +1,7 @@
-<a href="https://github.com/HugoBlancoo/tscom/graphs/contributors" title="Contributors"><img src="https://img.shields.io/github/contributors/HugoBlancoo/tscom"></a>
-<a href="https://github.com/HugoBlancoo/tscom/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/HugoBlancoo/tscom"></a>
-
 # TSCOM
+
+[![Contributors](https://img.shields.io/github/contributors/HugoBlancoo/tscom "Contributors")](https://github.com/HugoBlancoo/tscom/graphs/contributors)
+[![Last Commit](https://img.shields.io/github/last-commit/HugoBlancoo/tscom "Last Commit")](https://github.com/HugoBlancoo/tscom/commits/)
 
 Repositorio con las prácticas del curso "Signal Processing for Communications" (TSCOM) del Máster en Ingeniería de Telecomunicación — Universidade de Vigo.
 
