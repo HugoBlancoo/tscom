@@ -13,3 +13,27 @@ $O{_CP} = \frac{6\mu s}{50 \mu s} = 0.12$
 \vspace{1cm}
 \textbf{Question: Explain why it is not feasible to use a value of $2^{10}$ for the IFFT size.}
 \vspace{0.5cm}
+
+The occupied bandwidth of an OFDM signal is approximately
+\[
+    B \approx N\,\Delta f,
+\]
+where $N$ is the IFFT size (number of subcarriers) and $\Delta f$ is the subcarrier spacing.
+
+Given:
+\[
+    B = 80~\text{MHz}, \quad \Delta f = 20~\text{kHz},
+\]
+we can estimate the required IFFT size as
+\[
+    N \approx \frac{B}{\Delta f} = \frac{80\times10^6}{20\times10^3} = 4000.
+\]
+
+If we choose $N = 2^{10} = 1024$, the occupied bandwidth would be
+\[
+    B \approx 1024 \times 20~\text{kHz} = 20.48~\text{MHz},
+\]
+which is much smaller than the required 80~MHz.
+
+\textbf{Therefore, using $N = 2^{10}$ is not feasible because it would not cover the full 80~MHz data bandwidth.}
+To span the available bandwidth, we would need an IFFT size close to $N \approx 4000$ (i.e., the next power of two $N = 4096$).
