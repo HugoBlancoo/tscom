@@ -1,4 +1,15 @@
-\textbf{Question: ?
+\textbf{An OFDM transceiver has 85 MHz of available RF bandwidth, of which 80 MHz can be occupied for data transmission, leaving $2.5$ MHz at each side as guard bands. The subcarrier spacing is $20$ kHz, and the delay spread of the channel almost never exceeds 6 $\mu$s.
 }
+
+\textbf{Question: What is the smallest possible CP overhead of this system, in percentage?}
 \vspace{0.5cm}
 
+$O{_CP} = \frac{L_cT}{NT} = \frac{L_c}{N}$
+
+$\Delta_c = \frac{1}{NT} \rightarrow NT = \frac{1}{\Delta_c}= \frac{1}{20 \times 10^3} = 50 \mu s$
+
+$O{_CP} = \frac{6\mu s}{50 \mu s} = 0.12$
+
+\vspace{1cm}
+\textbf{Question: Explain why it is not feasible to use a value of $2^{10}$ for the IFFT size.}
+\vspace{0.5cm}
