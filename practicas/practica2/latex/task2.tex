@@ -37,3 +37,23 @@ which is much smaller than the required 80~MHz.
 
 \textbf{Therefore, using $N = 2^{10}$ is not feasible because it would not cover the full 80~MHz data bandwidth.}
 To span the available bandwidth, we would need an IFFT size close to $N \approx 4000$ (i.e., the next power of two $N = 4096$).
+
+\vspace{1cm}
+\textbf{Question: Assume an IFFT size of $2^{13}$. What would be the value of the sampling rate at the IFFT output?}
+\vspace{0.5cm}
+
+In an OFDM system, the sampling rate $F_s$ (at the IFFT output) is related to the IFFT size $N$ and the subcarrier spacing $\Delta f$ by:
+\[
+    F_s = N \, \Delta f.
+\]
+
+Given:
+\[
+    N = 2^{13} = 8192, \quad \Delta f = 20~\text{kHz},
+\]
+then
+\[
+    F_s = 8192 \times 20 \times 10^3 = 163.84 \times 10^6~\text{Hz} = \textbf{163.84~MHz}.
+\]
+
+Therefore, the sampling rate at the IFFT output is \textbf{163.84~MHz}.
