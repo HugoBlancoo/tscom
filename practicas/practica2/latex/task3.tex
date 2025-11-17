@@ -1,8 +1,23 @@
 Implementation of a simple version of the OFDM modulator.
 
-Tested with {\tt N=4} and {\tt Lc=2} with no null subcarriers inserted, then for {\tt data = [4 -1 4 -1 1 4i -1 2i]}, the output {\tt w} should be {\tt w = [ 2.5 0 1.5 0 2.5 0 -1.5i 1 1.5i 0 -1.5i 1 ]} (Why?).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/ofdm_modulator_block_diagram.png}
+    \caption{OFDM Modulator Block Diagram}
+    \label{fig:ofdm_modulator_block_diagram}
+\end{figure}
+
+Tested with {\tt N=4} and {\tt Lc=2} with no null subcarriers inserted, then for {\tt data = [4 -1 4 -1 1 4i -1 2i]}, the output {\tt w} should be {\tt w = [ 2.5 0 1.5 0 2.5 0 -1.5i 1 1.5i 0 -1.5i 1 ]} \textbf{(Why?)}.
 The output {\tt x} will depend on the oversampling factor specified.
 
+\vspace{0.5cm}
+\textbf{Question: Explain why if we have {\tt data = [4 -1 4 -1 1 4i -1 2i]} at the input, the output is {\tt w = [ 2.5 0 1.5 0 2.5 0 -1.5i 1 1.5i 0 -1.5i 1 ]}.
+}
+\vspace{0.5cm}
+
+The data vector is split into two OFDM symbols of size four. Each group of four is transformed by the IFFT to produce the time-domain representation of each symbol. For each symbol, the last two samples are copied as the cyclic prefix and prepended to the corresponding IFFT output. Finally, the parallel symbols (each with cyclic prefix) are serialized—giving a total output size of 2*(4+2)=12 The values in w reflect the structure: [CP, OFDM symbol, CP, OFDM symbol] for the two blocks of data.
+
+\vspace{0.5cm}
 \textbf{Question: Explain what the differences are between the outputs {\tt x} and {\tt w}.
 }
 \vspace{0.5cm}

@@ -30,24 +30,27 @@ Nu = N-K;   % No. of useful subcarriers
     % hint: you may want to use 'reshape'
 Nsymbols = ceil( length(data) / Nu );
 
-% Zero-padding del vector de datos si es necesario
-data_padded = [data, zeros(1, Nsymbols * Nu - data_len)];
+s_n = [data, zeros(1, Nsymbols * Nu - length(data))]; % relleno de 0s
 
-data_blocks = reshape(data_padded, Nu, Nsymbols).';  % Reshape para organizar los datos en bloques de Nu símbolos (uno por símbolo OFDM)
+data_blocks = reshape(s_n , Nu, Nsymbols).'; % S to P
 
-data_IFFT = zeros(Nsymbols, N);
-data_IFFT(:, datapos) = data_blocks;
+si_n = zeros(Nsymbols, N);
+si_n(:, datapos) = data_blocks;
 
 %% N-point IFFT operation
 
-out_IFFT = ifft(data_IFFT, N, 2);
+% ifft(Y,[],2) devuelve la transformada de Fourier inversa de cada fila.
+out_IFFT = ifft(si_n, N, 2);
 
 %% Add Cyclic Prefix
 
-CP = out_IFFT(:, end-Lc+1:end);
+CP = out_IFFT(:, end-Lc+1:end); % cogemos las ultimas Lc mustras
+wi_n = [CP, out_IFFT];
 
 %% Parallel to serial
     % hint: you may want to use 'reshape'
+w_n = reshape(wi_n.', 1, []);
+w = w_n;
 
 %% Upsample
 u = zeros(1,OF*length(w));
@@ -56,6 +59,3 @@ u(1:OF:end) = w;
 P = 150;
 gtx = srrc(0, P, OF);
 x = filter(gtx,1,u);
-data_IFFT = reshape(data_IFFT, Nu, []);  % Reshape for IFFT processing
-w = ifft(data_IFFT, N, 2);  % Perform N-point IFFT along the second dimension
-w = reshape(w, 1, []);  % Reshape back to a row vector

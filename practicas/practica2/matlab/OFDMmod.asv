@@ -28,24 +28,31 @@ Nu = N-K;   % No. of useful subcarriers
 
 %% Format data for IFFT
     % hint: you may want to use 'reshape'
-    dataPadded = zeros(1, Nu * ceil(length(data) / Nu)); % Zero-pad data
-dataPadded(1:length(data)) = data; % Place original data
-w = ifft(dataPadded(datapos)); % Perform IFFT on data subcarriers
+Nsymbols = ceil( length(data) / Nu );
 
-data_IFFT = zeros(1, N);
+s_n = [data, zeros(1, Nsymbols * Nu - length(data))]; % relleno de 0s
 
+data_blocks = reshape(s_n , Nu, Nsymbols).'; % S to P
+
+si_n = zeros(Nsymbols, N);
+si_n(:, datapos) = data_blocks;
 
 %% N-point IFFT operation
 
-
+% ifft(Y,[],2) devuelve la transformada de Fourier inversa de cada fila.
+out_IFFT = ifft(si_n, N, 2);
 
 %% Add Cyclic Prefix
 
+CP = out_IFFT(:, end-Lc+1:end); % cogemos las ultimas Lc mustras
+wi_n = [CP, out_IFFT];
 
 %% Parallel to serial
     % hint: you may want to use 'reshape'
+w_n = reshape(wi_n.', 1, []);
 
 %% Upsample
+w = w_n;
 u = zeros(1,OF*length(w));
 u(1:OF:end) = w;
 
