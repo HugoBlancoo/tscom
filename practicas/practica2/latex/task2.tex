@@ -57,3 +57,31 @@ then
 \]
 
 Therefore, the sampling rate at the IFFT output is \textbf{163.84~MHz}.
+
+
+\vspace{1cm}
+\textbf{Question: What is the data rate (in Mbits/s) of this system, when all active subcarriers are used to carry data and a QPSK constellation is used?}
+\vspace{0.5cm}
+
+COMPLETAR
+
+\vspace{1cm}
+\textbf{Question:  Now assume that we decide to implement an IFFT with size $4 096$, and redo the previous two points.}
+\vspace{0.5cm}
+In an OFDM system, the sampling rate $F_s$ (at the IFFT output) is related to the IFFT size $N$ and the subcarrier spacing $\Delta f$ by:
+\[
+    F_s = N \, \Delta f.
+\]
+
+Given:
+\[
+    N = 4096, \quad \Delta f = 20~\text{kHz},
+\]
+then
+\[
+    F_s = 4096 \times 20 \times 10^3 = 81,92 \times 10^6~\text{Hz} = \textbf{81,92~MHz}.
+\]
+
+Therefore, the sampling rate at the IFFT output is \textbf{81,92~MHz}.
+
+COMPLETAR
