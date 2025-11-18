@@ -1,4 +1,51 @@
-\textbf{Question: ?
+\textbf{Question: Assuming a sampling rate of $10/T$ Hz, generate a vector {\tt heq} of samples of $h(t) = g_{\rm TX}(t) \star \tilde h(t) \star g_{\rm RX}(t)$.  Compute the FFT  {\tt Heq = fft(heq,8192)} and plot its magnitude by means of {\tt plot(linspace(-20,20,8192), 20*log10(abs(fftshift(Heq))))}. Zoom in on the OFDM signal bandwidth.  Comment on the results. Is the effective channel frequency-flat within the passband? What is the largest difference (in dB) between passband points of the channel transfer function's magnitude?
 }
 \vspace{0.5cm}
 
+COMPLETAR
+
+\vspace{0.5cm}
+\textbf{Question: Assuming no noise, generate the samples (at $10/T$ samples/s) of the signal $z(t)$ at the receiver.
+}
+\vspace{0.5cm}
+
+COMPLETAR
+
+\vspace{0.5cm}
+\textbf{Question: Suppose that the receiver wrongly assumes that the channel is not frequency-selective, i.e., set the parameter {\tt channel = 1} when you call {\tt OFDMdem.m} . Plot all the demodulated data (i.e., the recovered QAM symbols) in the I/Q plane (1 dot per symbol) and comment on your observations.
+}
+\vspace{0.5cm}
+
+COMPLETAR
+
+\vspace{0.5cm}
+\textbf{Question: In a different figure, plot again the demodulated data, but only those received on subcarrier $k=10$. Repeat for subcarrier $k=46$. Comment on your results.
+}
+\vspace{0.5cm}
+
+COMPLETAR
+
+\vspace{0.5cm}
+\textbf{Question: Now suppose that the receiver is smarter, and has somehow estimated the channel perfectly. Given the $\tilde h(t)$ above, which is the value of the {\tt H} parameter that you should pass to {\tt OFDMdem}?
+}
+\vspace{0.5cm}
+
+COMPLETAR
+
+\vspace{0.5cm}
+\textbf{Question: Plot now the demodulated data in the I/Q plane (1 dot per symbol) and comment on your observations. Is equalization something that we can neglect at the receiver?
+}
+\vspace{0.5cm}
+
+COMPLETAR
+
+\vspace{0.5cm}
+\textbf{Question: Consider now the following channel:
+\begin{equation}
+\tilde h(t) = \delta(t) -0.8\delta(t-5T) +0.7\delta(t-10T).
+\end{equation}
+Set {\tt P = 150}, and plot again the demodulated data in the I/Q plane (1 dot per symbol). Comment on your observations.
+}
+\vspace{0.5cm}
+
+COMPLETAR

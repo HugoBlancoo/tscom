@@ -1,4 +1,29 @@
-\textbf{Question: ?
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/ofdm_demodulator_block_diagram.png}
+    \caption{OFDM Demodulator Block Diagram}
+    \label{fig:ofdm_demodulator_block_diagram}
+\end{figure}
+
+\textbf{Question: Verify that your code is working properly by generating an OFDM signal with {\tt OFDMmod.m} and then demodulating it with {\tt OFDMdem.m} , assuming for the time being an ideal channel.  For instance,
+\[ \texttt{x = OFDMmod(data, N, Lc, OF, nullpos);}  \]
+\[ \texttt{dem\_data = OFDMdem(x, N, Lc, OF, ones(N,1), nullpos);} \]
+Using Matlab's {\tt scatter} function, check if the transmitted and received constellations reflect the appropriate modulation scheme (QPSK, 16-QAM,\ldots) you have chosen.
 }
 \vspace{0.5cm}
 
+COMPLETAR
+
+\vspace{0.5cm}
+\textbf{Question: Consider an OFDM transmitter with the same $N$, $L_c$ and $\Delta_c$ parameters as in Task 3, and transmitting QPSK data. Represent the scatter plot of the received data  when the transmitter uses all $N$ subcarriers. Repeat for the cases in which the transmitter respectively turns off 5, 20 and 40 subcarriers at each edge of the passband, and comment on the results. What do you think is causing the observed differences?
+}
+\vspace{0.5cm}
+
+COMPLETAR
+
+\vspace{0.5cm}
+\textbf{Question: On occasion, you will see that the scatter plot of the demodulated data includes some points near the origin of the complex plane. Can you explain this?
+}
+\vspace{0.5cm}
+
+COMPLETAR
