@@ -4,11 +4,15 @@
 \textbf{Question: What is the smallest possible CP overhead of this system, in percentage?}
 \vspace{0.5cm}
 
-$O{_CP} = \frac{L_cT}{NT} = \frac{L_c}{N}$
+$O{_CP} = \frac{L_cT}{NT}$
+
+$L_cT= \Delta_{Tmax} = 6 \mu$s
 
 $\Delta_c = \frac{1}{NT} \rightarrow NT = \frac{1}{\Delta_c}= \frac{1}{20 \times 10^3} = 50 \mu s$
 
 $O{_CP} = \frac{6\mu s}{50 \mu s} = 0.12$
+
+\textbf{The smallest possible CP overhead of this system is 12\%}
 
 \vspace{1cm}
 \textbf{Question: Explain why it is not feasible to use a value of $2^{10}$ for the IFFT size.}
@@ -16,17 +20,17 @@ $O{_CP} = \frac{6\mu s}{50 \mu s} = 0.12$
 
 The occupied bandwidth of an OFDM signal is approximately
 \[
-    B \approx N\,\Delta f,
+    B \approx N\,\Delta c,
 \]
-where $N$ is the IFFT size (number of subcarriers) and $\Delta f$ is the subcarrier spacing.
+where $N$ is the IFFT size (number of subcarriers) and $\Delta c$ is the subcarrier spacing.
 
 Given:
 \[
-    B = 80~\text{MHz}, \quad \Delta f = 20~\text{kHz},
+    B = 80~\text{MHz}, \quad \Delta c = 20~\text{kHz},
 \]
 we can estimate the required IFFT size as
 \[
-    N \approx \frac{B}{\Delta f} = \frac{80\times10^6}{20\times10^3} = 4000.
+    N \approx \frac{B}{\Delta c} = \frac{80\times10^6}{20\times10^3} = 4000.
 \]
 
 If we choose $N = 2^{10} = 1024$, the occupied bandwidth would be
@@ -42,14 +46,14 @@ To span the available bandwidth, we would need an IFFT size close to $N \approx 
 \textbf{Question: Assume an IFFT size of $2^{13}$. What would be the value of the sampling rate at the IFFT output?}
 \vspace{0.5cm}
 
-In an OFDM system, the sampling rate $F_s$ (at the IFFT output) is related to the IFFT size $N$ and the subcarrier spacing $\Delta f$ by:
+In an OFDM system, the sampling rate $F_s$ (at the IFFT output) is related to the IFFT size $N$ and the subcarrier spacing $\Delta c$ by:
 \[
-    F_s = N \, \Delta f.
+    F_s = N \, \Delta c.
 \]
 
 Given:
 \[
-    N = 2^{13} = 8192, \quad \Delta f = 20~\text{kHz},
+    N = 2^{13} = 8192, \quad \Delta c = 20~\text{kHz},
 \]
 then
 \[
@@ -63,25 +67,60 @@ Therefore, the sampling rate at the IFFT output is \textbf{163.84~MHz}.
 \textbf{Question: What is the data rate (in Mbits/s) of this system, when all active subcarriers are used to carry data and a QPSK constellation is used?}
 \vspace{0.5cm}
 
-COMPLETAR
+% Data Rate= $\frac{N \times Bits_s}{T_{OFDM}}$ 
+
+% Since we have a QPSK constellation, we have $\log_2(4)= 2$ bits.
+
+% The duration of a OFDM Symbol is $T_{OFDM} = (N + L_c)T$.
+% $L_c T \ge \Delta_T$ $$L_c \ge \frac{\Delta\tau}{T} = \frac{6 \times 10^{-6} \text{ s}}{12.207 \times 10^{-9} \text{ s}} \approx 491.5 = 492$$
+
+% $$T = \frac{1}{N \cdot \Delta_c} = \frac{1}{4096 \cdot 20 \times 10^3 \text{ Hz}} \approx 12.207 \times 10^{-9} \text{ s}$$
+% $$T_{OFDM} = (4096 + 492) \cdot 12.207 \times 10^{-9} \text{ s} = 4588 \cdot 12.207 \times 10^{-9} \text{ s} \approx 55.99 \text{ µs}$$
+
+% Whith this values and with $N = \frac{B}{\Delta_c} = \frac{80 \times10^6}{20\times 10^3}= 4000$, we have a data rate of $\frac{4000 \times 2}{55.99\times 10^{-6}} = 142.89 \text{ Mbits/s} $ 
+
+Data Rate = $\frac{N \times \text{Bits}_s}{T_{OFDM}}$ 
+
+Since we have a QPSK constellation, we have $\log_2(4) = 2$ bits per subcarrier.
+
+The duration of an OFDM symbol is 
+\[
+T_{OFDM} = T_\text{symbol} + T_{CP},
+\] 
+where the useful symbol duration is 
+\[
+T_\text{symbol} = \frac{1}{\Delta c} = \frac{1}{20 \times 10^3 \text{ Hz}} \approx 50 \, \mu\text{s}.
+\] 
+
+The cyclic prefix must be at least as long as the maximum delay spread of the channel:
+\[
+T_{CP} \ge \Delta \tau = 6 \, \mu\text{s}.
+\] 
+
+Hence, the total OFDM symbol duration is 
+\[
+T_{OFDM} = T_\text{symbol} + T_{CP} \approx 50 + 6 = 56 \, \mu\text{s}.
+\]
+
+The number of active subcarriers is
+\[
+N = \frac{B}{\Delta c} = \frac{80 \times 10^6}{20 \times 10^3} = 4000.
+\] 
+
+Finally, the data rate is
+\[
+R = \frac{N \times \text{Bits}_s}{T_{OFDM}} = \frac{4000 \times 2}{56 \times 10^{-6}} \approx \textbf{142.86 Mbits/s}.
+\]
+
 
 \vspace{1cm}
-\textbf{Question:  Now assume that we decide to implement an IFFT with size $4 096$, and redo the previous two points.}
+\textbf{Question:  Repeat the previous point for a 16-QAM constellation when 100 of the active subcarriers are used to send training sequences to aid synchronization and channel estimation at the receiver.}
 \vspace{0.5cm}
-In an OFDM system, the sampling rate $F_s$ (at the IFFT output) is related to the IFFT size $N$ and the subcarrier spacing $\Delta f$ by:
-\[
-    F_s = N \, \Delta f.
-\]
 
-Given:
-\[
-    N = 4096, \quad \Delta f = 20~\text{kHz},
-\]
-then
-\[
-    F_s = 4096 \times 20 \times 10^3 = 81,92 \times 10^6~\text{Hz} = \textbf{81,92~MHz}.
-\]
+As its a 16-QAM constellation we have $\log_2(16) = 4 \text{bits per symbol}$.
 
-Therefore, the sampling rate at the IFFT output is \textbf{81,92~MHz}.
+The active subcarriers are the same, but we have 100 subcarriers used to send training data, so we have 3900 active subcarriers sending data.
 
-COMPLETAR
+\[
+R = \frac{N \times \text{Bits}_s}{T_{OFDM}} = \frac{3900 \times 4}{56 \times 10^{-6}} \approx \textbf{278.57 Mbits/s}.
+\]
