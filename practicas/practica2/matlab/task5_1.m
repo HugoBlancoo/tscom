@@ -13,7 +13,7 @@ Fs = OF / T;
 rng(2025);                              % Set seed for reproducibility
 M = 16;
 dataSymbols = randi([0 M-1], 10000, 1); % Generate 10000 random 16 QAM symbols
-txSig = pskmod(dataSymbols, M, pi/M); % 16 QAM modulation
+txSig = qammod(dataSymbols, M, 'UnitAveragePower', true); % 16 QAM modulation
 scatterplot(awgn(txSig,20));
 hold on; grid on;
 
@@ -36,9 +36,7 @@ delay_samples = round(tau * Fs);
 % Create discrete-time channel impulse response
 max_delay = max(delay_samples);
 h_tilde_discrete = zeros(1, max_delay + 1);
-for i = 1:length(tau)
-    h_tilde_discrete(delay_samples(i) + 1) = h_tilde(i);
-end
+h_tilde_discrete(delay_samples + 1) = h_tilde;
 
 % Generate transmit and receive filters
 P = 150;

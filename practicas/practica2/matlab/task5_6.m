@@ -13,7 +13,7 @@ Fs = OF / T;
 rng(2025);                              % Set seed for reproducibility
 M = 16;
 dataSymbols = randi([0 M-1], 10000, 1); % Generate 10000 random 16 QAM symbols
-txSig = pskmod(dataSymbols, M, pi/M); % 16 QAM modulation
+txSig = qammod(dataSymbols, M, 'UnitAveragePower', true); % 16 QAM modulation
 %scatterplot(awgn(txSig,20));hold on; grid on;
 
 data = txSig.';
@@ -21,29 +21,18 @@ data = txSig.';
 [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos);
 
 %% \tilde h(t) = \delta(t) -0.8\delta(t-5T) +0.7\delta(t-10T).
-tau = [0, 5*T, 10*T];
+tau_symbol_rate = [0, 5, 10]; % Porque son 0, 5T, 10T
 alpha = [1, -0.8, 0.7];
-phi = [0, 0, 0]; % No phase terms
 
-% Convert to complex channel taps
-h_tilde = alpha .* exp(1j * phi);  % Just the real amplitudes
+% Creamos el canal equivalente h[n] (a tasa de símbolo)
+h_eff = zeros(1, 11); % Longitud máxima es 10, +1 por índice 1 de Matlab
+h_eff(tau_symbol_rate + 1) = alpha;
 
-% Convert delays to sample indices
-delay_samples = round(tau * Fs);
-
-% Create discrete-time channel impulse response
-max_delay = max(delay_samples);
-h_tilde_discrete = zeros(1, max_delay + 1);
-for i = 1:length(tau)
-    h_tilde_discrete(delay_samples(i) + 1) = h_tilde(i);
-end
+% Ahora calculamos la H correcta para el ecualizador (tamaño N=64)
+H = fft(h_eff, N).'; 
 
 % Received signal
-z = conv(x, h_tilde_discrete);
-
-% Compute correct H[k]
-h_tilde_padded = [h_tilde_discrete, zeros(1, N - length(h_tilde_discrete))];
-H = fft(h_tilde_padded, N).';
+z = conv(x, H);
 
 % Demodulate with equalization
 dem_data = OFDMdem(z, N, Lc, OF, H, nullpos);

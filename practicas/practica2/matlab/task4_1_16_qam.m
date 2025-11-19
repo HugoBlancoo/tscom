@@ -11,7 +11,7 @@ Lc = round(prefix_redundancy * N);
 rng(2025);                              % Set seed for reproducibility
 M = 16;
 dataSymbols = randi([0 M-1], 10000, 1); % Generate 10000 random 16 QAM
-txSig = pskmod(dataSymbols, M, pi/M); % 16 QAM modulation
+txSig = qammod(dataSymbols, M, 'gray'); % 16 QAM modulation
 scatterplot(awgn(txSig,20));
 hold on; grid on;
 
