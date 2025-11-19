@@ -67,17 +67,6 @@ Therefore, the sampling rate at the IFFT output is \textbf{163.84~MHz}.
 \textbf{Question: What is the data rate (in Mbits/s) of this system, when all active subcarriers are used to carry data and a QPSK constellation is used?}
 \vspace{0.5cm}
 
-% Data Rate= $\frac{N \times Bits_s}{T_{OFDM}}$ 
-
-% Since we have a QPSK constellation, we have $\log_2(4)= 2$ bits.
-
-% The duration of a OFDM Symbol is $T_{OFDM} = (N + L_c)T$.
-% $L_c T \ge \Delta_T$ $$L_c \ge \frac{\Delta\tau}{T} = \frac{6 \times 10^{-6} \text{ s}}{12.207 \times 10^{-9} \text{ s}} \approx 491.5 = 492$$
-
-% $$T = \frac{1}{N \cdot \Delta_c} = \frac{1}{4096 \cdot 20 \times 10^3 \text{ Hz}} \approx 12.207 \times 10^{-9} \text{ s}$$
-% $$T_{OFDM} = (4096 + 492) \cdot 12.207 \times 10^{-9} \text{ s} = 4588 \cdot 12.207 \times 10^{-9} \text{ s} \approx 55.99 \text{ µs}$$
-
-% Whith this values and with $N = \frac{B}{\Delta_c} = \frac{80 \times10^6}{20\times 10^3}= 4000$, we have a data rate of $\frac{4000 \times 2}{55.99\times 10^{-6}} = 142.89 \text{ Mbits/s} $ 
 
 Data Rate = $\frac{N \times \text{Bits}_s}{T_{OFDM}}$ 
 
@@ -123,4 +112,20 @@ The active subcarriers are the same, but we have 100 subcarriers used to send tr
 
 \[
 R = \frac{N \times \text{Bits}_s}{T_{OFDM}} = \frac{3900 \times 4}{56 \times 10^{-6}} \approx \textbf{278.57 Mbits/s}.
+\]
+
+\vspace{1cm}
+\textbf{Question:Now assume that we decide to implement an IFFT with size 4096, and redo the previous two points.}
+\vspace{0.5cm}
+
+\textbf{For the QPSK constellation:}
+
+\[
+R = \frac{N \times \text{Bits}_s}{T_{OFDM}} = \frac{4096 \times 2}{56 \times 10^{-6}} \approx \textbf{146.28 Mbits/s}.
+\]
+
+\textbf{For the 16-QAM constellation:}
+
+\[
+R = \frac{N \times \text{Bits}_s}{T_{OFDM}} = \frac{(4096 - 100) \times 2}{56 \times 10^{-6}} \approx \textbf{285.42 Mbits/s}.
 \]
