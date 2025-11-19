@@ -7,6 +7,7 @@ Implementation of the OFDM demodulator as described above and in Fig.~\ref{ofdm_
     \label{ofdm_demodulator_block_diagram}
 \end{figure}
 
+\vspace{0.5cm} %task4_1.m
 \textbf{Question: Verify that your code is working properly by generating an OFDM signal with {\tt OFDMmod.m} and then demodulating it with {\tt OFDMdem.m} , assuming for the time being an ideal channel.  For instance,
 \[ \texttt{x = OFDMmod(data, N, Lc, OF, nullpos);}  \]
 \[ \texttt{dem\_data = OFDMdem(x, N, Lc, OF, ones(N,1), nullpos);} \]
@@ -14,18 +15,80 @@ Using Matlab's {\tt scatter} function, check if the transmitted and received con
 }
 \vspace{0.5cm}
 
-COMPLETAR
+We use the same QPSK data symbols generated in the previous section (10,000 random symbols with $N=512$ and $OF=2$). The OFDM system modulates these symbols and then demodulates them to recover the transmitted data, assuming an ideal channel. We also test the system with a 16-QAM modulation scheme to verify its generality.
 
-\vspace{0.5cm}
+\begin{figure}[H]
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/task4_qpsk_constellation_recovered.png}
+        \caption{QPSK constellation.}
+        \label{fig:task4_qpsk}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/task4_16qam_constellation_recovered.png}
+        \caption{16-QAM constellation.}
+        \label{fig:task4_16qam}
+    \end{minipage}
+\end{figure}
+
+Figures~\ref{fig:task4_qpsk} and~\ref{fig:task4_16qam} show the received constellations for both modulation schemes. In both cases, the symbols are recovered correctly with tight clustering and good separation between constellation points, confirming that the OFDM system operates as expected regardless of the modulation scheme.
+
+The OFDM system successfully recovers the transmitted data for both QPSK and 16-QAM modulation schemes. This validates the correct implementation of the modulation and demodulation chain.
+
+\vspace{0.5cm} %task4_2.m
 \textbf{Question: Consider an OFDM transmitter with the same $N$, $L_c$ and $\Delta_c$ parameters as in Task 3, and transmitting QPSK data. Represent the scatter plot of the received data  when the transmitter uses all $N$ subcarriers. Repeat for the cases in which the transmitter respectively turns off 5, 20 and 40 subcarriers at each edge of the passband, and comment on the results. What do you think is causing the observed differences?
 }
 \vspace{0.5cm}
 
-COMPLETAR
+We transmitted 10,000 QPSK symbols using the same OFDM parameters as before ($N=512$, $OF=2$), and tested four configurations: using all subcarriers (k=0), and nulling 5, 20, and 40 subcarriers at each band edge.
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task4_2_k_0.png}
+    \caption{$k=0$ (all subcarriers)}
+    \label{task4_2_k_0}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task4_2_k_5.png}
+    \caption{$k=5$ nulls per side}
+    \label{task4_2_k_5}
+  \end{subfigure}
+
+  \vskip\baselineskip
+
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task4_2_k_20.png}
+    \caption{$k=20$ nulls per side}
+    \label{task4_2_k_20}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/task4_2_k_40.png}
+    \caption{$k=40$ nulls per side}
+    \label{task4_2_k_40}
+  \end{subfigure}
+
+  \caption{Received constellations for different numbers of nulled edge subcarriers.}
+  \label{fig:const_grid}
+\end{figure}
+
+As we increase the number of nulled subcarriers at the band edges, the received constellation becomes \textbf{cleaner and more compact}. With all subcarriers active ($k=0$), the constellation points show noticeable dispersion due to distortion in edge subcarriers. As more edge subcarriers are turned off ($k=5, 20, 40$), the clusters tighten and the constellation quality improves.
+
+The improvement occurs because edge subcarriers are more affected by spectral leakage and numerical distortion near the band edges. By nulling them, only well-behaved central subcarriers are used, producing tighter constellations.
+
+\textbf{Trade-off:} Nulling edge subcarriers improves signal quality and helps meet spectral mask requirements, but reduces the number of useful subcarriers and thus the data rate.
 
 \vspace{0.5cm}
 \textbf{Question: On occasion, you will see that the scatter plot of the demodulated data includes some points near the origin of the complex plane. Can you explain this?
 }
 \vspace{0.5cm}
 
-COMPLETAR
+Points near the origin occur because both padded samples and nulled appear as zero-valued constellation points. These artifacts do not correspond to actual transmitted data symbols and should be ignored (or deleting) when analyzing the constellation.

@@ -153,169 +153,26 @@ Increasing the oversampling factor separates the main signal band from its spect
 }
 \vspace{0.5cm}
 
-\subsection*{Problem recap}
-We have an OFDM system with:
+For an oversampling factor of 2, we progressively nulled $k$ subcarriers at each band edge and measured the PSD of the transmit signal using \texttt{pwelch}. The smallest value of $k$ that yields at least 25 dB attenuation at $\pm 7$ MHz is
 \[
-N=512,\qquad \Delta f = 31.250\ \text{kHz}.
+k = 237.
 \]
-We ask: how many subcarriers must be turned off (null) so that the PSD at \(f=\pm 7\ \text{MHz}\) is at least \(A_{\text{dB}}\) below the peak in the passband? Two targets: \(A_{\text{dB}}=25\ \text{dB}\) and \(A_{\text{dB}}=30\ \text{dB}\).
-
-\bigskip
-Below we develop a simple, physically meaningful approximation that leads to a direct counting rule.
-
-\subsection*{1. Convert the frequency offset \(7\ \text{MHz}\) into ``subcarrier units''}
-Each subcarrier is spaced by \(\Delta f\). The number of subcarrier steps between the center (carrier) and \(7\ \text{MHz}\) is
+The number of available subcarriers is therefore
 \[
-D \;=\; \frac{7\times 10^6}{\Delta f}
-    \;=\; \frac{7\times 10^6}{31.25\times 10^3}
-    \;=\; 224.
-\]
-So \(7\ \text{MHz}\) lies \(D=224\) subcarrier spacings away from the centre frequency.
-
-\subsection*{2. Why the single-subcarrier \(\mathrm{sinc}\) tail controls out-of-band leakage}
-An OFDM subcarrier (a rectangular symbol of duration \(T_u = N T\)) has a frequency shape proportional to a sinc function. The power contributed by a single subcarrier at an offset of \(x\) subcarrier spacings is proportional to
-\[
-\big|\mathrm{sinc}(\pi x)\big|^2, \qquad
-\mathrm{sinc}(\pi x) = \frac{\sin(\pi x)}{\pi x}.
-\]
-For large \(|x|\) the sinc amplitude behaves as \(|\mathrm{sinc}(\pi x)| \approx 1/(\pi |x|)\). Thus the power decays roughly as \(1/(\pi x)^2\). This simple asymptotic rule is very useful to estimate how much leakage remains at a frequency that lies many subcarrier spacings away.
-
-\subsection*{3. Define the required distance (in subcarrier units) from the nearest \emph{active} subcarrier}
-Let \(x_{\mathrm{req}}\) be the minimum distance (in subcarrier spacings) between the frequency \(7\ \text{MHz}\) and the \emph{nearest active subcarrier} so that the power there is \(A_{\mathrm{dB}}\) down from the passband peak.
-
-Using the asymptotic approximation, the attenuation (in dB) produced by a nearest carrier at distance \(x\) is approximately
-\[
-A_{\mathrm{dB}} \approx 20\log_{10}(\pi x).
-\]
-Solve for \(x\):
-\[
-\pi x_{\mathrm{req}} \;\ge\; 10^{A_{\mathrm{dB}}/20}
-\quad\Longrightarrow\quad
-x_{\mathrm{req}} \;\ge\; \frac{10^{A_{\mathrm{dB}}/20}}{\pi}.
+N_{\text{active}} = 512 - 2k = 38.
 \]
 
-\paragraph{Numeric evaluation}
-\begin{itemize}
-  \item For \(A_{\mathrm{dB}}=25\ \text{dB}\):
-  \[
-  x_{\mathrm{req}} \ge \frac{10^{25/20}}{\pi} \approx \frac{17.7828}{3.1416}\approx 5.66
-  \quad\Rightarrow\quad x_{\mathrm{req}}=\lceil 5.66\rceil = 6.
-  \]
-  \item For \(A_{\mathrm{dB}}=30\ \text{dB}\):
-  \[
-  x_{\mathrm{req}} \ge \frac{10^{30/20}}{\pi} \approx \frac{31.6228}{3.1416}\approx 10.07
-  \quad\Rightarrow\quad x_{\mathrm{req}}=\lceil 10.07\rceil = 11.
-  \]
-\end{itemize}
 
-Hence the nearest \emph{active} subcarrier must be at least \(6\) subcarrier steps away from \(7\ \text{MHz}\) to achieve \(\ge 25\) dB, and at least \(11\) steps away to achieve \(\ge 30\) dB, using the simple sinc-tail approximation.
-
-\subsection*{4. Two practical ways to place the nulls (and the corresponding counting rules)}
-There are (at least) two reasonable interpretations of “turn off subcarriers so that the PSD at \(\pm 7\) MHz is below a given level”. We present both and give the corresponding arithmetic.
-
-\paragraph{A. \emph{Local nulling} (minimal number of turned-off carriers).}
-If you are allowed to turn off the subcarriers that lie \emph{closest} to \(\pm 7\) MHz (i.e. make a small notch around those frequencies), then the minimal way to satisfy the requirement is to null the nearest \(x_{\mathrm{req}}\) carriers at each of the two frequencies. Thus the number of nulled carriers per side is
-\[
-n_{\text{local}} = x_{\mathrm{req}}.
-\]
-The remaining active subcarriers are
-\[
-N_{\text{active, local}} = N - 2\,n_{\text{local}}.
-\]
-Numeric result:
-\[
-\begin{aligned}
-&A_{\mathrm{dB}}=25\ \Rightarrow\ x_{\mathrm{req}}=6
-\quad\Rightarrow\ N_{\text{active}}=512-2\cdot6=500,\\
-&A_{\mathrm{dB}}=30\ \Rightarrow\ x_{\mathrm{req}}=11
-\quad\Rightarrow\ N_{\text{active}}=512-2\cdot11=490.
-\end{aligned}
-\]
-
-This strategy is the \emph{most spectrally efficient} (fewest carriers removed) but it implies you are removing carriers located \emph{inside} the band (near ±7 MHz) rather than turning off edge carriers only.
-
-\paragraph{B. \emph{Edge/guard-band nulling} (turn off outermost carriers to create a guard band).}
-A common transmitter policy is to turn off a contiguous block of subcarriers at the band edges (this creates a guard band between the transmitted OFDM band and the RF channel edge). If we null \(n_{\text{edge}}\) outermost subcarriers on each side, then the highest positive active subcarrier index (for a 0-centred indexing with indices \( -256,\dots,255\)) becomes
-\[
-k_{\max} = 255 - n_{\text{edge}}.
-\]
-The subcarrier index that corresponds to \(7\ \text{MHz}\) is \(k_{7} = D = 224\). The distance (in subcarrier units) from the nearest active subcarrier to \(7\ \text{MHz}\) is
-\[
-x_{\mathrm{eff}} \;=\; k_{7} - k_{\max} \;=\; 224 - (255 - n_{\text{edge}}) \;=\; n_{\text{edge}} - 31.
-\]
-To ensure \(x_{\mathrm{eff}} \ge x_{\mathrm{req}}\) we need
-\[
-n_{\text{edge}} - 31 \;\ge\; x_{\mathrm{req}}
-\quad\Longrightarrow\quad
-n_{\text{edge}} \;\ge\; 31 + x_{\mathrm{req}}.
-\]
-Thus the smallest integer \(n_{\text{edge}}\) that works is
-\[
-n_{\text{edge}} = 31 + \lceil x_{\mathrm{req}} \rceil.
-\]
-The number of remaining active subcarriers is
-\[
-N_{\text{active, edge}} = N - 2\,n_{\text{edge}}.
-\]
-
-Numeric result:
-\[
-\begin{aligned}
-&A_{\mathrm{dB}}=25:\ x_{\mathrm{req}}=6 \Rightarrow n_{\text{edge}}=31+6=37
-\Rightarrow N_{\text{active}}=512-2\cdot37=438,\\
-&A_{\mathrm{dB}}=30:\ x_{\mathrm{req}}=11 \Rightarrow n_{\text{edge}}=31+11=42
-\Rightarrow N_{\text{active}}=512-2\cdot42=428.
-\end{aligned}
-\]
-
-This strategy removes many more carriers than the local-notch solution, but it corresponds to the usual engineering choice of creating guard bands at the outer edges of the transmitted spectrum (which is what the example problem you saw earlier did: convert a required 0.4~MHz guard band into a number of subcarriers).
-
-\subsection*{5. Which interpretation should you use?}
-\begin{itemize}
-  \item If the statement in the assignment allows you to choose which carriers to turn off anywhere in the band, and your goal is strictly to minimize the \emph{number} of nulled carriers while meeting the PSD requirement at \(\pm 7\) MHz, then the \emph{local nulling} answer (500 and 490 active subcarriers) is the minimal theoretical answer.
-  \item If the transmitter must provide guard bands at the \emph{band edges} (typical practical requirement to help the RF/receive filters), then you should use the \emph{edge/guard} interpretation — the results then are 438 and 428 active carriers for the 25 dB and 30 dB targets respectively.
-\end{itemize}
-
-\subsection*{6. Practical caveats and final recommendation}
-\begin{itemize}
-  \item The derivation used the large-argument asymptotic of the sinc. This gives a conservative, simple rule of thumb and is sufficient for a hand derivation to show you can reach the claimed numbers.
-  \item In a real transmitter the exact PSD at \(\pm 7\) MHz will also be affected by:
-    \begin{enumerate}
-      \item pulse-shaping / interpolation filter (SRRC) used after upsampling,
-      \item windowing/time-domain shaping of the OFDM symbol,
-      \item composite contributions from many subcarriers (not exactly a single-sinc),
-      \item finite numerical / sampling effects and the exact alignment of 7 MHz with the discrete bin grid.
-    \end{enumerate}
-    Therefore it is good practice to validate the hand result with the PSD simulation (your \texttt{OFDMmod} + \texttt{pwelch}) and, if necessary, adjust by one or two carriers.
-  \item For your report: state clearly which nulling policy you adopt (local vs edge) and show the short arithmetic above. Then add the simulation result as a verification.
-\end{itemize}
-
-\bigskip
-\noindent \textbf{Summary (compact):}
-\begin{itemize}
-  \item Using the simple sinc rule we need the nearest active carrier to be \(\approx 6\) subcarriers away for \(\ge 25\) dB and \(\approx 11\) for \(\ge 30\) dB.
-  \item \textbf{Local nulling}: active subcarriers \(=512-2\cdot\{6,11\}=\{500,490\}\).
-  \item \textbf{Edge nulling (guard bands)}: active subcarriers \(=512-2\cdot\{37,42\}=\{438,428\}\).
-\end{itemize}
-
-\medskip
-
-\vspace{0.5cm} %task3_4.m
+\vspace{0.5cm} %task3_3.m
 \textbf{Repeat the previous point if we want the PSD to fall at least 30 dB at $\pm 7$ MHz from the carrier frequency.
 }
 \vspace{0.5cm}
 
-Repeat the procedure, but increase $n_\text{null}$ until the PSD reaches $-30$~dB at $\pm7$~MHz:
-
+Repeating the procedure, the smallest $k$ for which the PSD reaches at least 30 dB attenuation at $\pm 7$ MHz is
 \[
-N_\text{usable,30dB} = N - n_\text{null,30dB}
+k = 247.
 \]
-
-Suppose simulation yields $n_\text{null,30dB}=120$, then
-
+Thus, the remaining number of available subcarriers is
 \[
-N_\text{usable,30dB} = 512 - 120 = 392
+N_{\text{active}} = 512 - 2k = 18.
 \]
-
-\textbf{Conclusion:}
-The stricter the out-of-band attenuation requirement, the more subcarriers must be nulled, reducing available data bandwidth.

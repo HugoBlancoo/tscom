@@ -1,8 +1,22 @@
-% minimal empirical check (replace your loop with this)
+clear; close all;
+
+N=512;
+delta_c = 31.250e3; % subcarrier_spacing in Hz
+prefix_redundancy = 0.0655; % 6.55%
+
+% random QPSK data symbols to modulate with OFDM
+rng(2025);                                  % Set seed for reproducibility
+M = 4;
+dataSymbols = randi([0 M-1], 10000, 1);     % Generate 10000 random QPSK symbols (0, 1, 2, 3)
+data = pskmod(dataSymbols, M, pi/M);        % QPSK modulation
+OF = 2;
+Lc = round(prefix_redundancy * N);
+data = data.';
 P = 150; gtx = srrc(0, P, OF); Lg = length(gtx); delay = floor((Lg-1)/2);
 Fs = OF * N * delta_c;
 
-k_list = [0, 10, 20, 30, 40, 50, 100];
+%k_list = [0, 10, 20, 30, 40, 50, 100, 150, 200, 225, 230, 250];
+k_list = 225:230;
 figure; hold on; colors = lines(length(k_list)); % for overplot option
 
 for ii = 1:length(k_list)

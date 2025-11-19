@@ -1,38 +1,60 @@
 function data = OFDMdem(r, N, Lc, OF, H, nullpos)
 
+% function [data, H] = OFDMdem(r, N, Lc, OF, H, nullpos)
+%
+% Simulates OFDM modulation
+% Input: 
+%  r       = row vector with received signal samples 
+%               ( OF*(N+Lc) samples/OFDM symbol )
+%  N       = IFFT size
+%  Lc      = length of cyclic prefix, in samples
+%  OF      = oversampling factor
+%  H       = column vector with frequency response of channel, to be used in FEQ
+%  nullpos = vector with indices (within 1:N) of null subcarriers
+% If the number of received samples (after taking into account the delays 
+% of the pulse-shaping and matched filters) is not an integer multiple of 
+% N+Lc, the last samples will be discarded. 
+% Output:
+%  data = row vector with demodulated data (data in null subcarriers is discarded)
+
 if nargin==5
-    datapos = (1:N);
+    K = 0; 
+    datapos = [1:N];
 else
-    datapos = setdiff(1:N, nullpos);
+    K = length(nullpos);                % no. of null subcarriers
+    datapos = setdiff([1:N], nullpos);  % indices of data subcarriers
 end
 
-%% === 1. Filtering and downsampling (matched filter) ===
+%% Filtering and downsampling
 P = 150;
 pulse = srrc(0, P, OF);
 rxsig = filter(pulse,1,r);
+% throw away initial samples due to filter delay
+rxdec = rxsig(2*P*OF+1:OF:end);   % Decimación (resuelve el retardo y el sobremuestreo)
 
-% Remove matched filter delay:
-rxdec = rxsig(2*P*OF+1 : OF : end);   % take every OF-th sample
+%% Format data for processing
+% Calcular el número de símbolos OFDM recibidos completos:
+Lsymb = N + Lc;
+Nsymbols = floor(length(rxdec)/Lsymb);
+rxdec = rxdec(1:Nsymbols * Lsymb);              % Descarta muestras incompletas
+rxmat = reshape(rxdec, Lsymb, Nsymbols).';      % Un símbolo por fila
 
-%% === 2. Format data: reshape into OFDM symbols (N+Lc samples each) ===
-sym_len = N + Lc;
-num_syms = floor(length(rxdec) / sym_len);
+%% Discard cyclic prefix
+rxmat_noCP = rxmat(:, Lc+1:end);                % Quita el prefijo cíclico de cada símbolo
 
-rxdec = rxdec(1 : num_syms * sym_len); % remove trailing incomplete part
-rx_blocks = reshape(rxdec, sym_len, num_syms);  % (N+Lc)-by-num_syms
+%% N-point FFT (obtiene dominio de frecuencia)
+Si_n = fft(rxmat_noCP, N, 2);                   % Analiza cada símbolo
 
-%% === 3. Remove cyclic prefix ===
-rx_noCP = rx_blocks(Lc+1 : Lc+N, :);   % N-by-num_syms
+%% Frequency domain equalizer (FEQ)
+% Divide cada subportadora por la respuesta del canal, por símbolo:
+Si_eq = Si_n ./ H.';                            % H es columna, transpón para broadcasting
 
-%% === 4. N-point FFT ===
-Y = fft(rx_noCP, N, 1);   % FFT column-wise (per OFDM symbol)
+%% Discard null subcarriers
+Si_data = Si_eq(:,datapos);                     % Solo subportadoras útiles
 
-%% === 5. Frequency domain equalizer (Zero-Forcing) ===
-H = H(:);   % ensure column vector
-S_hat = Y ./ H;     % ZF equalization (channel known exactly)
+%% Parallel to serial
+% Recupera el vector original de datos en fila
 
-%% === 6. Remove null subcarriers and serialize ===
-data_blocks = S_hat(datapos, :);       % keep only data subcarriers
-data = data_blocks(:).';               % P-to-S: return row vector
+data = reshape(Si_data.', 1, []);
 
 end

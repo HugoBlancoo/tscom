@@ -8,13 +8,13 @@ prefix_redundancy = 0.0655; % 6.55%
 rng(2025);                                  % Set seed for reproducibility
 M = 4;
 dataSymbols = randi([0 M-1], 10000, 1);     % Generate 10000 random QPSK symbols (0, 1, 2, 3)
-data = pskmod(dataSymbols, M, pi/M);        % QPSK modulation
-scatterplot(awgn(data.',20))
+txSig = pskmod(dataSymbols, M, pi/M);        % QPSK modulation
+scatterplot(awgn(txSig,20))
 
 OF = 2;
 Lc = round(prefix_redundancy * N);
 
-data = data.';
+data = txSig.';
 [x, u, w] = OFDMmod(data, N, Lc, OF);
 
 Fs = OF * N * delta_c;       % frecuencia de muestreo tras oversampling y filtro

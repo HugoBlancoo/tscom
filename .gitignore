@@ -7,4 +7,5 @@
 *.pdf
 Teoria
 *.gz
+*.synctex(busy)
 *.asv
