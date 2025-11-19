@@ -1,4 +1,4 @@
-Implementation of the OFDM demodulator as described above and in Fig.~\ref{ofdm_demodulator_block_diagram}.
+Implementation of the OFDM demodulator as described above and in Fig~\ref{ofdm_demodulator_block_diagram}.
 
 \begin{figure}[H]
     \centering
@@ -91,4 +91,4 @@ The improvement occurs because edge subcarriers are more affected by spectral le
 }
 \vspace{0.5cm}
 
-Points near the origin occur because both padded samples and nulled appear as zero-valued constellation points. These artifacts do not correspond to actual transmitted data symbols and should be ignored (or deleting) when analyzing the constellation.
+Points near the origin occur because zero-padding and nulled subcarriers propagate through the OFDM chain unchanged. When the input data length is not a multiple of the number of active subcarriers, zeros are appended to complete the last OFDM block. These zero-valued subcarriers appear as a small cluster around (0,0) in the constellation, but they do not correspond to transmitted data symbols.
