@@ -1,0 +1,476 @@
+\appendix
+\section{Appendix: MATLAB scripts and data}
+\label{app:matlab}
+
+\subsection{Task 1}
+\subsubsection{task1\_3.m}
+
+
+\begin{lstlisting}[language=Matlab]
+    A = 1;
+    w0 = pi/2;
+    omega = linspace(-pi, pi, 2000);
+
+    W_of = @(w) ( (abs(w) <= w0) .* ( A .* (1 - abs(w)/w0) ) );
+
+    W = W_of(omega);
+
+    Lvals = [2, 3];
+
+    figure('Units','normalized','Position',[0.1 0.1 0.6 0.7]);
+    subplot(3,1,1);
+    plot(omega, W, 'LineWidth', 1.5);
+    xlim([-pi pi]); ylim([0 1.05*A]);
+    xlabel('$\omega (rad/sample)$','Interpreter','latex');
+    ylabel('$W(e^{j\omega})$','Interpreter','latex');
+    title('Original spectrum $W(e^{j\omega})$','Interpreter','latex');
+    grid on;
+
+    for i=1:length(Lvals)
+        L = Lvals(i);
+        omegaL = omega * L;
+        omegaL_wrapped = mod(omegaL + pi, 2*pi) - pi;
+        Wbar = W_of(omegaL_wrapped);
+
+        subplot(3,1,i+1);
+        plot(omega, Wbar, 'LineWidth', 1.5);
+        xlim([-pi pi]); ylim([0 1.05*A]);
+        xlabel('$\omega (rad/sample)$','Interpreter','latex');
+        ylabel(['$\bar{W}(e^{j\omega})$, $L=' num2str(L) '$'],'Interpreter','latex');
+        title(['Spectrum $\bar{W}(e^{j\omega}) = W(e^{j\omega ' num2str(L) '})$, $L=' num2str(L) '$'],...
+            'Interpreter','latex');
+        grid on;
+    end
+
+\end{lstlisting}
+
+\subsubsection{task1\_4.m}
+
+\begin{lstlisting}[language=Matlab]
+    clear; close all; clc;
+
+    Ls = [2 3];
+    order = 80;
+    window = @hamming;
+    nfft = 8192;
+    omega = linspace(-pi, pi, nfft);
+
+    figure('Units','normalized','Position',[0.1 0.1 0.7 0.8]);
+
+    for k = 1:length(Ls)
+        L = Ls(k);
+        Wn = 1/L;
+        
+        h = fir1(order, Wn, window(order+1));
+        
+        H = fftshift(fft(h, nfft));
+        Hmag = abs(H);
+        Hdb  = 20*log10(max(Hmag,1e-12));
+        
+        subplot(3,1,k);
+        plot(omega, Hmag, 'LineWidth', 1.6); hold on;
+        yyaxis right;
+        plot(omega, Hdb, '--', 'LineWidth', 1);
+        yyaxis left;
+        
+        xline(-pi/L, '--k', 'LineWidth', 1);
+        xline( pi/L, '--k', 'LineWidth', 1);
+        
+        xlabel('$\omega$ (rad/sample)','Interpreter','latex');
+        yyaxis left; ylabel('$|G_{TX}(e^{j\omega})|$','Interpreter','latex');
+        yyaxis right; ylabel('Magnitude (dB)','Interpreter','latex');
+        title(['$G_{TX}(e^{j\omega})$ for $L = ', num2str(L), '$'],'Interpreter','latex');
+        xlim([-pi pi]); grid on;
+        legend({'Linear magnitude','Magnitude (dB)','$\omega_c = \pm \pi/L$'},...
+            'Interpreter','latex','Location','best');
+    end
+
+    subplot(3,1,3);
+    colors = {'b','r'};
+    for k = 1:length(Ls)
+        L = Ls(k);
+        h = fir1(order, 1/L, window(order+1));
+        H = fftshift(fft(h, nfft));
+        plot(omega, abs(H), 'LineWidth', 1.8, 'Color', colors{k}); hold on;
+        xline(-pi/L, '--', 'Color', colors{k}, 'HandleVisibility','off');
+        xline( pi/L, '--', 'Color', colors{k}, 'HandleVisibility','off');
+    end
+    xlabel('$\omega$ (rad/sample)','Interpreter','latex');
+    ylabel('$|G_{TX}(e^{j\omega})|$','Interpreter','latex');
+    title('Overlay of $G_{TX}(e^{j\omega})$ for $L=2$ and $L=3$','Interpreter','latex');
+    legend({'$L=2$','$L=3$'},'Interpreter','latex','Location','best');
+    xlim([-pi pi]); ylim([0 1.1]);
+    grid on;
+\end{lstlisting}
+
+\subsection{Task 3}
+\subsubsection{task3\_1.m}
+
+\begin{lstlisting}[language=Matlab]
+    close all;
+
+    N=512;
+    delta_c = 31.250e3;
+    prefix_redundancy = 0.0655;
+
+    rng(2025);
+    M = 4;
+    dataSymbols = randi([0 M-1], 10000, 1);
+    txSig = pskmod(dataSymbols, M, pi/M);
+    scatterplot(awgn(txSig,20))
+
+    OF = 2;
+    Lc = round(prefix_redundancy * N);
+
+    data = txSig.';
+    [x, u, w] = OFDMmod(data, N, Lc, OF);
+
+    Fs = OF * N * delta_c;
+
+    figure;
+    pwelch(x, 512, [], 512, Fs);
+
+    figure;
+    pwelch(x, 512, [], 512, Fs, 'centered')
+
+    [Px, f] = pwelch(x, 512, [], 512, Fs, 'centered');
+    [Pu, f2] = pwelch(sqrt(OF)*u, 512, [], 512, Fs, 'centered');
+    figure;
+    plot(f, 10*log10(Px)); hold on;
+    plot(f2, 10*log10(Pu));
+    grid on;
+
+    xlabel('Frequency (Hz)');
+    ylabel('Power/frequency (dB/Hz)');
+    legend('PSD of x', 'PSD of sqrt(OF)*u');
+    title('PSD comparison on the same axis');
+
+    P = 150;
+    gtx = srrc(0, P, OF);
+    figure;
+    freqz(gtx, 1, 2048, Fs);
+    grid on;
+\end{lstlisting}
+
+\subsubsection{task3\_2.m}
+\begin{lstlisting}[language=Matlab]
+    
+    close all;
+
+    N=512;
+    delta_c = 31.250e3; % subcarrier_spacing in Hz
+    prefix_redundancy = 0.0655; % 6.55%
+
+    % random QPSK data symbols to modulate with OFDM
+    rng(2025);                                  % Set seed for reproducibility
+    M = 4;
+    dataSymbols = randi([0 M-1], 10000, 1);     % Generate 10000 random QPSK symbols (0, 1, 2, 3)
+    txSig = pskmod(dataSymbols, M, pi/M);        % QPSK modulation
+    scatterplot(awgn(txSig,20))
+
+    OF = 3;
+    Lc = round(prefix_redundancy * N);
+
+    data = txSig.';
+    [x, u, w] = OFDMmod(data, N, Lc, OF);
+
+    Fs = OF * N * delta_c;       % frecuencia de muestreo tras oversampling y filtro
+
+    figure;
+    pwelch(x, 512, [], 512, Fs);
+
+    figure;
+    pwelch(x, 512, [], 512, Fs, 'centered')
+
+    %% With same X and Y axis
+    [Px, f] = pwelch(x, 512, [], 512, Fs, 'centered');
+    [Pu, f2] = pwelch(sqrt(OF)*u, 512, [], 512, Fs, 'centered');
+    figure;
+    plot(f, 10*log10(Px)); hold on;
+    plot(f2, 10*log10(Pu));
+    grid on;
+
+    xlabel('Frequency (Hz)');
+    ylabel('Power/frequency (dB/Hz)');
+    legend('PSD of x', 'PSD of sqrt(OF)*u');
+    title('PSD comparison on the same axis');
+
+    P = 150;
+    gtx = srrc(0, P, OF);
+    figure;
+    freqz(gtx, 1, 2048, Fs);
+    grid on;
+\end{lstlisting}
+
+\subsubsection{task3\_3.m}
+\begin{lstlisting}[language=Matlab]
+    clear; close all;
+
+    N=512;
+    delta_c = 31.250e3; % subcarrier_spacing in Hz
+    prefix_redundancy = 0.0655; % 6.55%
+
+    % random QPSK data symbols to modulate with OFDM
+    rng(2025);                                  % Set seed for reproducibility
+    M = 4;
+    dataSymbols = randi([0 M-1], 10000, 1);     % Generate 10000 random QPSK symbols (0, 1, 2, 3)
+    txSig = pskmod(dataSymbols, M, pi/M);        % QPSK modulation
+    OF = 2;
+    Lc = round(prefix_redundancy * N);
+    data = txSig.';
+
+    Fs = OF * N * delta_c;
+    %k_list = [0, 10, 20, 30, 40, 50, 100, 150, 200, 225, 230, 240, 250];
+    k_list = [235:240 245:250];
+
+    for k = k_list
+        nullpos = [1:k, N-k+1:N]; % null in the edges
+        [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos);
+
+        [Px, f] = pwelch(x, 512, [], 512, Fs, 'centered');
+        % figure;
+        % plot(f, 10*log10(Px));
+        % xlabel('Frequency (Hz)');
+        % ylabel('Power/frequency (dB/Hz)');
+
+        psd_peak = max(10*log10(Px));
+        idx_p7 = find(f>=7e6,1);
+        idx_m7 = find(f<=-7e6,1,'last');
+        psd_at_p7 = 10*log10(Px(idx_p7));
+        psd_at_m7 = 10*log10(Px(idx_m7));
+        att_p7 = psd_peak - psd_at_p7;
+        att_m7 = psd_peak - psd_at_m7;
+        fprintf('k = %d, Attenuation at +7MHz = %6.2f(dB/Hz), at -7MHz = %6.2f(dB/Hz), min = %6.2f\n',k,att_p7,att_m7,min(att_m7,att_p7));
+    end
+\end{lstlisting}
+
+\subsubsection{OFDMmod.m}
+
+\begin{lstlisting}[language=Matlab]
+    function [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos)
+
+    % function [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos)
+    %
+    % Simulates OFDM modulation
+    % Input: 
+    %  data    = row vector with (frequency-domain) data to be modulated
+    %  N       = IFFT size
+    %  Lc      = length of cyclic prefix, in samples
+    %  OF      = oversampling factor (sinc pulse shaping)
+    %  nullpos = vector with indices (within 1:N) of null subcarriers
+    % The data vector will be zero-padded if necessary in order to construct 
+    % an integer number of OFDM symbols.
+    % Output:
+    %  x = filtered   time domain samples ( OF*(N+Lc) samples per OFDM symbol )
+    %  u = unfiltered time domain samples ( OF*(N+Lc) samples per OFDM symbol )
+    %  w = time domain samples            (    (N+Lc) samples per OFDM symbol )
+
+    if nargin==4
+        K = 0; 
+        datapos = [1:N];
+    else
+        K = length(nullpos);                % no. of null subcarriers
+        datapos = setdiff([1:N], nullpos);  % indices of data subcarriers
+    end
+
+    Nu = N-K;   % No. of useful subcarriers
+
+    %% Format data for IFFT
+        % hint: you may want to use 'reshape'
+    Nsymbols = ceil( length(data) / Nu );
+
+    s_n = [data, zeros(1, Nsymbols * Nu - length(data))]; % relleno de 0s
+
+    data_blocks = reshape(s_n , Nu, Nsymbols).'; % S to P
+
+    si_n = zeros(Nsymbols, N);
+    si_n(:, datapos) = data_blocks;
+
+    %% N-point IFFT operation
+
+    % ifft(Y,[],2) devuelve la transformada de Fourier inversa de cada fila.
+    out_IFFT = ifft(si_n, N, 2);
+
+    %% Add Cyclic Prefix
+
+    CP = out_IFFT(:, end-Lc+1:end); % cogemos las ultimas Lc mustras
+    wi_n = [CP, out_IFFT];
+
+    %% Parallel to serial
+        % hint: you may want to use 'reshape'
+    w_n = reshape(wi_n.', 1, []);
+    w = w_n;
+
+    %% Upsample
+    u = zeros(1,OF*length(w));
+    u(1:OF:end) = w;
+
+    P = 150;
+    gtx = srrc(0, P, OF);
+    x = filter(gtx,1,u);
+\end{lstlisting}
+
+\subsection{Task 4}
+\subsection{task4\_1.m}
+\begin{lstlisting}[language=Matlab]
+    close all; clear;
+
+    N=512;
+    nullpos = [];
+    delta_c = 31.250e3; % subcarrier_spacing in Hz
+    prefix_redundancy = 0.0655; % 6.55%
+    OF = 2;
+    Lc = round(prefix_redundancy * N);
+
+    % random QPSK data symbols to modulate with OFDM
+    rng(2025);                              % Set seed for reproducibility
+    M = 4;
+    dataSymbols = randi([0 M-1], 10000, 1); % Generate 10000 random QPSK symbols (0, 1, 2, 3)
+    txSig = pskmod(dataSymbols, M, pi/M); % QPSK modulation
+    scatterplot(awgn(txSig,20));
+    hold on; grid on;
+
+    data = txSig.';
+
+    [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos);
+
+    dem_data = OFDMdem(x, N, Lc, OF, ones(N,1), nullpos);
+
+    scatter(real(dem_data), imag(dem_data));
+    legend('Transmitted QPSK', 'Received QPSK', 'Location', 'best');
+    title('QPSK Constellation: Transmitted vs Received');
+    xlabel('In-Phase');
+    ylabel('Quadrature');
+\end{lstlisting}
+
+\subsubsection{task4\_1\_16\_qam.m}
+\begin{lstlisting}[language=Matlab]
+    close all; clear;
+
+    N=512;
+    nullpos = [];
+    delta_c = 31.250e3; % subcarrier_spacing in Hz
+    prefix_redundancy = 0.0655; % 6.55%
+    OF = 2;
+    Lc = round(prefix_redundancy * N);
+
+    % random QPSK data symbols to modulate with OFDM
+    rng(2025);                              % Set seed for reproducibility
+    M = 16;
+    dataSymbols = randi([0 M-1], 10000, 1); % Generate 10000 random 16 QAM
+    txSig = qammod(dataSymbols, M, 'gray'); % 16 QAM modulation
+    scatterplot(awgn(txSig,20));
+    hold on; grid on;
+
+    data = txSig.';
+
+    [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos);
+
+    dem_data = OFDMdem(x, N, Lc, OF, ones(N,1), nullpos);
+
+    scatter(real(dem_data), imag(dem_data));
+    legend('Transmitted 16 QAM', 'Received 16 QAM', 'Location', 'best');
+    title('16-QAM Constellation: Transmitted vs Received');
+    xlabel('In-Phase');
+    ylabel('Quadrature');
+\end{lstlisting}
+
+\subsubsection{task4\_2.m}
+\begin{lstlisting}[language=Matlab]
+    close all; clear;
+
+    N=512;
+    delta_c = 31.250e3; % subcarrier_spacing in Hz
+    prefix_redundancy = 0.0655; % 6.55%
+    OF = 2;
+    Lc = round(prefix_redundancy * N);
+
+    % random QPSK data symbols to modulate with OFDM
+    rng(2025);                              % Set seed for reproducibility
+    M = 4;
+    dataSymbols = randi([0 M-1], 10000, 1); % Generate 10000 random QPSK symbols (0, 1, 2, 3)
+    txSig = pskmod(dataSymbols, M, pi/M); % QPSK modulation
+    scatterplot(awgn(txSig,20));
+    grid on;
+
+    data = txSig.';
+
+    Fs = OF * N * delta_c;
+    k_list = [0 5 20 40];% 60 80 100];
+
+    figure;
+    for i = 1:length(k_list)
+        k = k_list(i);
+        nullpos = [1:k, N-k+1:N]; % null in the edges
+
+        [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos);
+        dem_data = OFDMdem(x, N, Lc, OF, ones(N,1), nullpos);
+
+        subplot(2,2,i);
+        %figure;
+        scatter(real(dem_data), imag(dem_data));
+        grid on;
+        axis equal;
+        title(sprintf('k = %d', k));
+    end
+
+\end{lstlisting}
+
+\subsubsection{OFDMdem.m}
+\begin{lstlisting}[language=Matlab]
+    function data = OFDMdem(r, N, Lc, OF, H, nullpos)
+
+    % function [data, H] = OFDMdem(r, N, Lc, OF, H, nullpos)
+    %
+    % Simulates OFDM modulation
+    % Input: 
+    %  r       = row vector with received signal samples 
+    %               ( OF*(N+Lc) samples/OFDM symbol )
+    %  N       = IFFT size
+    %  Lc      = length of cyclic prefix, in samples
+    %  OF      = oversampling factor
+    %  H       = column vector with frequency response of channel, to be used in FEQ
+    %  nullpos = vector with indices (within 1:N) of null subcarriers
+    % If the number of received samples (after taking into account the delays 
+    % of the pulse-shaping and matched filters) is not an integer multiple of 
+    % N+Lc, the last samples will be discarded. 
+    % Output:
+    %  data = row vector with demodulated data (data in null subcarriers is discarded)
+
+    if nargin==5
+        K = 0; 
+        datapos = [1:N];
+    else
+        K = length(nullpos);                % no. of null subcarriers
+        datapos = setdiff([1:N], nullpos);  % indices of data subcarriers
+    end
+
+    %% Filtering and downsampling
+    P = 150;
+    pulse = srrc(0, P, OF);
+    rxsig = filter(pulse,1,r);
+    % throw away initial samples due to filter delay
+    rxdec = rxsig(2*P*OF+1:OF:end);
+
+    %% Format data for processing
+    Lsymb = N + Lc;
+    Nsymbols = floor(length(rxdec)/Lsymb);
+    rxdec = rxdec(1:Nsymbols * Lsymb);              % Descarta muestras incompletas
+    rxmat = reshape(rxdec, Lsymb, Nsymbols).';
+
+    rxmat_noCP = rxmat(:, Lc+1:end);
+
+    Si_n = fft(rxmat_noCP, N, 2);
+
+    Si_eq = Si_n ./ H.';
+
+    %% Discard null subcarriers
+    Si_data = Si_eq(:,datapos);
+
+    %% Parallel to serial
+    % Recupera el vector original de datos en fila
+
+    data = reshape(Si_data.', 1, []);
+
+    end
+\end{lstlisting}
