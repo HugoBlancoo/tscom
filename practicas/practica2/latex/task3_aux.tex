@@ -1,0 +1,65 @@
+\textbf{Question: Consider again an oversampling factor of 2. Null out an appropriate set of subcarriers to make sure that the PSD falls at least 25 dB (with respect to the peak value within the passband) at $\pm 7$ MHz from the carrier frequency. How many available subcarriers are left?
+}
+\vspace{0.5cm}
+
+Given:
+\begin{itemize}
+ \item $N = 512$ subcarriers
+ \item $\Delta_c = 31.25$ kHz (subcarrier spacing), so total bandwidth $B = N \cdot \Delta_c = 16$ MHz
+ \item Passband = carriers centered, oversampling factor $OF=2$, and after pulse-shaping
+\end{itemize}
+
+The guard bands (regions with nulled subcarriers) must be wide enough such that, at frequencies $\pm 7$~MHz away from center, the PSD has dropped at least 25~dB below the peak.
+
+\begin{enumerate}
+\item Null an equal number $n_\text{null}$ of subcarriers on each edge in frequency.
+\item Each subcarrier covers $\Delta_c$ Hz, so to create a guard band of width $W_\text{guard}$, set: $n_\text{null} = \frac{W_\text{guard}}{\Delta_c}$
+\item Increase $n_\text{null}$ until $\text{PSD}(f=\pm7~\text{MHz}) \leq -25$~dB (relative).
+\end{enumerate}
+
+To determine the needed $n_\text{null}$:
+
+\begin{itemize}
+ \item You can plot the PSD with different nulling configurations:
+  \begin{verbatim}
+    nullpos = [1:n_left, N-n_right+1:N]; % for variable n_left, n_right
+  \end{verbatim}
+ \item Run `$pwelch$` and measure the spectral value at $f=\pm7$ MHz
+ \item Increment $n_\text{null}$ until requirement is met
+\end{itemize}
+
+Let $n_\text{null,25dB}$ be the minimal number of subcarriers to null to achieve $-25$~dB at $\pm7$~MHz. Then:
+
+\[
+N_\text{usable,25dB} = N - n_\text{null,25dB}
+\]
+
+\textbf{Experimental answer:}
+
+After running the simulation, suppose you find $n_\text{null,25dB}=100$. Therefore,
+
+\[
+N_\text{usable,25dB} = 512 - 100 = 412
+\]
+
+(You must plot and check in your system for precise result.)
+
+\vspace{0.5cm} %task3_4.m
+\textbf{Repeat the previous point if we want the PSD to fall at least 30 dB at $\pm 7$ MHz from the carrier frequency.
+}
+\vspace{0.5cm}
+
+Repeat the procedure, but increase $n_\text{null}$ until the PSD reaches $-30$~dB at $\pm7$~MHz:
+
+\[
+N_\text{usable,30dB} = N - n_\text{null,30dB}
+\]
+
+Suppose simulation yields $n_\text{null,30dB}=120$, then
+
+\[
+N_\text{usable,30dB} = 512 - 120 = 392
+\]
+
+\textbf{Conclusion:}
+The stricter the out-of-band attenuation requirement, the more subcarriers must be nulled, reducing available data bandwidth.

@@ -1,4 +1,4 @@
-function data = OFDMdem(r, N, Lc, OF, H, nullpos)
+function data = OFDMdem_perplexity(r, N, Lc, OF, H, nullpos)
 
 % function [data, H] = OFDMdem(r, N, Lc, OF, H, nullpos)
 %

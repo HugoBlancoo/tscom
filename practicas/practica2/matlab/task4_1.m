@@ -1,5 +1,10 @@
 % generación TX
-x = OFDMmod(data, N, Lc, OF, nullpos);
+N = 4;
+Lc = 2;
+OF = 1;
+nullpos = [];
+data = [4 -1 4 -1 1 4i -1 2i];
+[x, u, w] = OFDMmod(data, N, Lc, OF, nullpos);
 
 % canal ideal
 H = ones(N,1);
