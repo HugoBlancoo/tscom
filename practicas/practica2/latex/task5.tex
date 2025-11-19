@@ -107,18 +107,28 @@ We extracted and plotted the symbols received on individual subcarriers $k=10$ a
 }
 \vspace{0.5cm}
 
-The correct \texttt{H} parameter is the frequency-domain representation of the multipath channel. It is computed as the $N$-point DFT of the zero-padded discrete-time channel impulse response:
+The \texttt{H} parameter is the frequency-domain representation of the channel:
 
 \[
-\texttt{H}[k] = \text{FFT}\{\tilde{h}[n]\} \quad k = 0, 1, \ldots, N-1
+H[k] = \text{DFT}_N\{\tilde{h}_{\text{sym}}[n]\}, \quad k = 0, 1, \ldots, N-1
 \]
 
+where $\tilde{h}_{\text{sym}}[n]$ represents the channel with delays $\{0, 2T, 3T, 4T\}$ converted to discrete samples at rate $1/T$.
 \vspace{0.5cm} %task5_5.m
 \textbf{Question: Plot now the demodulated data in the I/Q plane (1 dot per symbol) and comment on your observations. Is equalization something that we can neglect at the receiver?
 }
 \vspace{0.5cm}
 
-COMPLETAR
+With perfect channel knowledge and equalization, Figure~\ref{task5_constellation_perfect_eq} shows the recovered constellation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/task5_constellation_perfect_eq.png}
+    \caption{Received 16-QAM constellation with perfect equalization.}
+    \label{task5_constellation_perfect_eq}
+\end{figure}
+
+The constellation is perfectly recovered. All 16 symbols are tightly clustered at their ideal positions, demonstrating that equalization is \textbf{absolutely essential}. Without it, symbols are unintelligible (as seen earlier). Proper channel estimation and equalization are critical for reliable OFDM reception in frequency-selective channels.
 
 \vspace{0.5cm} %task5_6.m
 \textbf{Question: Consider now the following channel:
@@ -129,4 +139,15 @@ Set {\tt P = 150}, and plot again the demodulated data in the I/Q plane (1 dot p
 }
 \vspace{0.5cm}
 
-COMPLETAR
+We simulated the same OFDM system with this three-path channel. After computing the correct frequency-domain channel response and applying equalization, Figure~\ref{task5_6_constellation} shows the received constellation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/task5_6_constellation.png}
+    \caption{Received 16-QAM constellation with equalization (simplified channel).}
+    \label{task5_6_constellation}
+\end{figure}
+
+The constellation is well-recovered with clear clustering around the 16 ideal points. The blue dots form tight groups centered at the red ideal symbols, confirming that equalization effectively compensates for the multipath channel.
+
+\textbf{Conclusion:} Even with a simplified channel (real-valued taps, fewer paths), frequency-domain equalization successfully recovers the transmitted symbols. This demonstrates OFDM's robustness with proper equalization.

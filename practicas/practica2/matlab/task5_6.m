@@ -15,7 +15,6 @@ M = 16;
 dataSymbols = randi([0 M-1], 10000, 1); % Generate 10000 random 16 QAM symbols
 txSig = qammod(dataSymbols, M, 'UnitAveragePower', true); % 16 QAM modulation
 %scatterplot(awgn(txSig,20));hold on; grid on;
-
 data = txSig.';
 
 [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos);
@@ -24,15 +23,20 @@ data = txSig.';
 tau_symbol_rate = [0, 5, 10]; % Porque son 0, 5T, 10T
 alpha = [1, -0.8, 0.7];
 
-% Creamos el canal equivalente h[n] (a tasa de símbolo)
+% Creamos el canal equivalente h[n] (a tasa de símbolo) para H
 h_eff = zeros(1, 11); % Longitud máxima es 10, +1 por índice 1 de Matlab
 h_eff(tau_symbol_rate + 1) = alpha;
 
 % Ahora calculamos la H correcta para el ecualizador (tamaño N=64)
 H = fft(h_eff, N).'; 
 
+% Canal físico para la transmisión (oversampled) para generar z
+delay_samples_Fs = tau_symbol_rate * OF;
+h_physical = zeros(1, max(delay_samples_Fs) + 1);
+h_physical(delay_samples_Fs + 1) = alpha;
+
 % Received signal
-z = conv(x, H);
+z = conv(x, h_physical);
 
 % Demodulate with equalization
 dem_data = OFDMdem(z, N, Lc, OF, H, nullpos);
@@ -48,6 +52,6 @@ axis equal;
 
 % Ideal constellation for reference
 hold on;
-ideal_qam = qammod(0:15, 16);
+ideal_qam = qammod(0:15, 16, 'UnitAveragePower', true);
 scatter(real(ideal_qam), imag(ideal_qam), 100, 'r', 'x', 'LineWidth', 2);
 legend('Received (with EQ)', 'Ideal 16-QAM', 'Location', 'best');

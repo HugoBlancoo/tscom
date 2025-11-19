@@ -15,7 +15,6 @@ M = 16;
 dataSymbols = randi([0 M-1], 10000, 1); % Generate 10000 random 16 QAM symbols
 txSig = qammod(dataSymbols, M, 'UnitAveragePower', true); % 16 QAM modulation
 %scatterplot(awgn(txSig,20));hold on; grid on;
-
 data = txSig.';
 
 [x, u, w] = OFDMmod(data, N, Lc, OF, nullpos);
@@ -29,19 +28,24 @@ phi = [0, -pi/2, pi/4, pi/2];          % Phases
 % Convert to complex channel taps
 h_tilde = alpha .* exp(1j * phi);
 
-% Convert delays to sample indices at rate Fs
-delay_samples = round(tau * Fs);
+% Convert delays to sample indices at rate Fs (Oversampled)
+delay_samples_Fs = round(tau * Fs);
 
-% Create discrete-time channel impulse response
-max_delay = max(delay_samples);
-h_tilde_discrete = zeros(1, max_delay + 1);
-h_tilde_discrete(delay_samples + 1) = h_tilde;
+% Create discrete-time channel impulse response (High Res)
+max_delay_Fs = max(delay_samples_Fs);
+h_physical = zeros(1, max_delay_Fs + 1);
+h_physical(delay_samples_Fs + 1) = h_tilde;
+z = conv(x, h_physical);
 
-z = conv(x, h_tilde_discrete);
+% El receptor "inteligente" ve el canal a tasa de símbolo (1/T)
+% Convertimos los retardos a muestras enteras de símbolo:
+delay_samples_symbol = round(tau / T); % [0, 2, 3, 4]
+% Creamos la respuesta impulsiva discreta a tasa de símbolo
+h_eff = zeros(1, max(delay_samples_symbol) + 1);
+h_eff(delay_samples_symbol + 1) = h_tilde;
 
-% Pad h_tilde_discrete to length N for the FFT
-h_tilde_padded = [h_tilde_discrete, zeros(1, N - length(h_tilde_discrete))];
-H = fft(h_tilde_padded, N).';
+% Compute correct H[k] for the equalizer
+H = fft(h_eff, N).';
 
 dem_data_correct = OFDMdem(z, N, Lc, OF, H, nullpos);
 
@@ -51,11 +55,5 @@ scatter(real(dem_data_correct), imag(dem_data_correct), 10, 'b', 'filled', 'Mark
 grid on;
 xlabel('In-Phase');
 ylabel('Quadrature');
-title('Received 16-QAM Constellation - With Equalization');
+title('Received 16-QAM Constellation - With Perfect Equalization');
 axis equal;
-
-% For comparison: plot ideal 16-QAM constellation
-hold on;
-ideal_qam = qammod(0:15, 16);
-scatter(real(ideal_qam), imag(ideal_qam), 100, 'r', 'x', 'LineWidth', 2);
-legend('Received (with EQ)', 'Ideal 16-QAM', 'Location', 'best');
