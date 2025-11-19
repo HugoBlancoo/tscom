@@ -14,8 +14,7 @@ rng(2025);                              % Set seed for reproducibility
 M = 16;
 dataSymbols = randi([0 M-1], 10000, 1); % Generate 10000 random 16 QAM symbols
 txSig = pskmod(dataSymbols, M, pi/M); % 16 QAM modulation
-scatterplot(awgn(txSig,20));
-hold on; grid on;
+%scatterplot(awgn(txSig,20));hold on; grid on;
 
 data = txSig.';
 
@@ -40,10 +39,32 @@ for i = 1:length(tau)
     h_tilde_discrete(delay_samples(i) + 1) = h_tilde(i);
 end
 
-%% Generate received signal z(t) at receiver (no noise)
-% z(t) = x(t) * h_tilde(t)
-
 z = conv(x, h_tilde_discrete);
-length(x)
-length(h_tilde_discrete)
-length(z)
+
+dem_data = OFDMdem(z, N, Lc, OF, ones(N, 1), nullpos);
+
+%% Plot demodulated data for specific subcarriers (no equalization)
+k1 = 10;
+idx_k10 = k1:N:length(dem_data);
+symbols_k10 = dem_data(idx_k10);
+
+k2 = 46;
+idx_k46 = k2:N:length(dem_data);
+symbols_k46 = dem_data(idx_k46);
+
+figure;
+subplot(1,2,1);
+scatter(real(symbols_k10), imag(symbols_k10), 10, 'g', 'filled', 'MarkerFaceAlpha', 0.5);
+grid on;
+xlabel('In-Phase');
+ylabel('Quadrature');
+title(sprintf('Subcarrier k=%d', k1));
+axis equal;
+
+subplot(1,2,2);
+scatter(real(symbols_k46), imag(symbols_k46), 10, 'y', 'filled', 'MarkerFaceAlpha', 0.5);
+grid on;
+xlabel('In-Phase');
+ylabel('Quadrature');
+title(sprintf('Subcarrier k=%d', k2));
+axis equal;

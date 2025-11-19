@@ -7,7 +7,7 @@ Consider the channel
     \{\alpha_1,\ldots,\alpha_4\}   & = & \{1, 0.7, 0.4, 0.5\}                                \\
     \{\phi_1,\ldots,\phi_4\}       & = & \{0, -\frac{\pi}{2}, \frac{\pi}{4}, \frac{\pi}{2}\}\end{array}\right.
 \end{equation}
-
+\vspace{0.5cm} %task5_1.m
 \textbf{Question: Assuming a sampling rate of $10/T$ Hz, generate a vector {\tt heq} of samples of $h(t) = g_{\rm TX}(t) \star \tilde h(t) \star g_{\rm RX}(t)$.  Compute the FFT  {\tt Heq = fft(heq,8192)} and plot its magnitude by means of {\tt plot(linspace(-20,20,8192), 20*log10(abs(fftshift(Heq))))}. Zoom in on the OFDM signal bandwidth.  Comment on the results. Is the effective channel frequency-flat within the passband? What is the largest difference (in dB) between passband points of the channel transfer function's magnitude?
 }
 \vspace{0.5cm}
@@ -21,26 +21,26 @@ The OFDM system uses $N=64$ subcarriers with spacing $\Delta_c = 62.5$ kHz, resu
         \centering
         \includegraphics[width=\linewidth]{img/task5_1_Heq_magnitude.png}
         \caption{Full frequency response (±20 MHz).}
-        \label{fig:task5_full}
+        \label{task5_1_Heq_magnitude}
     \end{minipage}
     \hfill
     \begin{minipage}{0.49\textwidth}
         \centering
         \includegraphics[width=\linewidth]{img/task5_1_zoom.png}
         \caption{Zoomed to OFDM passband (±2 MHz).}
-        \label{fig:task5_zoom}
+        \label{task5_1_zoom}
     \end{minipage}
 \end{figure}
 
-Figure~\ref{fig:task5_full} shows the magnitude response of the equivalent channel across a ±20 MHz span. The response exhibits the characteristic shape of a pulse-shaping filter combined with multipath effects, with maximum energy concentrated near the center frequency.
+Figure~\ref{task5_1_Heq_magnitude} shows the magnitude response of the equivalent channel across a ±20 MHz span. The response exhibits the characteristic shape of a pulse-shaping filter combined with multipath effects, with maximum energy concentrated near the center frequency.
 
-Figure~\ref{fig:task5_zoom} focuses on the OFDM passband (4 MHz bandwidth). The plot reveals that the channel response is \textbf{not frequency-flat} within the passband. Significant magnitude variations are visible across the band, indicating frequency-selective fading caused by the multipath propagation.
+Figure~\ref{task5_1_zoom} focuses on the OFDM passband (4 MHz bandwidth). The plot reveals that the channel response is \textbf{not frequency-flat} within the passband. Significant magnitude variations are visible across the band, indicating frequency-selective fading caused by the multipath propagation.
 
 \textbf{Quantitative Analysis:} The peak-to-peak magnitude variation within the OFDM passband is \textbf{26.71 dB}, with a maximum of 27.48 dB and a minimum of 0.77 dB. This large variation confirms that the channel is strongly \textbf{frequency-selective}, meaning different subcarriers experience substantially different channel gains.
 
 \textbf{Conclusion:} The multipath channel introduces severe frequency selectivity across the OFDM band (26.71 dB variation). This justifies the need for per-subcarrier frequency-domain equalization (FEQ) in the OFDM receiver. Without equalization, subcarriers experiencing deep fades (near 0.77 dB) would suffer severe distortion, while others at the peak (27.48 dB) would be received with much higher power. The FEQ compensates for these differences by dividing each received subcarrier by its corresponding channel gain $H[k]$, enabling reliable symbol recovery across all subcarriers.
 
-\vspace{0.5cm}
+\vspace{0.5cm} %task5_2.m
 \textbf{Question: Assuming no noise, generate the samples (at $10/T$ samples/s) of the signal $z(t)$ at the receiver.
 }
 \vspace{0.5cm}
@@ -52,40 +52,75 @@ Figure~\ref{fig:task5_zoom} focuses on the OFDM passband (4 MHz bandwidth). The 
     \label{LTI_channel}
 \end{figure}
 
-The received signal $z(t)$ is obtained by convolving the transmitted signal $x(t)$ with the multipath channel impulse response $\tilde{h}(t)$:
+Since there ir no noise the received signal $z(t)$ is obtained by convolving the transmitted signal $x(t)$ with the multipath channel impulse response $\tilde{h}(t)$:
 \[
 z(t) = x(t) \star \tilde{h}(t)
 \]
 
-\vspace{0.5cm}
-\textbf{Question: Suppose that the receiver wrongly assumes that the channel is not frequency-selective, i.e., set the parameter {\tt channel = 1} when you call {\tt OFDMdem.m} . Plot all the demodulated data (i.e., the recovered QAM symbols) in the I/Q plane (1 dot per symbol) and comment on your observations.
+\vspace{0.5cm} %task5_3.m
+\textbf{Question: Suppose that the receiver wrongly assumes that the channel is not frequency-selective, i.e., set the parameter {\tt channel = 1} when you call {\tt OFDMdem.m}. Plot all the demodulated data (i.e., the recovered QAM symbols) in the I/Q plane (1 dot per symbol) and comment on your observations.
 }
 \vspace{0.5cm}
 
-COMPLETAR
+We demodulated the received signal assuming an ideal flat channel (no equalization). Figure~\ref{task5_3_rx_16_qam} shows the resulting constellation compared to the ideal 16-QAM constellation.
 
-\vspace{0.5cm}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/task5_3_rx_16_qam.png}
+    \caption{Received 16-QAM constellation without equalization (blue dots) vs. ideal constellation (red crosses).}
+    \label{task5_3_rx_16_qam}
+\end{figure}
+
+\textbf{Observations:} The received constellation is completely distorted. The blue dots are spread throughout the I/Q plane and heavily overlap, making it impossible to distinguish between the 16 intended constellation points (marked by red crosses). The symbols are scattered, rotated, and scaled unpredictably.
+
+\textbf{Conclusion:} Without correcting for the channel's frequency-selective effects, the receiver cannot recover the transmitted symbols. This demonstrates that equalization is essential when the channel is not flat.
+
+\vspace{0.5cm} %task5_4.m
 \textbf{Question: In a different figure, plot again the demodulated data, but only those received on subcarrier $k=10$. Repeat for subcarrier $k=46$. Comment on your results.
 }
 \vspace{0.5cm}
 
-COMPLETAR
+We extracted and plotted the symbols received on individual subcarriers $k=10$ and $k=46$ (without equalization).
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/task5_3_k_10.png}
+        \caption{Data on subcarrier $k=10$.}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/task5_3_k_46.png}
+        \caption{Data on subcarrier $k=46$.}
+    \end{minipage}
+    \label{task5_3_subcarriers}
+\end{figure}
+
+\textbf{Observations:} Both subcarriers show scattered constellations with no clear 16-QAM structure. However, the patterns differ between the two: subcarrier $k=10$ shows more dispersed points, while $k=46$ exhibits a slightly different spread and orientation. This difference reflects the fact that each subcarrier experiences a different channel gain and phase due to the frequency-selective nature of the multipath channel.
+
+\textbf{Conclusion:} Different subcarriers suffer different levels of distortion, confirming that the channel is frequency-selective and reinforcing the need for per-subcarrier equalization.
 
 \vspace{0.5cm}
 \textbf{Question: Now suppose that the receiver is smarter, and has somehow estimated the channel perfectly. Given the $\tilde h(t)$ above, which is the value of the {\tt H} parameter that you should pass to {\tt OFDMdem}?
 }
 \vspace{0.5cm}
 
-COMPLETAR
+The correct \texttt{H} parameter is the frequency-domain representation of the multipath channel. It is computed as the $N$-point DFT of the zero-padded discrete-time channel impulse response:
 
-\vspace{0.5cm}
+\[
+\texttt{H}[k] = \text{FFT}\{\tilde{h}[n]\} \quad k = 0, 1, \ldots, N-1
+\]
+
+\vspace{0.5cm} %task5_5.m
 \textbf{Question: Plot now the demodulated data in the I/Q plane (1 dot per symbol) and comment on your observations. Is equalization something that we can neglect at the receiver?
 }
 \vspace{0.5cm}
 
 COMPLETAR
 
-\vspace{0.5cm}
+\vspace{0.5cm} %task5_6.m
 \textbf{Question: Consider now the following channel:
 \begin{equation}
 \tilde h(t) = \delta(t) -0.8\delta(t-5T) +0.7\delta(t-10T).

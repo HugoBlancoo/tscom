@@ -14,8 +14,7 @@ rng(2025);                              % Set seed for reproducibility
 M = 16;
 dataSymbols = randi([0 M-1], 10000, 1); % Generate 10000 random 16 QAM symbols
 txSig = pskmod(dataSymbols, M, pi/M); % 16 QAM modulation
-scatterplot(awgn(txSig,20));
-hold on; grid on;
+%scatterplot(awgn(txSig,20));hold on; grid on;
 
 data = txSig.';
 
@@ -40,10 +39,21 @@ for i = 1:length(tau)
     h_tilde_discrete(delay_samples(i) + 1) = h_tilde(i);
 end
 
-%% Generate received signal z(t) at receiver (no noise)
-% z(t) = x(t) * h_tilde(t)
-
 z = conv(x, h_tilde_discrete);
-length(x)
-length(h_tilde_discrete)
-length(z)
+
+dem_data = OFDMdem(z, N, Lc, OF, ones(N, 1), nullpos);
+
+%% Plot received constellation without equalization
+figure;
+scatter(real(dem_data), imag(dem_data), 10, 'b', 'filled', 'MarkerFaceAlpha', 0.5);
+grid on;
+xlabel('In-Phase');
+ylabel('Quadrature');
+title('Received 16-QAM Constellation - No Equalization (H=1)');
+axis equal;
+
+%% For comparison: plot ideal 16-QAM constellation
+hold on;
+ideal_qam = qammod(0:15, 16);
+scatter(real(ideal_qam), imag(ideal_qam), 100, 'r', 'x', 'LineWidth', 2);
+legend('Received (no EQ)', 'Ideal 16-QAM', 'Location', 'best');
