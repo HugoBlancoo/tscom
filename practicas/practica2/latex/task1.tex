@@ -17,7 +17,29 @@ by taking one sample out of every $L$ samples (i.e., by discarding the inserted 
 \noindent\textbf{Question: Show that if the Discrete-Time Fourier Transform (DTFT) of $w[n]$ is $W(e^{j\omega})$, then the DTFT of $\bar w[n]$ in (see \eqref{eq:upsample}) is $\bar W(e^{j\omega}) = W(e^{j\omega L})$.}
 \vspace{0.5cm}
 
-COMPLETAR
+The DTFT of the downsampled sequence $\overline{w}[n]$ is defined as:
+\[
+\overline{W}(e^{j\omega}) = \sum_{n=-\infty}^{\infty} \overline{w}[n]\, e^{-j\omega n}.
+\]
+
+The sequence $\overline{w}[n]$ is nonzero only when $n = kL$, where $k \in \mathbb{Z}$.  
+In those points we have $\overline{w}[kL] = w[k]$.  
+Replacing $n$ with $kL$ and changing the summation index from $n$ to $k$, we get:
+\[
+\overline{W}(e^{j\omega}) 
+= \sum_{k=-\infty}^{\infty} \overline{w}[kL]\, e^{-j\omega (kL)}.
+\]
+
+Substituting $\overline{w}[kL] = w[k]$:
+\[
+\overline{W}(e^{j\omega})
+= \sum_{k=-\infty}^{\infty} w[k]\, e^{-j(\omega L)k}.
+\]
+
+We recognize this last expression as the DTFT of the original sequence $w[k]$, with the frequency substitution $\Omega = \omega L$:
+\[
+\overline{W}(e^{j\omega}) = W(e^{j\omega L}).
+\]
 
 \vspace{1cm}
 \noindent\textbf{Question: Let $A>0$ and $\omega_0 = \frac{\pi}{2}$, and consider
