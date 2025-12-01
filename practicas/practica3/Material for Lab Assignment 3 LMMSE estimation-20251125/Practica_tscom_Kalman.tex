@@ -1,0 +1,301 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage[latin1]{inputenc}
+%\usepackage[spanish]{babel}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{multirow}
+
+%\spanishdecimal{.}
+
+\topmargin 0truein
+\topskip 0truein
+\headheight 0truein
+\headsep 0.5truein
+%\footheight 0truein
+\oddsidemargin 0.0in
+\evensidemargin 0.0in
+\textwidth 6.5in
+\textheight 8in
+
+\newenvironment{algorithm}[1]
+{\vspace{0.3in}
+\begin{center}
+\parbox{6in}{#1}
+\end{center}
+\vspace{0.15in}
+\hrule
+\begin{enumerate}}{
+\end{enumerate}
+\hrule
+\vspace{0.3in}}
+
+\newenvironment{program}[1]
+{
+\vspace{0.2in}
+\hrule
+\vspace{0.1in}
+\begin{center}
+\parbox{6in}{\sf #1}
+\end{center}
+\vspace{-0.05in}
+\hrule
+\vspace{-0.05in}
+\begin{tabbing}}
+{\end{tabbing}
+\vspace{-0.1in}
+\hrule
+\vspace{0.2in}
+}
+
+\newcounter{ntask}
+\newtheorem{task}[ntask]{$\Box$ Task}
+\newenvironment{Task}
+{\begin{task}\end{task} \vspace*{-0.2in}\sf}
+{\vspace*{-0.3in} \hfill \QED}
+
+
+\newcommand{\q}[1]{\mbox{$q^{- #1}$}}
+\newcommand{\bbm}[1]{\mathop{\bar{\bm #1}}}
+\newcommand{\tbm}[1]{\mathop{\tilde{\bm #1}}}
+\newcommand{\re}{\mathop{\rm Re}}
+\newcommand{\im}{\mathop{\rm Im}}
+\newcommand{\cov}{\mathop{\rm Cov}}
+\newcommand{\diag}{\mathop{\rm diag}}
+\newcommand{\snr}{\mathop{\rm SNR}}
+\newcommand{\sinc}{\mathop{\rm sinc}}
+\newcommand{\sign}{\mathop{\rm sign}}
+\newcommand{\ERLE}{\mathop{\rm ERLE}}
+\newcommand{\GM}{\mathop{\rm GM}}
+\newcommand{\ce}{\mathop{\Sigma_{k/k-1}}}
+\newcommand{\ts}{\tt\scriptsize}
+\def\QED{~\rule[-1pt]{5pt}{5pt}\par\medskip}
+\def\figurename{Figure}
+\def\refname{References}
+\newtheorem{lemma}{Lemma}
+
+\begin{document}
+\setlength{\baselineskip}{16pt}
+\title{\underline{Signal Processing for Communications} \\ Lab Assignment 3: Linear Estimation and Kalman Filtering}
+\author{}
+\date{}
+\maketitle
+\noindent
+
+\vspace*{-1.25cm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Introduction}
+
+Loosely speaking, we say that the states of a system are those varibles providing a complete characterization of the internal status of the system at a given time. For example, the states of a flying drone may include its position, angular orientation, and velocity. For a chemical process, the states may be the concentrations of the different reactives. For a motor, we may consider as states the position and speed of the motor shaft and the currents through the windings, etc. In general, systems are {\em dynamic,} meaning that their states evolve with time.
+
+The states of a system may be of interest in their own right, or may be needed to implement ``state-feedback control'' (e.g., we may need to estimate the attitude of a flying drone in order to control its velocity).  Assuming that state variables can be directly observed, such observations may be very noisy. Often, however, the states of the system are not directly available; instead, we may have access to (also noisy) observations of quantities which are related to the state variables of interest (e.g., in a chemical reactor we may only measure the system pressure and/or temperature, and not the individual concentrations). The problem is then to obtain {\em optimal} estimates of the system's state variables at a given time, given the history of observations collected up to that time, and our knowledge of the inner workings of the system (i.e., our {\em model}).
+
+When talking about {\em optimality} we mean that we want our estimators to be as accurate as possible. In our context, we model states and observations as random variables, so that accuracy is given by the Mean Square Error (MSE), i.e., the expected value of the squared difference between the state and its estimate. When estimates are linear functions of observations, the optimal estimator is the linear minimum MSE (LMMSE) estimator.
+
+
+%\begin{figure}[t]
+%\begin{center}
+% \includegraphics[width=10cm]{echo}
+% \caption{Schematic representation of the acoustic echo cancellation problem.}
+% \label{fig:echo}
+%\end{center}
+%\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Estimation of a constant level observed in noise}
+
+Consider a system consisting of a tank containing some amount of a certain fluid. Being interested in estimating the fluid level, we place a pressure sensor at the bottom of the tank and use it to collect measurements of hydrostatic pressure. Let $\ell$ denote the fluid level, which we model as a random variable with mean $\mu_\ell$ and variance $\sigma_\ell^2$ (this is our {\em a priori} knowledge). We let the sensor collect $n$ pressure measurements, given by:
+\begin{equation}\label{eq:simple_obs}
+ x_k = c_h \cdot\ell + v_k, \quad k=0,1,\ldots,n-1, 
+\end{equation}
+where $v_0$, \ldots, $v_{n-1}$ are measurement errors, which we model as random, statistically independent, with zero mean, and variance $\sigma_v^2$. Also, $\ell$ and $v_k$ are statistically independent for all $k$. Constant $c_h$ relates hydrostatic pressure and fluid level\footnote{Recall that hydrostatic pressure equals [fluid density] $\times \,g\, \times$ [fluid level], where $g$ is the gravitational constant.}; for example, if pressure is in millibar\footnote{Recall that 1 mbar $=100$ Pa $=100$ kg/(m s$^2$).} and fluid level is in cm, then $c_h=0.98\rho$ mbar/cm, where $\rho$ is the fluid density in g/cm$^3$. 
+
+We want to estimate the value taken by $\ell$, based on our $n$ available observations $x_0$,\ldots,$x_{n-1}$.
+
+\begin{Task}
+
+In your derivations, make sure to properly define all relevant variables, and use different notation for scalars, vectors, and matrices.
+
+\begin{itemize} 
+\item Find the expression of the Least Squares (LS) estimate  of the fluid level $\ell$, given the pressure observations $\bm x = [\begin{array}{cccc} x_0 & x_1 & \cdots & x_{n-1}\end{array}]^T$. How do you interpret this estimate?
+
+\item  Recall that the LMMSE estimator of $\ell$ based on $\bm x$ is given by
+$ \hat{\ell}(\bm x) = \mu_\ell + \bm C_{\ell x} \bm C_{xx}^{-1}(\bm x - \bm \mu_x)$. 
+Obtain the values of $\bm \mu_x$, $\bm C_{\ell x}$ and $\bm C_{xx}$ for this problem.
+
+\item Use the Matrix Inversion Lemma to obtain $\bm C_{xx}^{-1}$ in closed form.
+
+\item Let $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$ and $S = \sum_{k=0}^{n-1}x_k$. Prove that 
+\begin{equation} \label{eq:lmmse_ave}
+\hat \ell(\bm x) = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} S. 
+\end{equation}
+How do you interpret the parameter $\alpha$?
+
+\item Show that the normalized MSE obtained with this estimator is
+\[ \frac{\mathbb{E}\{(\ell-\hat \ell(\bm x))^2\}}{\sigma_\ell^2} = \frac{1}{1+n\alpha c_h^2}. \]
+
+\item Show that the LMMSE estimator can be written as a {\em convex combination} (that is, a linear combination with positive coefficients that add up to one) of the {\em a priori} estimator and the LS estimator.
+
+\item For a given ratio of variances, what happens when $n$ becomes large? Explain.
+
+\item For a given number of observations, what happens when $\alpha$ becomes large? Explain.
+
+\item For a given number of observations, what happens when $\alpha$ becomes small? Explain.
+\end{itemize}
+\end{Task}
+
+\newpage
+Consider now the case in which pressure measurements arrive sequentially in time (at this point, the fluid level is assumed to remain constant through time). Therefore, at time $nT$ ($T$ is the sampling interval), a new measurement $x_n$ arrives, and we can refine our LMMSE estimator of the fluid level incorporating the new information available. Let us change the notation slightly to make the dependence on the time index more clear. Thus, now we denote the LMMSE estimate of the fluid level  based on these measurements as $\hat \ell_{n-1}$. Then, from \eqref{eq:lmmse_ave}, we know that
+\begin{equation}\label{eq:brute}
+  \hat \ell_{n-1} = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} (x_0 + x_1 + \ldots + x_{n-1}). 
+\end{equation}
+When the new measurement $x_n$ arrives, we could use a similar expression to compute the LMMSE estimate $\hat \ell_n$. However, we may exploit the availability of $\hat \ell_{n-1}$ to save computations.
+
+\begin{Task}
+
+\begin{itemize}
+
+\item Obtain $\hat \ell_n$ as a linear combination of $\hat \ell_{n-1}$ and the new measurement $x_n$.
+\item Show that, for appropriate initial values $\beta_{-1}$ and $\hat\ell_{-1}$ that you should specify, the LMMSE estimate can be computed recursively as
+\[  \beta_n = \beta_{n-1} + \alpha c_h^2, \qquad \hat \ell_n = \frac{1}{\beta_n} (\beta_{n-1}\hat \ell_{n-1} + \alpha c_h x_n), \qquad n\geq 0. \]
+Using this recursion, how many additions, multiplications and divisions do we need in order to update the estimate with each new observation? Does this load depend on the time index $n$?
+
+\item Note that if one simply stored all samples in memory and then computed  the LMMSE estimate naively using \eqref{eq:brute} without using recursivity, then the memory size and the number of additions would grow with $n$.
+
+
+\end{itemize}
+
+\end{Task}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Application of the Kalman filter}
+
+\subsection{Constant fluid level}
+
+We are going to recast the estimation problem from the previous section in the framework of the Kalman filter, which is based in the following two equations ({\em state evolution} and {\em measurement}):
+\begin{equation}\label{eq:statespace}
+\bm s_n = \bm A_n \bm s_{n-1} + \bm G_n \bm f_n + \bm u_n, \qquad \bm x_n = \bm H_n \bm s_n + \bm w_n. 
+\end{equation}
+(The definitions of the different quantities should be familiar, and can be found in the class notes).
+In our problem we have a single variable to estimate (the fluid level), so the state vector $\bm s_n$ is actually a scalar $s_n$. At time $n$ we obtain a single new pressure measurement, so the vector $\bm x_n$ also reduces to a scalar, $x_n$.  
+
+\begin{Task}
+\begin{itemize}
+\item Find a ``state evolution'' and ``measurement'' description for \eqref{eq:simple_obs} in the form of \eqref{eq:statespace}.  Note that the state of the system (the fluid level) is static, i.e., $s_n = s$ is constant with $n$.
+
+\item Derive the Kalman filter equations for this problem, in order to obtain the LMMSE estimate of the state given the observations $x_0$,\ldots,$x_n$ ( i.e., $\hat s_{n|n}$).
+
+\item How should we choose the initial estimate $\hat s_{-1|-1}$ and estimation error covariance $\Sigma_{-1|-1}$?
+
+\item Write a Matlab script\footnote{You may use the file {\tt kalman\_dc\_template.m} as starting point.} to simulate this dynamical system and the Kalman filter. Assume that the sensor measures pressure in mbar, fluid level is in cm, and that the fluid is benzene (density $874$ kg/m$^3$ at 25$^\circ$C).
+Our initial guess of the fluid level is $\mu_\ell=250$ cm, and we assign a standard deviation $\sigma_\ell = 11$ cm to reflect our uncertainty about this guess. Measurement errors are uncorrelated, zero-mean Gaussian with standard deviation $\sigma_v = 25$ mbar, and the true fluid level is $340$ cm. Plot the time evolution of the state, the measurements, and the estimate, up to $n=200$, and for two different executions. Also, plot the time evolution of the standard deviation of the fluid level estimation error, in cm. Comment on your results.
+
+\item Using mathematical induction, prove that $\Sigma_{n|n} = \frac{\sigma_\ell^2}{1+(n+1)\alpha c_h^2}$ for all $n\geq 0$. Does this expression look familiar? Evaluate it for $n=200$ with the parameters of the previous point, and check the result of your simulation.  What is the asymptotic value of $\Sigma_{n|n}$?
+
+\item Show that 
+\begin{equation}\label{eq:est_2}
+\hat s_{n|n} = \frac{1+n\alpha c_h^2}{1+n\alpha c_h^2 + \alpha c_h^2} \hat s_{n-1|n-1} + \frac{\alpha c_h}{1+ n\alpha c_h^2 + \alpha c_h^2}x_n.
+\end{equation}
+Compare this with your answer to the first point of Task 2 and give your conclusions.
+
+\item Repeat your simulations after changing $\sigma_\ell$ to 50 cm. Repeat again for $\sigma_\ell = 5$ cm. Comment on your results.
+\end{itemize}
+\end{Task}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Sensor with failures}
+
+Consider now a scenario in which the pressure sensor may produce erroneous measurements every now and then, in a random fashion.
+Under a sensor error event, the measurement is not related to the true pressure, and is just noise. Therefore, we have now
+\begin{equation}\label{eq:xno}
+ x_n = \left\{ \begin{array}{cl} c_h s + v_n, & \mbox{if there is no failure,} \\ v_n, & \mbox{if there is a failure.} \end{array}\right.
+\end{equation}
+It is assumed that the sensor is equipped with a failure indicator, so that we know whether a sensor error event has taken place or not.
+
+
+\begin{Task}
+\begin{itemize}
+\item Develop the state and measurement equations for this system. Develop the Kalman filter equations, and in view of them, explain how the effect of sensor error events is handled by the filter.
+
+\item Write a script {\tt kalman\_dc\_errs.m} to simulate it. Use the same values of $\ell$, $\mu_\ell$, $\sigma_\ell$, $\sigma_v$ as in Task~3, (consider only the case $\sigma_\ell = 11$ cm) and assume that failures are random, statistically independent, and taking place with probability $p$.
+Observe what happens for $p=0.15$ and $p=0.85$, and comment on your results.
+
+\item Now suppose that the sensor has no failure indicator, and thus we cannot know the time instants at which error events take place. We decide to assume that they {\em never} take place and run the Kalman filter under such assumption. Modify your code accordingly and observe what happens  for $p=0.15$ and $p=0.85$. 
+
+\item Assuming we know $p$, can you think of any trick to improve the performance of the Kalman filter in the situation from the previous point? [Hint: think of the measurement equation having a measurement matrix which is now random, and consider replacing in the Kalman filter its actual value (which is unknown) by its expected value]. Try it out and comment on your results.
+\end{itemize}
+\end{Task}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Varying fluid level}
+Suppose now that fluid can be added to the tank, and that the tank is not 100\% tight, so that there may be some leakage. We have no control regarding the incoming or outcoming fluid flow, so we just model it as a random variable, which will become part of the unknown state vector. Thus, $\bm s_n$ is now a two-dimensional vector whose first entry is the fluid level at time $nT$, and whose second entry is the fluid flow (in e.g. cm$^3/$s) at time $nT$. If we assume\footnote{Note that this approximation is accurate if we sample significantly faster than the rate of change of the fluid flow.} that this flow remains approximately constant from $t=(n-1)T$ to $t=nT$, we can write
+\begin{eqnarray}
+ \mbox{[fluid level at time $nT$]} &=& \mbox{[fluid level at time $(n-1)T$]} \nonumber \\
+ & & {}+ \, \frac{T}{A} \,\times \, \mbox{[fluid flow at time $(n-1)T$]},
+\end{eqnarray}
+where $A$ is the area of the tank cross-section (assumed constant with height).
+
+Our measurements, as before, are given by the hydrostatic pressure at the bottom of the tank.
+
+\newpage
+\begin{Task}
+\begin{itemize}
+\item Find a ``state evolution'' and ``measurement'' description for the system in the form of \eqref{eq:statespace}, assuming that the fluid flow remains constant with time. (Assume that the tank is sufficiently big so that it never overflows, and that the initial fluid level is sufficiently high so that the tank never empties out).
+
+\item Write a Matlab script {\tt kalman\_flow.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid level and the fluid flow. Assume that the sensor works correctly (i.e., $p=0$ in \eqref{eq:xno}), measures pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.
+
+The initial true fluid level is 340 cm; our guess is 250 cm, with a standard deviation of 11 cm. The true fluid flow is constant with time and equal to 33 cm$^3$/s; our guess is 0 cm$^3/$s, with standard deviation of 10 cm$^3/$s. Measurement errors are zero-mean uncorrelated Gaussian, with standard deviation of 25 mbar.
+
+\item Plot the time evolution of the fluid level and fluid flow, the measurements, and the estimates, for up to $60$ minutes, and for two different executions. Comment on your results.
+
+\item Plot the time evolution of the standard deviation of the estimation error for both the fluid level (in cm) and the fluid flow (in cm$^3/$s), also for two different realizations. Comment on your results.
+
+\item Repeat the above two points if we change the standard deviation for our guess of the flow to 2 cm$^3/$s, and comment on your results.
+
+\end{itemize}
+\end{Task}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Adding more sensors}
+
+We decide to invest in an additional pressure sensor, which we install it at the opposite side of the bottom of the tank. In that way, the measurement errors at the two sensors can be assumed independent of each other. However, the original sensor is out of stock, so we are forced to purchase a different model whose errors need not have the same variance as the first sensor.
+
+%\newpage
+
+\begin{Task}
+\begin{itemize}
+\item Note that the addition of a new sensor does not alter the ''state evolution'' description of the system, but it obviously changes its ``measurement'' description. Give the corresponding details.
+
+\item Write a Matlab script {\tt kalman\_flow2.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid (benzene) level and the fluid flow. Assume that the two sensors work correctly (i.e., $p=0$ in \eqref{eq:xno}), measuring pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.
+
+The initial true fluid level is 340 cm; our guess is 250 cm, with a standard deviation of 11 cm. The true fluid flow is constant with time and equal to 33 cm$^3$/s; our guess is 0 cm$^3/$s, with standard deviation of 10 cm$^3/$s. Measurement errors are zero-mean uncorrelated Gaussian, with standard deviation of 20 mbar at the first sensor and of 80 mbar at the second.
+
+\item Plot the time evolution of the fluid level and fluid flow, the measurements, and the estimates, for up to $60$ minutes, and for two different executions. Comment on your results.
+
+\item Plot the time evolution of the standard deviation of the estimation error for both the fluid level (in cm) and the fluid flow (in cm$^3/$s), also for two different realizations. Superimpose the corresponding curves when only the first sensor is available, and explain what you see.
+
+\end{itemize}
+\end{Task}
+
+To conclude the assignment, we study the case in which the fluid flow does not remain constant with time; instead, it exhibits random fluctuations, according to
+\begin{eqnarray}\label{eq:rndflow}
+ \mbox{[fluid flow at time $nT$]} &=& \mbox{[fluid flow at time $(n-1)T$]} \, + \, \mbox{[random increment]},
+\end{eqnarray}
+where the random increment is modeled as a zero-mean Gaussian random variable with standard deviation of 0.35 cm$^3/$s.
+
+\begin{Task}
+\begin{itemize}
+\item Modify your script from Task 6 to incorporate \eqref{eq:rndflow}. Execute your Kalman filter simulation to cover up to $60$ minutes, plot the corresponding curves, and comment on your observations.
+
+\item What are the asymptotic values of the standard deviation of the estimation error of: (i)  the fluid level (in cm); and (ii) the fluid flow (in cm$^3/$s)?
+\end{itemize}
+\end{Task}
+
+
+\end{document}
