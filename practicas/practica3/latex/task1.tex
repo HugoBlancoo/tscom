@@ -1,0 +1,224 @@
+\textbf{Question: Find the expression of the Least Squares (LS) estimate  of the fluid level $\ell$, given the pressure observations $\bm x = [\begin{array}{cccc} x_0 & x_1 & \cdots & x_{n-1}\end{array}]^T$. How do you interpret this estimate?}
+\vspace{0.5cm}
+
+We have the model:
+\begin{equation}
+\bm z = H \theta + \bm v
+\end{equation}
+
+In our case:
+\begin{itemize}
+    \item $\bm z = \bm x$ (observations)
+    \item $\theta = \ell$ (scalar parameter to estimate)
+    \item $H = c_h \, \mathbf{1}_n$ (vector of $c_h$, $n \times 1$)
+\end{itemize}
+
+All vectors:
+\begin{equation}
+\bm z = \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_{n-1} \end{bmatrix}, \quad
+\mathbf{1}_n = \begin{bmatrix} 1 \\ 1 \\ \vdots \\ 1 \end{bmatrix}, \quad
+H = \begin{bmatrix} c_h \\ c_h \\ \vdots \\ c_h \end{bmatrix}
+\end{equation}
+
+The LS estimator is given by the normal equations:
+\begin{equation}
+\hat{\theta}_{\text{LS}} = (H^T H)^{-1} H^T \bm z 
+= \left( \mathbf{1}_n^T c_h^{\cancel{2}} \mathbf{1}_n \right)^{-1} \frac{1}{\cancel{c_h}} c_h \sum_{k} x_k 
+= \frac{1}{n \, c_h} \sum_{k} x_k
+\end{equation}
+
+Therefore, our estimator is:
+\begin{equation}
+\boxed{\hat{\ell} = \frac{\sum_k x_k}{n \, c_h}}
+\end{equation}
+
+\textbf{Interpretation:} This is the average of all the measurements scaled by $c_h$. 
+
+The variance of the estimate is:
+\begin{equation}
+\mathrm{var}(\hat{\ell}) = \mathrm{var}\left(\frac{\sum_k x_k}{n \, c_h}\right) 
+= \frac{\mathrm{var}(\bm z)}{(n \, c_h)^2} 
+= \frac{n \, \sigma_v^2}{n^2 \, c_h^2} 
+= \frac{\sigma_v^2}{n \, c_h^2}
+\end{equation}
+
+This shows that as we increase the number of measurements $n$, the variance of our estimator decreases proportionally to $\frac{1}{n}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Question: Recall that the LMMSE estimator of $\ell$ based on $\bm x$ is given by
+$ \hat{\ell}(\bm x) = \mu_\ell + \bm C_{\ell x} \bm C_{xx}^{-1}(\bm x - \bm \mu_x)$. 
+Obtain the values of $\bm \mu_x$, $\bm C_{\ell x}$ and $\bm C_{xx}$ for this problem.}
+\vspace{0.5cm}
+
+\subsubsection*{Mean vector $\bm \mu_x$}
+
+\begin{align}
+\mu_x &= \mathbb{E}[\bm x] = \mathbb{E}[c_h \, \ell \, \mathbf{1}_n + \bm v] \\
+&= c_h \, \underbrace{\mathbb{E}[\ell]}_{\mu_\ell} \, \mathbf{1}_n + \underbrace{\mathbb{E}[\bm v]}_{\bm 0} \\
+&= c_h \, \mu_\ell \, \mathbf{1}_n
+\end{align}
+
+where $\mathbf{1}_n$ is the $n \times 1$ vector of ones.
+
+\subsubsection*{Cross-covariance $\bm C_{\ell x}$}
+
+\begin{align}
+\bm C_{\ell x} &= \mathrm{cov}(\ell, \bm x) = \mathrm{cov}(\ell, c_h \, \ell \, \mathbf{1}_n + \bm v) \\
+&= \mathrm{cov}(\ell, c_h \, \ell) + \underbrace{\mathrm{cov}(\ell, \bm v)}_{\bm 0} \\
+&= \mathrm{cov}(\ell, \ell) \, c_h \, \mathbf{1}_n^T = \sigma_\ell^2 \, c_h \, \mathbf{1}_n^T
+\end{align}
+
+Note: $\ell$ is a scalar, $\bm x \in \mathbb{R}^n \Rightarrow \bm C_{\ell x}$ is a $(1 \times n)$ row vector: $\sigma_\ell^2 \, c_h \, \mathbf{1}_n^T$.
+
+\subsubsection*{Covariance matrix $\bm C_{xx}$}
+
+\textbf{Element $i$:}
+\begin{align}
+C_{xx}^{(i,i)} &= \mathrm{cov}(x_i, x_i) = \mathrm{cov}(c_h \, \ell + v_i, c_h \, \ell + v_i) \\
+&= c_h^2 \, \sigma_\ell^2 + \sigma_v^2
+\end{align}
+
+This gives the diagonal elements.
+
+\textbf{Elements $i \neq j$:}
+\begin{align}
+C_{xx}^{(i,j)} &= \mathrm{cov}(x_i, x_j) = \mathrm{cov}(c_h \, \ell + v_i, c_h \, \ell + v_j) \\
+&= c_h^2 \, \sigma_\ell^2 + \underbrace{\mathrm{cov}(v_i, v_j)}_{=0}  = c_h^2 \, \sigma_\ell^2
+\end{align}
+
+This gives the off-diagonal elements.
+
+Therefore:
+\begin{equation}
+\bm C_{xx} = c_h^2 \, \sigma_\ell^2 \, U_n + \sigma_v^2 \, \mathbf{I}_n = U_n \, c_h^2 \, \sigma_\ell^2 + \mathbf{I}_n \, \sigma_v^2
+\end{equation}
+
+where $U_n = \mathbf{1}_n \mathbf{1}_n^T$ is the $n \times n$ matrix of ones.
+
+\subsubsection*{Summary}
+
+\begin{equation}
+\boxed{
+\begin{aligned}
+\bm \mu_x &= c_h \, \mu_\ell \, \mathbf{1}_n \\
+\bm C_{\ell x} &= \sigma_\ell^2 \, c_h \, \mathbf{1}_n^T \quad \text{(row vector)} \\
+\bm C_{xx} &= U_n \, c_h^2 \, \sigma_\ell^2 + \mathbf{I}_n \, \sigma_v^2
+\end{aligned}
+}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Question: Use the Matrix Inversion Lemma to obtain $\bm C_{xx}^{-1}$ in closed form.}
+\vspace{0.5cm}
+
+\textbf{Matrix Inversion Lemma:}
+\begin{equation}
+(A + UCV)^{-1} = A^{-1} - A^{-1} U(C^{-1} + VA^{-1}U)^{-1} VA^{-1}
+\end{equation}
+
+In our case, we have:
+\begin{equation}
+\bm C_{xx} = \mathbf{I}_n \sigma_v^2 + \mathbf{1}_n \, c_h^2 \sigma_\ell^2 \, \mathbf{1}_n^T
+\end{equation}
+
+Identify:
+\begin{itemize}
+    \item $A = \mathbf{I}_n \sigma_v^2$
+    \item $U = \mathbf{1}_n$
+    \item $C = c_h^2 \sigma_\ell^2$
+    \item $V = \mathbf{1}_n^T$
+\end{itemize}
+
+Therefore:
+\begin{align}
+\bm C_{xx}^{-1} &= (\mathbf{I}_n \sigma_v^2 + \mathbf{1}_n \, c_h^2 \sigma_\ell^2 \, \mathbf{1}_n^T)^{-1} \\
+&= \frac{\mathbf{I}_n}{\sigma_v^2} - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \left( \frac{1}{c_h^2 \sigma_\ell^2} + \mathbf{1}_n^T \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \right)^{-1} \mathbf{1}_n^T \frac{\mathbf{I}_n}{\sigma_v^2} \\
+&= \frac{\mathbf{I}_n}{\sigma_v^2} - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \left( \frac{1}{c_h^2 \sigma_\ell^2} + \frac{n}{\sigma_v^2} \right)^{-1} \mathbf{1}_n^T \frac{\mathbf{I}_n}{\sigma_v^2}
+\end{align}
+
+Define:
+\begin{equation}
+a = \frac{c_h^2 \, \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \, \sigma_\ell^2}
+\end{equation}
+
+\textbf{Verification that $\bm C_{xx} \bm C_{xx}^{-1} = \mathbf{I}_n$:}
+
+\begin{align}
+&\left[\mathbf{I}_n \mathbf{1}_n c_h^2 \sigma_\ell^2 + \mathbf{I}_n \sigma_v^2\right] \left[\frac{\mathbf{I}_n}{\sigma_v^2} - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \, a \right] \\
+&= \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n c_h^2 \sigma_\ell^2 - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n c_h^2 \sigma_\ell^2 \frac{c_h^2 \sigma_\ell^2}{\sigma_v^2} n \, a + \mathbf{I}_n - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n a \, a \\
+&\quad \text{(debe ser $\beta$)} \\
+&\Rightarrow \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \left( \frac{c_h^2 \sigma_\ell^2}{\sigma_v^2} - \frac{c_h^2 \sigma_\ell^2 n}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} - \frac{c_h^2 c_i^2}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} \right) + \mathbf{I}_n \\
+&\Rightarrow \frac{c_h^2 \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} \left( \frac{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2}{\sigma_v^2} - \frac{c_h^2 \sigma_\ell^2}{\sigma_v^2} n - 1 \right) = \sigma_v^2 n \, c_h^2 \sigma_\ell^2 - c_h^2 \sigma_\ell^2 n - \sigma_v^2 = 0
+\end{align}
+
+Therefore:
+\begin{equation}
+\boxed{
+\bm C_{xx}^{-1} = \frac{\mathbf{I}_n}{\sigma_v^2} - \frac{a}{\sigma_v^2} U_n
+}
+\end{equation}
+
+where $a = \dfrac{c_h^2 \, \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \, \sigma_\ell^2}$ and $U_n = \mathbf{1}_n \mathbf{1}_n^T$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Question: Let $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$ and $S = \sum_{k=0}^{n-1}x_k$. Prove that 
+\begin{equation} \label{eq:lmmse_ave}
+\hat \ell(\bm x) = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} S. 
+\end{equation}
+How do you interpret the parameter $\alpha$?}
+\vspace{0.5cm}
+
+Starting from the LMMSE estimator formula:
+\begin{align}
+\hat{\ell}(\bm x) &= \mu_\ell + \bm C_{\ell x} \bm C_{xx}^{-1}(\bm x - \bm \mu_x) \\
+&= \mu_\ell + \sigma_\ell^2 \, c_h \, \mathbf{1}_n^T \frac{1}{\sigma_v^2} \left[ \mathbf{I}_n - \mathbf{I}_n \, \mathbf{1}_n^T \left( \frac{c_h^2 \, \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \, \sigma_\ell^2} \right) \right] (\bm x - c_h \, \mu_\ell \, \mathbf{1}_n)
+\end{align}
+
+Substituting $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$:
+\begin{equation}
+= \mu_\ell + \alpha \, c_h \, \mathbf{1}_n^T \left[ \mathbf{I}_n - \mathbf{I}_n \, \mathbf{1}_n^T \left( \frac{\alpha \, c_h^2}{1 + n \, c_h^2 \, \alpha} \right) \right] (\bm x - c_h \, \mu_\ell \, \mathbf{1}_n)
+\end{equation}
+
+Simplifying:
+\begin{equation}
+= \mu_\ell + \left[ \alpha \, c_h \, \mathbf{1}_n^T - \alpha \, c_h \, n \, \mathbf{1}_n^T \left( \frac{\alpha \, c_h^2}{1 + n \, c_h^2 \, \alpha} \right) \right] (\bm x - c_h \, \mu_\ell \, \mathbf{1}_n)
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Question: Show that the normalized MSE obtained with this estimator is
+\[ \frac{\mathbb{E}\{(\ell-\hat \ell(\bm x))^2\}}{\sigma_\ell^2} = \frac{1}{1+n\alpha c_h^2}. \]}
+\vspace{0.5cm}
+
+COMPLETAR
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Question:Show that the LMMSE estimator can be written as a {\em convex combination} (that is, a linear combination with positive coefficients that add up to one) of the {\em a priori} estimator and the LS estimator.}
+\vspace{0.5cm}
+
+COMPLETAR
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Question: For a given ratio of variances, what happens when $n$ becomes large? Explain.}
+\vspace{0.5cm}
+
+COMPLETAR
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Question: For a given number of observations, what happens when $\alpha$ becomes large? Explain.}
+\vspace{0.5cm}
+
+COMPLETAR
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Question: For a given number of observations, what happens when $\alpha$ becomes small? Explain.}
+\vspace{0.5cm}
+
+COMPLETAR
