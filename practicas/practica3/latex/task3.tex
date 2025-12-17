@@ -24,3 +24,112 @@ Comparing this to $x_n = H_n s_n + w_n$:
     \item Measurement noise: $w_n = v_n$.
     \item Measurement noise covariance: $R_n = \sigma_v^2$ (given variance of $v_k$).
 \end{itemize}
+
+\textbf{Question:Derive the Kalman filter equations for this problem, in order to obtain the LMMSE estimate of the state given the observations $x_0$,\ldots,$x_n$ ( i.e., $\hat s_{n|n}$).}
+\vspace{0.5cm}
+
+\subsubsection*{Derivation of the Kalman Filter Equations}
+
+Since the system state is a scalar constant ($s_n = s_{n-1}$), we identified that $A_n = 1$, $G_n = 0$, $Q_n = 0$. The measurement follows $x_n = c_h s_n + v_n$, implying $H_n = c_h$ and $R_n = \sigma_v^2$. The Kalman filter recursive steps for $n \ge 0$ are derived as follows:
+
+\begin{enumerate}
+    \item \textbf{Prediction ($\hat{s}_{n|n-1}$):}
+          Using the state evolution equation with $f_n=0$:
+          \begin{equation}
+              \hat{s}_{n|n-1} = A_n \hat{s}_{n-1|n-1} = 1 \cdot \hat{s}_{n-1|n-1} = \hat{s}_{n-1|n-1}
+          \end{equation}
+
+    \item \textbf{Prediction Error Covariance ($\Sigma_{n|n-1}$):}
+          Using the general prediction covariance formula with $Q_n=0$:
+          \begin{equation}
+              \Sigma_{n|n-1} = A_n \Sigma_{n-1|n-1} A_n^T + Q_n = 1 \cdot \Sigma_{n-1|n-1} \cdot 1 + 0 = \Sigma_{n-1|n-1}
+          \end{equation}
+
+    \item \textbf{Kalman Gain ($K_n$):}
+          Since $H_n$ and $R_n$ are scalars ($c_h$ and $\sigma_v^2$), the matrix inversion becomes a scalar division:
+          \begin{equation}
+              K_n = \Sigma_{n|n-1} H_n^T (H_n \Sigma_{n|n-1} H_n^T + R_n)^{-1}
+          \end{equation}
+          Substituting the known values:
+          \begin{equation}
+              K_n = \frac{\Sigma_{n|n-1} \cdot c_h}{c_h^2 \Sigma_{n|n-1} + \sigma_v^2}
+          \end{equation}
+
+    \item \textbf{Correction ($\hat{s}_{n|n}$):}
+          Updating the a priori estimate with the new measurement $x_n$:
+          \begin{equation}
+              \hat{s}_{n|n} = \hat{s}_{n|n-1} + K_n (x_n - H_n \hat{s}_{n|n-1})
+          \end{equation}
+          Substituting the prediction from step 1:
+          \begin{equation}
+              \hat{s}_{n|n} = \hat{s}_{n-1|n-1} + K_n (x_n - c_h \hat{s}_{n-1|n-1})
+          \end{equation}
+
+    \item \textbf{Estimation Error Covariance ($\Sigma_{n|n}$):}
+          Updating the error covariance. Note that the identity matrix $\mathbf{I}$ becomes the scalar $1$:
+          \begin{equation}
+              \Sigma_{n|n} = (I - K_n H_n) \Sigma_{n|n-1}
+          \end{equation}
+          Substituting scalars and the result from step 2:
+          \begin{equation}
+              \Sigma_{n|n} = (1 - K_n c_h) \Sigma_{n-1|n-1}
+          \end{equation}
+\end{enumerate}
+
+
+\textbf{Question: How should we choose the initial estimate $\hat s_{-1|-1}$ and estimation error covariance $\Sigma_{-1|-1}$?}
+\vspace{0.5cm}
+
+\begin{enumerate}
+    \item \textbf{$\hat{s}_{-1|-1}$:}
+          The initial value corresponds to the best best guess \textit{a priori} for the fluid level. This is the mean of the random variable.
+          \begin{equation}
+              \hat{s}_{-1|-1} = \mu_l
+          \end{equation}
+    \item \textbf{$\Sigma_{-1|-1}$:}
+          \begin{equation}
+              \Sigma_{-1|-1} = \sigma_l^2
+          \end{equation}
+\end{enumerate}
+
+\textbf{Question: Write a Matlab script\footnote{You may use the file {\tt kalman\_dc\_template.m} as starting point.} to simulate this dynamical system and the Kalman filter. Assume that the sensor measures pressure in mbar, fluid level is in cm, and that the fluid is benzene (density $874$ kg/m$^3$ at 25$^\circ$C).
+    Our initial guess of the fluid level is $\mu_\ell=250$ cm, and we assign a standard deviation $\sigma_\ell = 11$ cm to reflect our uncertainty about this guess. Measurement errors are uncorrelated, zero-mean Gaussian with standard deviation $\sigma_v = 25$ mbar, and the true fluid level is $340$ cm. Plot the time evolution of the state, the measurements, and the estimate, up to $n=200$, and for two different executions. Also, plot the time evolution of the standard deviation of the fluid level estimation error, in cm. Comment on your results.
+}
+
+\subsection*{Simulation Results}
+
+The Kalman filter was simulated for the constant fluid level estimation problem using the derived scalar equations. The system parameters were set to $\mu_l = 250$ cm, $\sigma_l = 11$ cm, and the true level $l_{true} = 340$ cm. The measurement noise standard deviation was $\sigma_v = 25$ mbar.
+
+The simulation results for $N=200$ iterations and two different noise realizations are shown below:
+
+\begin{figure}[h!]
+    \centering
+    % Sustituye 'figura1.png' por el nombre real de tu archivo de imagen
+    \includegraphics[width=0.8\textwidth]{img/task1_3_1.png}
+    \caption{Time evolution of the true state (black dashed), noisy measurements (dots), and Kalman filter estimates (colored lines) for two executions.}
+    \label{fig:kalman_state}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    % Sustituye 'figura2.png' por el nombre real de tu archivo de imagen
+    \includegraphics[width=0.8\textwidth]{img/task1_3_2.png}
+    \caption{Time evolution of the standard deviation of the estimation error ($\sqrt{\Sigma_{n|n}}$) for two executions.}
+    \label{fig:kalman_sigma}
+\end{figure}
+
+\subsubsection*{Comments on Results}
+
+Based on the generated plots, we can draw the following conclusions:
+
+\begin{itemize}
+    \item \textbf{Convergence of the Estimate:} As seen in Figure \ref{fig:kalman_state}, the estimate starts at the initial guess ($\hat{s}_{-1|-1} = 250$ cm) and rapidly converges towards the true value ($340$ cm). The filter effectively corrects the large initial error (90 cm bias) within the first few iterations.
+
+    \item \textbf{Noise Reduction:} The raw measurements (grey dots) exhibit high variance due to the sensor noise ($\sigma_v \approx 25$ mbar). The Kalman filter estimate behaves as a low-pass filter, smoothing out this noise. As time progresses ($n$ increases), the estimate becomes increasingly stable and closer to the true constant value.
+
+    \item \textbf{Error Covariance Behavior:} Figure \ref{fig:kalman_sigma} shows that the standard deviation of the estimation error ($\sqrt{\Sigma_{n|n}}$) decreases monotonically from the initial uncertainty ($\sigma_l = 11$ cm) towards zero. This asymptotic behavior towards zero is expected because the process noise is zero ($Q=0$); the filter assumes the state is perfectly constant, so it accumulates infinite information over time, theoretically achieving perfect precision as $n \to \infty$.
+
+    \item \textbf{Independence from Realizations:} The error standard deviation curves for both executions are identical and superimposed. This confirms a fundamental property of the Kalman Filter: the covariance evolution ($\Sigma_{n|n}$) depends only on the system matrices ($A, H, Q, R$) and is independent of the specific random values of the measurements ($x_n$). Therefore, the performance metric is deterministic and can be computed offline.
+\end{itemize}
+
+\vspace{0.5cm}
