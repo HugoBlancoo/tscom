@@ -1,0 +1,26 @@
+\textbf{Question: Find a ``state evolution'' and ``measurement'' description for (1) in the form of (4).
+    Note that the state of the system (the fluid level) is static, i.e., $s_n = s$ is constant with $n$.}
+\vspace{0.5cm}
+
+Given that the fluid level is static ($s_n = s_{n-1} = l$) and a scalar, the state evolution equation simplifies.
+We identify the state transition matrix $A_n$ and the process noise $u_n$:
+\begin{equation}
+    s_n = 1 \cdot s_{n-1} + 0
+\end{equation}
+Thus, identifying terms with the general form $s_n = A_n s_{n-1} + G_n f_n + u_n$:
+\begin{itemize}
+    \item State variable: $s_n = l$ (scalar).
+    \item State transition matrix: $A_n = 1$.
+    \item Control input: $G_n = 0$ (no external forcing).
+    \item Process noise: $u_n = 0$, which implies the process noise covariance is $Q_n = 0$.
+\end{itemize}
+For the measurement equation, we relate the pressure observation $x_n$ to the fluid level using the hydrostatic constant $c_h$:
+\begin{equation}
+    x_n = c_h \cdot s_n + v_n
+\end{equation}
+Comparing this to $x_n = H_n s_n + w_n$:
+\begin{itemize}
+    \item Observation matrix: $H_n = c_h$.
+    \item Measurement noise: $w_n = v_n$.
+    \item Measurement noise covariance: $R_n = \sigma_v^2$ (given variance of $v_k$).
+\end{itemize}
