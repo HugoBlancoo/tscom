@@ -96,7 +96,7 @@ Since the system state is a scalar constant ($s_n = s_{n-1}$), we identified tha
     Our initial guess of the fluid level is $\mu_\ell=250$ cm, and we assign a standard deviation $\sigma_\ell = 11$ cm to reflect our uncertainty about this guess. Measurement errors are uncorrelated, zero-mean Gaussian with standard deviation $\sigma_v = 25$ mbar, and the true fluid level is $340$ cm. Plot the time evolution of the state, the measurements, and the estimate, up to $n=200$, and for two different executions. Also, plot the time evolution of the standard deviation of the fluid level estimation error, in cm. Comment on your results.
 }
 
-\subsection*{Simulation Results}
+\subsubsection*{Simulation Results}
 
 The Kalman filter was simulated for the constant fluid level estimation problem using the derived scalar equations. The system parameters were set to $\mu_l = 250$ cm, $\sigma_l = 11$ cm, and the true level $l_{true} = 340$ cm. The measurement noise standard deviation was $\sigma_v = 25$ mbar.
 
@@ -105,7 +105,7 @@ The simulation results for $N=200$ iterations and two different noise realizatio
 \begin{figure}[h!]
     \centering
     % Sustituye 'figura1.png' por el nombre real de tu archivo de imagen
-    \includegraphics[width=0.8\textwidth]{img/task1_3_1.png}
+    \includegraphics[width=0.8\textwidth]{img/task1_4_1.png}
     \caption{Time evolution of the true state (black dashed), noisy measurements (dots), and Kalman filter estimates (colored lines) for two executions.}
     \label{fig:kalman_state}
 \end{figure}
@@ -113,7 +113,7 @@ The simulation results for $N=200$ iterations and two different noise realizatio
 \begin{figure}[h!]
     \centering
     % Sustituye 'figura2.png' por el nombre real de tu archivo de imagen
-    \includegraphics[width=0.8\textwidth]{img/task1_3_2.png}
+    \includegraphics[width=0.8\textwidth]{img/task1_4_2.png}
     \caption{Time evolution of the standard deviation of the estimation error ($\sqrt{\Sigma_{n|n}}$) for two executions.}
     \label{fig:kalman_sigma}
 \end{figure}
@@ -131,5 +131,9 @@ Based on the generated plots, we can draw the following conclusions:
 
     \item \textbf{Independence from Realizations:} The error standard deviation curves for both executions are identical and superimposed. This confirms a fundamental property of the Kalman Filter: the covariance evolution ($\Sigma_{n|n}$) depends only on the system matrices ($A, H, Q, R$) and is independent of the specific random values of the measurements ($x_n$). Therefore, the performance metric is deterministic and can be computed offline.
 \end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Question: Using mathematical induction, prove that $\Sigma_{n|n} = \frac{\sigma_\ell^2}{1+(n+1)\alpha c_h^2}$ for all $n\geq 0$. Does this expression look familiar? Evaluate it for $n=200$ with the parameters of the previous point, and check the result of your simulation.  What is the asymptotic value of $\Sigma_{n|n}$?}
 
 \vspace{0.5cm}
