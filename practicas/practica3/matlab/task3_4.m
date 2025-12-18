@@ -37,11 +37,11 @@ R = sigma_v^2;                  % Measurement noise covariance
 
 % Prepare Figures
 figure(1); hold on; grid on;
-title('Time Evolution: State, Measurements, and Estimate');
+title('Time Evolution: State, Measurements, and Estimate', 'Color', 'k');
 xlabel('Time index (n)'); ylabel('Fluid Level (cm)');
 
 figure(2); hold on; grid on;
-title('Standard Deviation of Estimation Error');
+title('Standard Deviation of Estimation Error', 'Color', 'k');
 xlabel('Time index (n)'); ylabel('Std Dev (cm)');
 
 colors = ['b', 'r']; % Colors for the two executions
@@ -97,6 +97,12 @@ for k = 1:num_execs
     
     % Plot on Figure 1
     figure(1);
+    set(gcf, 'Color', 'w');
+    set(gca, 'Color', 'w');
+    grid on;
+    set(gca, 'GridColor', 'k');  % 'k' es el código para negro
+    set(gca, 'GridAlpha', 1);
+    set(gca, 'XColor', 'k', 'YColor', 'k');
     % Plot measurements converted to cm (observed level) for valid comparison
     % We plot points (.) to avoid clutter
     plot(time_vec, x_hist/ch, '.', 'Color', [0.7 0.7 0.7], ...
@@ -108,6 +114,12 @@ for k = 1:num_execs
     
     % Plot on Figure 2 (Sigma)
     figure(2);
+    set(gcf, 'Color', 'w');
+    set(gca, 'Color', 'w');
+    grid on;
+    set(gca, 'GridColor', 'k');  % 'k' es el código para negro
+    set(gca, 'GridAlpha', 1);
+    set(gca, 'XColor', 'k', 'YColor', 'k');
     plot(time_vec, sqrt(Sigma_hist), 'Color', colors(k), 'LineWidth', 1.5, ...
         'DisplayName', sprintf('Exec %d', k));
 end
@@ -116,11 +128,11 @@ end
 figure(1);
 % Plot True Level once (it's the same for all)
 plot(time_vec, s_true_hist, 'k--', 'LineWidth', 2, 'DisplayName', 'True Level');
-legend('Location', 'best');
+legend('Location', 'best', 'Color','w', 'TextColor','k');
 ylim([200 450]); % Adjust view to see convergence
 
 figure(2);
-legend('Location', 'best');
+legend('Location', 'best', 'Color','w', 'TextColor','k');
 % Analytic Check (Optional validation)
 % Formula: Sigma_n = sigma_l^2 / (1 + (n+1)*alpha*ch^2)
 alpha = sigma_l^2 / sigma_v^2;
