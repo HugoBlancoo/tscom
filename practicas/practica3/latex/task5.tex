@@ -1,7 +1,7 @@
 Suppose now that fluid can be added to the tank, and that the tank is not 100\% tight, so that there may be some leakage. We have no control regarding the incoming or outcoming fluid flow, so we just model it as a random variable, which will become part of the unknown state vector. Thus, $\bm s_n$ is now a two-dimensional vector whose first entry is the fluid level at time $nT$, and whose second entry is the fluid flow (in e.g. cm$^3/$s) at time $nT$. If we assume\footnote{Note that this approximation is accurate if we sample significantly faster than the rate of change of the fluid flow.} that this flow remains approximately constant from $t=(n-1)T$ to $t=nT$, we can write
 \begin{eqnarray}
- \mbox{[fluid level at time $nT$]} &=& \mbox{[fluid level at time $(n-1)T$]} \nonumber \\
- & & {}+ \, \frac{T}{A} \,\times \, \mbox{[fluid flow at time $(n-1)T$]},
+    \mbox{[fluid level at time $nT$]} &=& \mbox{[fluid level at time $(n-1)T$]} \nonumber \\
+    & & {}+ \, \frac{T}{A} \,\times \, \mbox{[fluid flow at time $(n-1)T$]},
 \end{eqnarray}
 where $A$ is the area of the tank cross-section (assumed constant with height).
 
@@ -9,10 +9,38 @@ Our measurements, as before, are given by the hydrostatic pressure at the bottom
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Find a ``state evolution'' and ``measurement'' description for the system in the form of \eqref{eq:statespace}, assuming that the fluid flow remains constant with time. (Assume that the tank is sufficiently big so that it never overflows, and that the initial fluid level is sufficiently high so that the tank never empties out).}
+\textbf{Question: Find a ``state evolution'' and ``measurement'' description for the system in the form of (4), assuming that the fluid flow remains constant with time. (Assume that the tank is sufficiently big so that it never overflows, and that the initial fluid level is sufficiently high so that the tank never empties out).}
 \vspace{0.5cm}
 
-COMPLETAR
+\begin{itemize}
+    \item State vector:
+
+          Now we have two unknowns which change over time:
+          \subitem The fluid level ($l_n$) in cm.
+          \subitem The fluid flow ($q_n$) in $cm^3/s$
+          Therefore our state is now a 2x1 vector:
+          $$\bm s_n = \begin{bmatrix} l_n \\ q_n \end{bmatrix}$$
+    \item Transition matrix:
+
+          We are looking for a matrix $A_n$ that tells us how to calculate the current state from the previous one. $s_n = A_n s_{n-1}$.
+
+          We know that $l_n = l_{n-1} + \frac{T}{A_{tank}} \cdot q_{n-1}$.
+
+          We also know that $q_n$ is constant, so $q_n = q_{n-1}$
+
+          We can write it as a lineal system and extract the matrix:
+          $$\begin{cases}
+                  l_n = \mathbf{1} \cdot l_{n-1} + \mathbf{\frac{T}{A_{tank}}} \cdot q_{n-1} \\
+                  q_n = \mathbf{0} \cdot l_{n-1} + \mathbf{1} \cdot q_{n-1}
+              \end{cases}$$
+          $$\bm A_n = \begin{bmatrix} 1 & \frac{T}{A_{tank}} \\ 0 & 1 \end{bmatrix}$$
+    \item Observation Matrix:
+
+          $x_n = c_h \cdot l_n + \text{noise}$
+          $$x_n = \begin{bmatrix} c_h & 0 \end{bmatrix} \begin{bmatrix} l_n \\ q_n \end{bmatrix} + v_n$$
+          This means that $\bm H_n = \begin{bmatrix} c_h & 0 \end{bmatrix}$
+
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
