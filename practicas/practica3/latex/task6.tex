@@ -5,27 +5,144 @@ We decide to invest in an additional pressure sensor, which we install it at the
 \textbf{Question: Note that the addition of a new sensor does not alter the ''state evolution'' description of the system, but it obviously changes its ``measurement'' description. Give the corresponding details.}
 \vspace{0.5cm}
 
-COMPLETAR
+\begin{itemize}
+    \item \textbf{State vector (unchanged):}
+    
+    The state remains two-dimensional, containing both level and flow:
+    $$\mathbf{s}_n = \begin{bmatrix} l_n \\ q_n \end{bmatrix}$$
+    
+    \item \textbf{State transition matrix (unchanged):}
+    
+    The dynamics remain identical to Task 5:
+    $$\mathbf{A} = \begin{bmatrix} 1 & \frac{T}{A_{\text{tank}}} \\ 0 & 1 \end{bmatrix}$$
+    
+    where $T = 5$ s and $A_{\text{tank}} = \pi (11)^2 \approx 380.13$ cm$^2$.
+    
+    \item \textbf{Measurement matrix (modified):}
+    
+    In Task 5 we had one sensor measuring pressure:
+    $$x_n = c_h \cdot l_n + w_n \quad \Rightarrow \quad \mathbf{H} = \begin{bmatrix} c_h & 0 \end{bmatrix}$$
+    
+    Now with \textbf{two sensors}, both measuring pressure (proportional to level), the measurement becomes a vector:
+    $$\mathbf{x}_n = \begin{bmatrix} x_n^{(1)} \\ x_n^{(2)} \end{bmatrix} = \begin{bmatrix} c_h & 0 \\ c_h & 0 \end{bmatrix} \begin{bmatrix} l_n \\ q_n \end{bmatrix} + \begin{bmatrix} w_n^{(1)} \\ w_n^{(2)} \end{bmatrix}$$
+    
+    Therefore:
+    $$\boxed{\mathbf{H} = \begin{bmatrix} c_h & 0 \\ c_h & 0 \end{bmatrix}}$$
+    
+    Both sensors measure the same physical quantity (level via pressure), but with different noise levels.
+    
+    \item \textbf{Measurement noise covariance (modified):}
+    
+    The two sensors have independent errors with different variances:
+    $$\mathbf{R} = \begin{bmatrix} \sigma_{v,1}^2 & 0 \\ 0 & \sigma_{v,2}^2 \end{bmatrix} = \begin{bmatrix} 20^2 & 0 \\ 0 & 80^2 \end{bmatrix} \text{ mbar}^2$$
+    
+    The off-diagonal terms are zero because the sensor errors are independent.
+\end{itemize}
+
+\textbf{Summary:} The state evolution remains unchanged. The only modification is expanding the measurement equation from a scalar to a 2D vector, with each row of $\mathbf{H}$ corresponding to one sensor.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Write a Matlab script {\tt kalman\_flow2.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid (benzene) level and the fluid flow. Assume that the two sensors work correctly (i.e., $p=0$ in \eqref{eq:xno}), measuring pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.}
+\textbf{Question: Write a Matlab script {\tt kalman\_flow2.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid (benzene) level and the fluid flow. Assume that the two sensors work correctly (i.e., $p=0$ in \eqref{eq:xno}), measuring pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.
+}
+\textbf{The initial true fluid level is 340 cm; our guess is 250 cm, with a standard deviation of 11 cm. The true fluid flow is constant with time and equal to 33 cm$^3$/s; our guess is 0 cm$^3$/s, with standard deviation of 10 cm$^3$/s. Measurement errors are zero-mean uncorrelated Gaussian, with standard deviation of 20 mbar at the first sensor and of 80 mbar at the second.
+}
 \vspace{0.5cm}
 
-COMPLETAR
-
-The initial true fluid level is 340 cm; our guess is 250 cm, with a standard deviation of 11 cm. The true fluid flow is constant with time and equal to 33 cm$^3$/s; our guess is 0 cm$^3/$s, with standard deviation of 10 cm$^3/$s. Measurement errors are zero-mean uncorrelated Gaussian, with standard deviation of 20 mbar at the first sensor and of 80 mbar at the second.
+% referenciar el anexo
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textbf{Question: Plot the time evolution of the fluid level and fluid flow, the measurements, and the estimates, for up to $60$ minutes, and for two different executions. Comment on your results.}
 \vspace{0.5cm}
 
-COMPLETAR
+We executed the simulation for 60 minutes with two independent executions. The results are shown below.
+
+\subsection*{System Parameters}
+\begin{itemize}
+    \item \textbf{Tank:} Diameter 22 cm, sampling period $T=5$ s.
+    \item \textbf{True initial state:} Level 340 cm, flow 33 cm$^3$/s (constant).
+    \item \textbf{Initial guesses:} Level 250 cm ($\sigma_l=11$ cm), flow 0 cm$^3$/s ($\sigma_q=10$ cm$^3$/s).
+    \item \textbf{Sensor noise:} Sensor 1: $\sigma_{v,1}=20$ mbar, Sensor 2: $\sigma_{v,2}=80$ mbar.
+\end{itemize}
+
+\subsection*{Simulation Results}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/task6_level.png}
+    \caption{Time evolution of fluid level with two sensors. Gray asterisks: Sensor 1 measurements (low noise). Green asterisks: Sensor 2 measurements (high noise). Blue/red lines: Kalman filter estimates. Black dashed: true level.}
+    \label{fig:task6_level}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/task6_flow.png}
+    \caption{Time evolution of fluid flow with two sensors. The filter successfully estimates the hidden flow variable, converging from 0 cm$^3$/s to the true value of 33 cm$^3$/s.}
+    \label{fig:task6_flow}
+\end{figure}
+
+\subsection*{Discussion}
+
+\textbf{Fluid Level (Figure~\ref{fig:task6_level}):}
+\begin{enumerate}
+    \item \textbf{Sensor Quality Difference:} Sensor 1 (gray points) produces measurements with low scatter, clustering near the true trajectory. Sensor 2 (green points) has much higher noise, with measurements spread widely (up to $\pm 90$ cm equivalent deviation).
+    
+    \item \textbf{Filter Robustness:} Despite the noisy second sensor, the Kalman filter estimates (blue/red lines) track the true level accurately. The filter automatically gives more weight to Sensor 1 (which has higher precision) while still extracting useful information from Sensor 2.
+    
+    \item \textbf{Level Evolution:} The true level increases linearly at approximately $\frac{33}{380.13} \approx 0.087$ cm/s (5.2 cm/min) due to the constant positive flow.
+\end{enumerate}
+
+\textbf{Fluid Flow (Figure~\ref{fig:task6_flow}):}
+\begin{enumerate}
+    \item \textbf{Convergence:} Starting from an initial guess of 0 cm$^3$/s, the filter estimates converge to the true value of 33 cm$^3$/s within approximately 10-15 minutes.
+    
+    \item \textbf{Indirect Observation:} The flow is not directly measured. The filter infers it by observing how fast the level is changing over time, combining information from both sensors.
+    
+    \item \textbf{Stability:} After convergence, the estimates remain stable near 33 cm$^3$/s, demonstrating successful tracking of the hidden state.
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textbf{Question: Plot the time evolution of the standard deviation of the estimation error for both the fluid level (in cm) and the fluid flow (in cm$^3/$s), also for two different realizations. Superimpose the corresponding curves when only the first sensor is available, and explain what you see.}
 \vspace{0.5cm}
 
-COMPLETAR
+Figure~\ref{fig:task6_std} shows the evolution of the estimation error standard deviation for both level and flow, comparing the two-sensor case (Task 6) with the single-sensor case (Task 5).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/task6_std.png}
+    \caption{Evolution of estimation uncertainty. Solid lines: level uncertainty. Dashed lines: flow uncertainty. Blue/red: Task 6 (two sensors). Black: Task 5 (one sensor, $\sigma_v=25$ mbar) superimposed for comparison.}
+    \label{fig:task6_std}
+\end{figure}
+
+\subsection*{Comments on Results}
+
+\textbf{1. Deterministic Covariance Evolution:}
+\begin{itemize}
+    \item As in Task 5, the two executions (blue and red curves) are perfectly superimposed. This confirms that the uncertainty evolution depends only on the system matrices ($\mathbf{A}, \mathbf{H}, \mathbf{Q}, \mathbf{R}$) and is independent of the specific measurement realizations.
+\end{itemize}
+
+\textbf{2. Level Uncertainty (Solid Lines):}
+\begin{itemize}
+    \item \textbf{Task 6 (two sensors):} Uncertainty decreases rapidly and stabilizes around 2.5-3 cm after 40 minutes.
+    \item \textbf{Task 5 (one sensor):} Uncertainty also decreases but stabilizes at a slightly higher level.
+    \item \textbf{Benefit of second sensor:} Even though Sensor 2 is much noisier ($\sigma_{v,2}=80$ mbar) than the Task 5 sensor ($\sigma_v=25$ mbar), adding it still improves performance because it provides independent information. The Kalman filter fuses both sensors optimally, weighting Sensor 1 more heavily.
+\end{itemize}
+
+\textbf{3. Flow Uncertainty (Dashed Lines):}
+\begin{itemize}
+    \item The flow uncertainty decreases more slowly than the level uncertainty because flow is not directly observed—it must be inferred from the rate of change of level measurements.
+    \item \textbf{Task 6 vs Task 5:} The two-sensor configuration reduces flow uncertainty faster than the single-sensor case. By 60 minutes, Task 6 achieves approximately 0.2-0.25 cm$^3$/s, compared to 0.3 cm$^3$/s in Task 5.
+    \item The improvement is less dramatic than for level because flow estimation depends on observing trends over time, which is less sensitive to instantaneous measurement precision.
+\end{itemize}
+
+\textbf{4. Sensor Fusion Principle:}
+\begin{itemize}
+    \item This result demonstrates that multiple sensors, even if one is low quality, reduce uncertainty compared to a single sensor.
+    \item The Kalman filter automatically weights each sensor inversely proportional to its noise variance ($K \propto 1/\sigma_v^2$), so Sensor 1 dominates but Sensor 2 still contributes.
+\end{itemize}
+
+\subsection*{Conclusion}
+
+Adding a second sensor improves estimation accuracy for both level and flow, even when the second sensor has significantly higher noise. The Kalman filter's optimal sensor fusion capability ensures that all available information is used effectively.

@@ -9,11 +9,94 @@ where the random increment is modeled as a zero-mean Gaussian random variable wi
 \textbf{Question: Modify your script from Task 6 to incorporate \eqref{eq:rndflow}. Execute your Kalman filter simulation to cover up to $60$ minutes, plot the corresponding curves, and comment on your observations.}
 \vspace{0.5cm}
 
-COMPLETAR
+\subsection*{Modification to the Model}
+
+The key change from Task 6 is the addition of \textbf{process noise} to the flow equation. The flow now evolves as:
+\begin{equation}
+q_n = q_{n-1} + w_n, \quad w_n \sim \mathcal{N}(0, 0.35^2) \text{ cm}^3\text{/s}.
+\end{equation}
+
+This is implemented by updating the process noise covariance matrix:
+\begin{equation}
+\mathbf{Q} = \begin{bmatrix} 0 & 0 \\ 0 & 0.35^2 \end{bmatrix}.
+\end{equation}
+
+In Task 6, we had $\mathbf{Q} = \mathbf{0}$ (perfect model). Now, the flow is stochastic.
+
+\subsection*{Simulation Results}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/task7_level.png}
+    \caption{Fluid level estimation with random flow. The true level (black dashed) follows an irregular trajectory due to flow fluctuations. The Kalman filter estimates (blue/red) successfully track the unpredictable changes.}
+    \label{fig:task7_level}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/task7_flow.png}
+    \caption{Fluid flow estimation with random fluctuations. The true flow (black dashed) varies randomly over time. The filter estimates (blue/red) track the general trend while smoothing rapid fluctuations.}
+    \label{fig:task7_flow}
+\end{figure}
+
+\subsection*{Discussion}
+
+\textbf{Fluid Level (Figure~\ref{fig:task7_level}):}
+\begin{enumerate}
+    \item The true level no longer increases linearly as in Task 6. Instead, it follows an irregular trajectory reflecting the random flow variations.
+    \item The Kalman filter estimates track the true level successfully despite the unpredictable changes, remaining close to the true trajectory.
+    \item The filter adapts to the random behavior, demonstrating robustness to process uncertainty.
+\end{enumerate}
+
+\textbf{Fluid Flow (Figure~\ref{fig:task7_flow}):}
+\begin{enumerate}
+    \item The true flow fluctuates randomly between approximately 15 and 35 cm$^3$/s, rather than remaining constant at 33 cm$^3$/s as in Task 6.
+    \item The filter estimates track these variations with some smoothing, capturing the general trend without following every rapid fluctuation.
+    \item The estimates show more variability than in Task 6, reflecting the increased uncertainty introduced by the random process.
+\end{enumerate}
+
+\textbf{Key Difference from Task 6:}
+
+In Task 6, the system was \textbf{deterministic} (constant flow). Once the filter learned the flow value, it could predict future states accurately. In Task 7, the system is \textbf{stochastic}—the flow changes unpredictably at each step. The filter must continuously balance trusting its predictions versus incorporating new measurements.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textbf{Question: What are the asymptotic values of the standard deviation of the estimation error of: (i)  the fluid level (in cm); and (ii) the fluid flow (in cm$^3/$s)?}
 \vspace{0.5cm}
 
-COMPLETAR
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/task7_std.png}
+    \caption{Evolution of estimation uncertainty. Solid lines: level uncertainty (cm). Dashed lines: flow uncertainty (cm$^3$/s). Both uncertainties stabilize after approximately 20 minutes.}
+\end{figure}
+
+From the uncertainty plot (Figure X), we observe that both uncertainties decrease initially and then stabilize at constant values:
+
+\begin{itemize}
+    \item \textbf{Level estimation error:} stabilizes at approximately \textbf{3.0--3.5 cm}
+    \item \textbf{Flow estimation error:} stabilizes at approximately \textbf{3.3--3.4 cm$^3$/s}
+\end{itemize}
+
+\subsubsection*{Why Do They Stabilize?}
+
+In Task 6 (constant flow), the uncertainties kept decreasing because the system was deterministic—more measurements always meant more knowledge. 
+
+In Task 7 (random flow), the uncertainties reach a floor because:
+\begin{itemize}
+    \item The random flow introduces new uncertainty at every time step (process noise).
+    \item The measurements provide information that reduces uncertainty.
+    \item Eventually, these two effects balance out: the rate at which uncertainty is added (by randomness) equals the rate at which it is removed (by measurements).
+\end{itemize}
+
+This steady-state represents the best the filter can do given the inherent randomness of the system.
+
+\subsubsection*{Comparison with Task 6}
+
+\begin{itemize}
+    \item \textbf{Task 6 (constant flow):} Level uncertainty $\approx$ 2-3 cm, flow uncertainty $\approx$ 0.2-0.3 cm$^3$/s after 60 minutes (still decreasing).
+    \item \textbf{Task 7 (random flow):} Level uncertainty $\approx$ 3-3.5 cm, flow uncertainty $\approx$ 3.3-3.4 cm$^3$/s after 20 minutes (stabilized).
+\end{itemize}
+
+The key observation is that the flow uncertainty in Task 7 ($\sim$3.3 cm$^3$/s) is much higher than in Task 6 ($\sim$0.3 cm$^3$/s), and it stabilizes near the process noise level (0.35 cm$^3$/s). This makes sense: when the flow changes randomly by $\pm$0.35 cm$^3$/s at each step, the filter cannot estimate it more precisely than that fundamental randomness.
+
+\textbf{Conclusion:} With process noise, the Kalman filter reaches a steady state where estimation uncertainty no longer decreases. This steady-state value depends on the balance between measurement quality and process randomness.
