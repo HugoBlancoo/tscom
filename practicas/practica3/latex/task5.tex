@@ -44,28 +44,120 @@ Our measurements, as before, are given by the hydrostatic pressure at the bottom
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Write a Matlab script {\tt kalman\_flow.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid level and the fluid flow. Assume that the sensor works correctly (i.e., $p=0$ in \eqref{eq:xno}), measures pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.}
+\textbf{Question: Write a Matlab script {\tt kalman\_flow.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid level and the fluid flow. Assume that the sensor works correctly (i.e., $p=0$ in \eqref{eq:xno}), measures pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.
+    The initial true fluid level is 340 cm; our guess is 250 cm, with a standard deviation of 11 cm. The true fluid flow is constant with time and equal to 33 cm$^3$/s; our guess is 0 cm$^3/$s, with standard deviation of 10 cm$^3/$s. Measurement errors are zero-mean uncorrelated Gaussian, with standard deviation of 25 mbar
+}
 \vspace{0.5cm}
 
-COMPLETAR
+%% Meter anexo
 
-The initial true fluid level is 340 cm; our guess is 250 cm, with a standard deviation of 11 cm. The true fluid flow is constant with time and equal to 33 cm$^3$/s; our guess is 0 cm$^3/$s, with standard deviation of 10 cm$^3/$s. Measurement errors are zero-mean uncorrelated Gaussian, with standard deviation of 25 mbar
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textbf{Question: Plot the time evolution of the fluid level and fluid flow, the measurements, and the estimates, for up to $60$ minutes, and for two different executions. Comment on your results.}
 \vspace{0.5cm}
 
-COMPLETAR
+We implemented a Matlab script \texttt{kalman\_flow.m} to simulate the dynamic system and the Kalman filter. The state vector is defined as $\bm{s}_n = [l_n, q_n]^T$, including both fluid level and fluid flow.
+
+\subsection*{System Model and Parameters}
+Following the assignment instructions, the system parameters were set as follows:
+\begin{itemize}
+    \item \textbf{Tank Geometry:} Diameter $d=22$ cm, Sampling period $T=5$ s.
+    \item \textbf{True Initial State:} Level $l_0 = 340$ cm, Flow $q_{true} = 33$ cm$^3$/s (constant).
+    \item \textbf{Initial Estimates (Guesses):} $\hat{l}_{-1} = 250$ cm ($\sigma_l=11$), $\hat{q}_{-1} = 0$ cm$^3$/s ($\sigma_q=10$).
+    \item \textbf{Measurement Noise:} $\sigma_v = 25$ mbar.
+\end{itemize}
+
+The state transition matrix $\bm{A}$ and observation matrix $\bm{H}$ were implemented as derived in the previous section, assuming a constant flow model ($Q=0$).
+
+\subsection*{Simulation Results}
+The simulation was executed for 60 minutes. The results are illustrated below.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/fig_level.png}
+    \caption{Time evolution of the Fluid Level. The true level (dashed black) increases linearly due to the constant positive input flow. The Kalman filter estimate (blue) converges rapidly to the true trajectory, correcting the initial error of 90 cm.}
+    \label{fig:sim_level}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/fig_flow.png}
+    \caption{Time evolution of the Fluid Flow. The true flow is constant at 33 cm$^3$/s (dashed black). The filter starts with a guess of 0 cm$^3$/s (red line at t=0). Over time, the filter successfully estimates the hidden flow variable, stabilizing around the true value.}
+    \label{fig:sim_flow}
+\end{figure}
+
+\subsection*{Discussion}
+The results confirm the correct operation of the filter:
+\begin{enumerate}
+    \item \textbf{Flow Estimation:} Even though the sensor only measures pressure (which is proportional to level), the filter is able to estimate the unmeasured fluid flow ($q_n$). It achieves this by observing the \textit{rate of change} of the level measurements. Since the level rises consistently faster than predicted by a zero-flow model, the filter adjusts the flow state upwards until it matches the observed dynamics.
+    \item \textbf{Convergence:} The flow estimate takes some time (approx. 10-20 minutes) to fully settle at 33 cm$^3$/s. This is expected, as estimating a derivative (flow) from noisy position data (level) inherently requires averaging over a longer time window than estimating the position itself.
+    \item \textbf{Initial Correction:} The level estimate corrects the large initial offset ($340 - 250 = 90$ cm) very quickly, similar to the static case, driven by the measurement updates.
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textbf{Question: Plot the time evolution of the standard deviation of the estimation error for both the fluid level (in cm) and the fluid flow (in cm$^3/$s), also for two different realizations. Comment on your results.}
 \vspace{0.5cm}
 
-COMPLETAR
+Figure \ref{fig:sigma_dynamic} shows the time evolution of the standard deviation of the estimation error for both the fluid level ($\sqrt{\Sigma_{11}}$) and the fluid flow ($\sqrt{\Sigma_{22}}$) for two different simulation runs.
+
+\begin{figure}[H]
+    \centering
+    % Asegúrate de guardar la Figura 3 de Matlab como 'fig_sigma_dynamic.png'
+    \includegraphics[width=0.85\textwidth]{img/fig_sigma_dynamic.png}
+    \caption{Time evolution of the standard deviation of the estimation error for fluid level (solid lines) and fluid flow (dashed lines). Results for two independent realizations are plotted.}
+    \label{fig:sigma_dynamic}
+\end{figure}
+
+\subsubsection*{Comments on Results}
+Based on the results, we can draw the following conclusions:
+
+\begin{itemize}
+    \item \textbf{Independence from Realizations:} As observed in the plot, the curves for the two different realizations (blue and red) are perfectly superimposed. This confirms a fundamental property of the Kalman Filter: the covariance matrix evolution ($\Sigma_{n|n}$) depends exclusively on the system matrices ($\bm{A}, \bm{H}, \bm{Q}, \bm{R}$) and is independent of the specific measurement values ($\bm{x}_n$). Thus, the theoretical accuracy of the filter is deterministic.
+
+    \item \textbf{Convergence Speed:}
+          \begin{itemize}
+              \item The \textbf{level error} (solid line) decreases relatively fast. This is expected because the level is directly observed by the pressure sensor.
+              \item The \textbf{flow error} (dashed line) decreases much more slowly. Since the flow is a "hidden" state that relates to the derivative of the level, the filter requires a longer history of measurements to reduce the uncertainty in this variable.
+          \end{itemize}
+
+    \item \textbf{Asymptotic Behavior:} Both standard deviations tend asymptotically towards zero. This is a consequence of assuming a perfect model with no process noise ($\bm{Q} = \bm{0}$). Under this assumption, the filter accumulates information indefinitely, theoretically achieving infinite precision as $n \to \infty$.
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textbf{Question:  Repeat the above two points if we change the standard deviation for our guess of the flow to 2 cm$^3/$s, and comment on your results.}
 \vspace{0.5cm}
+
+We repeated the simulation reducing the standard deviation of the initial flow guess from $10$ cm$^3$/s to $2$ cm$^3$/s. This implies that the filter is initialized with a higher confidence in the incorrect guess ($\hat{q}_{-1}=0$). The results differ significantly from the previous case:
+
+\subsubsection*{1. Impact on Convergence Speed}
+\begin{figure}[H]
+    \centering
+    % Guarda la Figura 2 (la del flujo) de esta nueva ejecución como 'figura_flow_sigma2.png'
+    \includegraphics[width=0.85\textwidth]{img/figura_flow_sigma2.png}
+    \caption{Fluid flow estimation with reduced initial uncertainty ($\sigma_q = 2$). Compared to the previous case ($\sigma_q=10$), the convergence towards the true value ($33$ cm$^3$/s) is significantly slower.}
+    \label{fig:flow_sigma2}
+\end{figure}
+
+\textbf{Comment:} As seen in Figure \ref{fig:flow_sigma2}, the flow estimate rises much more slowly ("sluggish response").
+\begin{itemize}
+    \item \textbf{Explanation:} By setting a small $\sigma_q$, we effectively told the filter that our initial guess ($0$) was very reliable. Consequently, the Kalman gain is initially very small. The filter is ``reluctant'' to change its internal state based on the measurements, attributing the level changes to noise rather than to a wrong flow estimate.
+    \item \textbf{Trade-off:} This demonstrates that high initial confidence (low $\sigma$) reduces sensitivity to noise but also reduces the speed of response to initialization errors.
+\end{itemize}
+
+\subsubsection*{2. Impact on Error Standard Deviation}
+\begin{figure}[H]
+    \centering
+    % Guarda la Figura 3 (la de std dev) de esta nueva ejecución como 'figura_sigma_sigma2.png'
+    \includegraphics[width=0.85\textwidth]{img/figura_sigma_sigma2.png}
+    \caption{Time evolution of the standard deviation of the estimation error for $\sigma_q = 2$. The flow error curve (dashed) starts at a lower value compared to the previous case.}
+    \label{fig:sigma_sigma2}
+\end{figure}
+
+\textbf{Comment:}
+\begin{itemize}
+    \item The curve for the flow error standard deviation ($\sqrt{\Sigma_{22}}$, dashed line) starts at $2$ cm$^3$/s.
+    \item Although the filter reports a lower standard deviation (it "thinks" it is more precise), we observed in the previous plot that the actual estimation error is large for a longer time. This is a clear example of filter \textbf{overconfidence}: the filter underestimates the true error because it was initialized with an overly optimistic certainty about a wrong value.
+\end{itemize}
