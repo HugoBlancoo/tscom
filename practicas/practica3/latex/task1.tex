@@ -1,100 +1,98 @@
-\textbf{Question: Find the expression of the Least Squares (LS) estimate  of the fluid level $\ell$, given the pressure observations $\bm x = [\begin{array}{cccc} x_0 & x_1 & \cdots & x_{n-1}\end{array}]^T$. How do you interpret this estimate?}
+The detailed derivations and step-by-step justifications for all questions in this section can be found in Appendix~\ref{app:handwritten}.
+
+\vspace{0.5cm}
+\question{Question: Find the expression of the Least Squares (LS) estimate of the fluid level $\ell$, given the pressure observations $\bm x = [\begin{array}{cccc} x_0 & x_1 & \cdots & x_{n-1}\end{array}]^T$. How do you interpret this estimate?}
 \vspace{0.5cm}
 
 We have the model:
 \begin{equation*}
-  \bm z = H \theta + \bm v
+  \bm x = H \theta + \bm e
 \end{equation*}
 
 In our case:
 \begin{itemize}
-  \item $\bm z = \bm x$ (observations)
-  \item $\theta = \ell$ (scalar parameter to estimate)
-  \item $H = c_h \, \mathbf{1}_n$ (vector of $c_h$, $n \times 1$)
+  \item $\bm x = [x_0, x_1, \ldots, x_{n-1}]^T$ is the vector of pressure measurements (in mbar).
+  \item $\theta = \ell$ (scalar parameter to estimate).
+  \item $H = c_h \, \mathbf{1}_n$ (measurement matrix, $n \times 1$).
+  \item $\bm e = [e_0, e_1, \ldots, e_{n-1}]^T = [v_0, v_1, \ldots, v_{n-1}]^T$ is the vector of measurement noise samples.
 \end{itemize}
 
 All vectors:
 \begin{equation*}
-  \bm z = \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_{n-1} \end{bmatrix}, \quad
+  \bm x = \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_{n-1} \end{bmatrix}, \quad
   \mathbf{1}_n = \begin{bmatrix} 1 \\ 1 \\ \vdots \\ 1 \end{bmatrix}, \quad
-  H = \begin{bmatrix} c_h \\ c_h \\ \vdots \\ c_h \end{bmatrix}
+  H = \begin{bmatrix} c_h \\ c_h \\ \vdots \\ c_h \end{bmatrix}, \quad
+  \bm e = \begin{bmatrix} e_0 \\ e_1 \\ \vdots \\ e_{n-1} \end{bmatrix}
 \end{equation*}
 
 The LS estimator is given by the normal equations:
 \begin{equation*}
-  \hat{\theta}_{\text{LS}} = (H^T H)^{-1} H^T \bm z
-  = \left( \mathbf{1}_n^T c_h^{\cancel{2}} \mathbf{1}_n \right)^{-1} \frac{1}{\cancel{c_h}} c_h \sum_{k} x_k
-  = \frac{1}{n \, c_h} \sum_{k} x_k
+  \hat{\theta}_{\text{LS}} = \hat{\ell}_{\text{LS}} = (H^T H)^{-1} H^T \bm x
+  = \frac{1}{n \, c_h} \sum_{k=0}^{n-1} x_k
 \end{equation*}
 
 Therefore, our estimator is:
 \begin{equation*}
-  \boxed{\hat{\ell} = \frac{\sum_k x_k}{n \, c_h}}
+  \boxed{\hat{\ell}_{\text{LS}} = \frac{1}{n \, c_h}\sum_{k=0}^{n-1} x_k}
 \end{equation*}
 
 \textbf{Interpretation:} This is the average of all the measurements scaled by $c_h$.
 
 The variance of the estimate is:
 \begin{equation*}
-  \mathrm{var}(\hat{\ell}) = \mathrm{var}\left(\frac{\sum_k x_k}{n \, c_h}\right)
-  = \frac{\mathrm{var}(\bm z)}{(n \, c_h)^2}
-  = \frac{n \, \sigma_v^2}{n^2 \, c_h^2}
-  = \frac{\sigma_v^2}{n \, c_h^2}
+  \mathrm{var}(\hat{\ell}_{\text{LS}}) = \mathrm{var}\left(\frac{1}{n \, c_h} \sum_{k=0}^{n-1} x_k\right)
+  = \frac{1}{(n \, c_h)^2} \mathrm{var}\left(\sum_{k=0}^{n-1} x_k\right)
+  = \frac{1}{(n \, c_h)^2} \cdot n \sigma_e^2
+  = \frac{\sigma_e^2}{n \, c_h^2}
 \end{equation*}
 
 This shows that as we increase the number of measurements $n$, the variance of our estimator decreases proportionally to $\frac{1}{n}$.
 
+The detailed derivation can be found in Appendix~\ref{app:handwritten}, Figure~\ref{fig:task1_q1}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Recall that the LMMSE estimator of $\ell$ based on $\bm x$ is given by
+\vspace{0.5cm}
+\question{Question: Recall that the LMMSE estimator of $\ell$ based on $\bm x$ is given by
   $ \hat{\ell}(\bm x) = \mu_\ell + \bm C_{\ell x} \bm C_{xx}^{-1}(\bm x - \bm \mu_x)$.
   Obtain the values of $\bm \mu_x$, $\bm C_{\ell x}$ and $\bm C_{xx}$ for this problem.}
 \vspace{0.5cm}
 
+Given the model $\bm x = c_h \, \ell \, \mathbf{1}_n + \bm v$, where $\ell$ is the fluid level, $\bm v$ is the measurement noise vector, and $\mathbf{1}_n$ is the $n \times 1$ vector of ones, we compute the required statistics:
+
 \subsubsection*{Mean vector $\bm \mu_x$}
 
-\begin{align}
-  \mu_x & = \mathbb{E}[\bm x] = \mathbb{E}[c_h \, \ell \, \mathbf{1}_n + \bm v]                                      \\
-        & = c_h \, \underbrace{\mathbb{E}[\ell]}_{\mu_\ell} \, \mathbf{1}_n + \underbrace{\mathbb{E}[\bm v]}_{\bm 0} \\
-        & = c_h \, \mu_\ell \, \mathbf{1}_n
-\end{align}
-
-where $\mathbf{1}_n$ is the $n \times 1$ vector of ones.
+\begin{equation*}
+  \bm \mu_x = \mathbb{E}[\bm x] = c_h \, \mathbb{E}[\ell] \, \mathbf{1}_n + \mathbb{E}[\bm v] = c_h \, \mu_\ell \, \mathbf{1}_n
+\end{equation*}
 
 \subsubsection*{Cross-covariance $\bm C_{\ell x}$}
 
-\begin{align}
-  \bm C_{\ell x} & = \mathrm{cov}(\ell, \bm x) = \mathrm{cov}(\ell, c_h \, \ell \, \mathbf{1}_n + \bm v)        \\
-                 & = \mathrm{cov}(\ell, c_h \, \ell) + \underbrace{\mathrm{cov}(\ell, \bm v)}_{\bm 0}           \\
-                 & = \mathrm{cov}(\ell, \ell) \, c_h \, \mathbf{1}_n^T = \sigma_\ell^2 \, c_h \, \mathbf{1}_n^T
-\end{align}
+\begin{equation*}
+  \bm C_{\ell x} = \mathrm{cov}(\ell, \bm x) = \mathrm{cov}(\ell, c_h \, \ell \, \mathbf{1}_n + \bm v) 
+  = \mathrm{cov}(\ell, \ell) \, c_h \, \mathbf{1}_n^T = \sigma_\ell^2 \, c_h \, \mathbf{1}_n^T
+\end{equation*}
 
-Note: $\ell$ is a scalar, $\bm x \in \mathbb{R}^n \Rightarrow \bm C_{\ell x}$ is a $(1 \times n)$ row vector: $\sigma_\ell^2 \, c_h \, \mathbf{1}_n^T$.
+Note: $\ell$ is a scalar and $\bm x \in \mathbb{R}^n$, so $\bm C_{\ell x}$ is a $(1 \times n)$ row vector.
 
 \subsubsection*{Covariance matrix $\bm C_{xx}$}
 
-\textbf{Element $i$:}
-\begin{align}
-  C_{xx}^{(i,i)} & = \mathrm{cov}(x_i, x_i) = \mathrm{cov}(c_h \, \ell + v_i, c_h \, \ell + v_i) \\
-                 & = c_h^2 \, \sigma_\ell^2 + \sigma_v^2
-\end{align}
-
-This gives the diagonal elements.
-
-\textbf{Elements $i \neq j$:}
-\begin{align}
-  C_{xx}^{(i,j)} & = \mathrm{cov}(x_i, x_j) = \mathrm{cov}(c_h \, \ell + v_i, c_h \, \ell + v_j)                 \\
-                 & = c_h^2 \, \sigma_\ell^2 + \underbrace{\mathrm{cov}(v_i, v_j)}_{=0}  = c_h^2 \, \sigma_\ell^2
-\end{align}
-
-This gives the off-diagonal elements.
-
-Therefore:
+The diagonal elements are:
 \begin{equation*}
-  \bm C_{xx} = c_h^2 \, \sigma_\ell^2 \, U_n + \sigma_v^2 \, \mathbf{I}_n = U_n \, c_h^2 \, \sigma_\ell^2 + \mathbf{I}_n \, \sigma_v^2
+  C_{xx}^{(i,i)} = \mathrm{cov}(x_i, x_i) = c_h^2 \, \sigma_\ell^2 + \sigma_v^2
 \end{equation*}
 
-where $U_n = \mathbf{1}_n \mathbf{1}_n^T$ is the $n \times n$ matrix of ones.
+The off-diagonal elements are:
+\begin{equation*}
+  C_{xx}^{(i,j)} = \mathrm{cov}(x_i, x_j) = c_h^2 \, \sigma_\ell^2 \quad (i \neq j)
+\end{equation*}
+
+Therefore, the covariance matrix can be written as:
+\begin{equation*}
+  \bm C_{xx} = c_h^2 \, \sigma_\ell^2 \, U_n + \sigma_v^2 \, \mathbf{I}_n
+\end{equation*}
+
+where $U_n = \mathbf{1}_n \mathbf{1}_n^T$ is the $n \times n$ matrix of ones and $\mathbf{I}_n$ is the identity matrix.
 
 \subsubsection*{Summary}
 
@@ -103,149 +101,120 @@ where $U_n = \mathbf{1}_n \mathbf{1}_n^T$ is the $n \times n$ matrix of ones.
     \begin{aligned}
       \bm \mu_x      & = c_h \, \mu_\ell \, \mathbf{1}_n                                  \\
       \bm C_{\ell x} & = \sigma_\ell^2 \, c_h \, \mathbf{1}_n^T \quad \text{(row vector)} \\
-      \bm C_{xx}     & = U_n \, c_h^2 \, \sigma_\ell^2 + \mathbf{I}_n \, \sigma_v^2
+      \bm C_{xx}     & = c_h^2 \, \sigma_\ell^2 \, U_n + \sigma_v^2 \, \mathbf{I}_n
     \end{aligned}
   }
 \end{equation*}
 
+The detailed derivation can be found in Appendix~\ref{app:handwritten}, Figure~\ref{fig:task2_q1}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Use the Matrix Inversion Lemma to obtain $\bm C_{xx}^{-1}$ in closed form.}
+\vspace{0.5cm}
+\question{Question: Use the Matrix Inversion Lemma to obtain $\bm C_{xx}^{-1}$ in closed form.}
 \vspace{0.5cm}
 
-\textbf{Matrix Inversion Lemma:}
+We apply the Matrix Inversion Lemma\footnote{Also known as the Woodbury matrix identity. See: \url{https://en.wikipedia.org/wiki/Woodbury_matrix_identity}}:
 \begin{equation*}
   (A + UCV)^{-1} = A^{-1} - A^{-1} U(C^{-1} + VA^{-1}U)^{-1} VA^{-1}
 \end{equation*}
 
-In our case, we have:
+to the covariance matrix:
 \begin{equation*}
-  \bm C_{xx} = \mathbf{I}_n \sigma_v^2 + \mathbf{1}_n \, c_h^2 \sigma_\ell^2 \, \mathbf{1}_n^T
+  \bm C_{xx} = \sigma_v^2 \, \mathbf{I}_n + c_h^2 \sigma_\ell^2 \, \mathbf{1}_n \mathbf{1}_n^T
 \end{equation*}
 
-Identify:
+We identify the components:
 \begin{itemize}
-  \item $A = \mathbf{I}_n \sigma_v^2$
-  \item $U = \mathbf{1}_n$
-  \item $C = c_h^2 \sigma_\ell^2$
-  \item $V = \mathbf{1}_n^T$
+  \item $A = \sigma_v^2 \, \mathbf{I}_n$
+  \item $U = \mathbf{1}_n$ (column vector)
+  \item $C = c_h^2 \sigma_\ell^2$ (scalar)
+  \item $V = \mathbf{1}_n^T$ (row vector)
 \end{itemize}
 
-Therefore:
-\begin{align}
-  \bm C_{xx}^{-1} & = (\mathbf{I}_n \sigma_v^2 + \mathbf{1}_n \, c_h^2 \sigma_\ell^2 \, \mathbf{1}_n^T)^{-1}                                                                                                                                                        \\
-                  & = \frac{\mathbf{I}_n}{\sigma_v^2} - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \left( \frac{1}{c_h^2 \sigma_\ell^2} + \mathbf{1}_n^T \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \right)^{-1} \mathbf{1}_n^T \frac{\mathbf{I}_n}{\sigma_v^2} \\
-                  & = \frac{\mathbf{I}_n}{\sigma_v^2} - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \left( \frac{1}{c_h^2 \sigma_\ell^2} + \frac{n}{\sigma_v^2} \right)^{-1} \mathbf{1}_n^T \frac{\mathbf{I}_n}{\sigma_v^2}
-\end{align}
+Applying the lemma:
+\begin{align*}
+  \bm C_{xx}^{-1} 
+  &= \frac{\mathbf{I}_n}{\sigma_v^2} - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \left( \frac{1}{c_h^2 \sigma_\ell^2} + \mathbf{1}_n^T \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \right)^{-1} \mathbf{1}_n^T \frac{\mathbf{I}_n}{\sigma_v^2} \\
+  &= \frac{\mathbf{I}_n}{\sigma_v^2} - \frac{1}{\sigma_v^2} \mathbf{1}_n \left( \frac{1}{c_h^2 \sigma_\ell^2} + \frac{n}{\sigma_v^2} \right)^{-1} \mathbf{1}_n^T \frac{1}{\sigma_v^2} \\
+  &= \frac{\mathbf{I}_n}{\sigma_v^2} - \frac{a}{\sigma_v^2} \, U_n
+\end{align*}
 
-Define:
+where we define:
 \begin{equation*}
   a = \frac{c_h^2 \, \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \, \sigma_\ell^2}
 \end{equation*}
 
-\textbf{Verification that $\bm C_{xx} \bm C_{xx}^{-1} = \mathbf{I}_n$:}
+and $U_n = \mathbf{1}_n \mathbf{1}_n^T$ is the $n \times n$ matrix of ones.
 
-\begin{align}
-   & \left[\mathbf{I}_n \mathbf{1}_n c_h^2 \sigma_\ell^2 + \mathbf{I}_n \sigma_v^2\right] \left[\frac{\mathbf{I}_n}{\sigma_v^2} - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \, a \right]                                                                                              \\
-   & = \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n c_h^2 \sigma_\ell^2 - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n c_h^2 \sigma_\ell^2 \frac{c_h^2 \sigma_\ell^2}{\sigma_v^2} n \, a + \mathbf{I}_n - \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n a \, a                            \\
-   & \quad \text{(debe ser $\beta$)}                                                                                                                                                                                                                                                     \\
-   & \Rightarrow \frac{\mathbf{I}_n}{\sigma_v^2} \mathbf{1}_n \left( \frac{c_h^2 \sigma_\ell^2}{\sigma_v^2} - \frac{c_h^2 \sigma_\ell^2 n}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} - \frac{c_h^2 c_i^2}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} \right) + \mathbf{I}_n                     \\
-   & \Rightarrow \frac{c_h^2 \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} \left( \frac{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2}{\sigma_v^2} - \frac{c_h^2 \sigma_\ell^2}{\sigma_v^2} n - 1 \right) = \sigma_v^2 n \, c_h^2 \sigma_\ell^2 - c_h^2 \sigma_\ell^2 n - \sigma_v^2 = 0
-\end{align}
+\subsubsection*{Final Result}
 
-Therefore:
 \begin{equation*}
   \boxed{
-    \bm C_{xx}^{-1} = \frac{\mathbf{I}_n}{\sigma_v^2} - \frac{a}{\sigma_v^2} U_n
+    \bm C_{xx}^{-1} = \frac{1}{\sigma_v^2} \left( \mathbf{I}_n - a \, U_n \right)
   }
 \end{equation*}
 
-where $a = \dfrac{c_h^2 \, \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \, \sigma_\ell^2}$ and $U_n = \mathbf{1}_n \mathbf{1}_n^T$.
+where:
+\begin{equation*}
+  a = \frac{c_h^2 \, \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \, \sigma_\ell^2}, \quad U_n = \mathbf{1}_n \mathbf{1}_n^T
+\end{equation*}
+
+The detailed derivation and verification that $\bm C_{xx} \bm C_{xx}^{-1} = \mathbf{I}_n$ can be found in Appendix~\ref{app:handwritten}, Figure~\ref{fig:task2_q2}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Let $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$ and $S = \sum_{k=0}^{n-1}x_k$. Prove that
-  \begin{equation*} \label{eq:lmmse_ave}
+\vspace{0.5cm}
+\question{Question: Let $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$ and $S = \sum_{k=0}^{n-1}x_k$. Prove that
+  \begin{equation*}
     \hat \ell(\bm x) = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} S.
   \end{equation*}
   How do you interpret the parameter $\alpha$?}
 \vspace{0.5cm}
 
-\textbf{Question: Let $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$ and $S = \sum_{k=0}^{n-1}x_k$. Prove that
-  \begin{equation*} \label{eq:lmmse_ave}
-    \hat \ell(\bm x) = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} S.
-  \end{equation*}
-  How do you interpret the parameter $\alpha$?}
-\vspace{0.5cm}
-
-
-Recall the LMMSE estimator:
+Starting from the LMMSE estimator:
 \begin{equation*}
   \hat{\ell}(\bm x) = \mu_\ell + \bm C_{\ell x} \bm C_{xx}^{-1}(\bm x - \bm \mu_x)
 \end{equation*}
 
-Substituting the values we found previously:
-\begin{align}
-  \hat{\ell}(\bm x) & = \mu_\ell + \sigma_\ell^2 c_h \mathbf{1}_n^T \left[\frac{\mathbf{I}_n}{\sigma_v^2} - \frac{a}{\sigma_v^2} U_n\right](\bm x - c_h \mu_\ell \mathbf{1}_n)         \\
-                    & = \mu_\ell + \frac{\sigma_\ell^2 c_h}{\sigma_v^2} \mathbf{1}_n^T \left[\mathbf{I}_n - a \, \mathbf{1}_n \mathbf{1}_n^T\right](\bm x - c_h \mu_\ell \mathbf{1}_n)
-\end{align}
-
-Note that:
-\begin{equation*}
-  \mathbf{1}_n^T \mathbf{I}_n = \mathbf{1}_n^T, \quad \mathbf{1}_n^T \mathbf{1}_n \mathbf{1}_n^T = n \, \mathbf{1}_n^T
-\end{equation*}
+Substituting the values obtained previously and simplifying (using $S = \mathbf{1}_n^T \bm x = \sum_{k=0}^{n-1} x_k$):
+\begin{align*}
+  \hat{\ell}(\bm x) 
+  &= \mu_\ell + \frac{\sigma_\ell^2 c_h}{\sigma_v^2} \mathbf{1}_n^T \left[\mathbf{I}_n - a \, U_n\right](\bm x - c_h \mu_\ell \mathbf{1}_n) \\
+  &= \mu_\ell - \frac{\alpha c_h^2 \, n \, \mu_\ell}{1 + n \, \alpha \, c_h^2} + \frac{\alpha c_h}{1 + n \, \alpha \, c_h^2} S \\
+  &= \frac{1}{1 + n \, \alpha \, c_h^2} \mu_\ell + \frac{\alpha c_h}{1 + n \, \alpha \, c_h^2} S
+\end{align*}
 
 Therefore:
-\begin{align}
-  \hat{\ell}(\bm x) & = \mu_\ell + \frac{\sigma_\ell^2 c_h}{\sigma_v^2} [\mathbf{1}_n^T - a \, n \, \mathbf{1}_n^T](\bm x - c_h \mu_\ell \mathbf{1}_n)                                                                                                \\
-                    & = \mu_\ell + \frac{\sigma_\ell^2 c_h}{\sigma_v^2} \mathbf{1}_n^T \left[1 - \frac{n \, c_h^2 \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2}\right](\bm x - c_h \mu_\ell \mathbf{1}_n)                                     \\
-                    & = \mu_\ell + \frac{\sigma_\ell^2 c_h}{\sigma_v^2} \mathbf{1}_n^T \left[\frac{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2 - n \, c_h^2 \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2}\right](\bm x - c_h \mu_\ell \mathbf{1}_n) \\
-                    & = \mu_\ell + \frac{\sigma_\ell^2 c_h}{\sigma_v^2} \mathbf{1}_n^T \left[\frac{\sigma_v^2}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2}\right](\bm x - c_h \mu_\ell \mathbf{1}_n)                                                       \\
-                    & = \mu_\ell + \frac{\sigma_\ell^2 c_h}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2}(S - n \, c_h \mu_\ell)
-\end{align}
-
-where $S = \mathbf{1}_n^T \bm x = \sum_{k=0}^{n-1} x_k$.
-
-Continuing:
-\begin{align}
-  \hat{\ell}(\bm x) & = \mu_\ell + \frac{\sigma_\ell^2 c_h}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} S - \frac{\sigma_\ell^2 c_h^2 n}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} \mu_\ell                                              \\
-                    & = \mu_\ell \left(1 - \frac{n \, c_h^2 \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2}\right) + \frac{\sigma_\ell^2 c_h}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} S                                     \\
-                    & = \mu_\ell \left(\frac{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2 - n \, c_h^2 \sigma_\ell^2}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2}\right) + \frac{\sigma_\ell^2 c_h}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} S \\
-                    & = \frac{\sigma_v^2}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} \mu_\ell + \frac{\sigma_\ell^2 c_h}{\sigma_v^2 + n \, c_h^2 \sigma_\ell^2} S
-\end{align}
-
-Dividing numerator and denominator by $\sigma_v^2$:
-\begin{align}
-  \hat{\ell}(\bm x) & = \frac{1}{1 + n \, c_h^2 \frac{\sigma_\ell^2}{\sigma_v^2}} \mu_\ell + \frac{\frac{\sigma_\ell^2}{\sigma_v^2} c_h}{1 + n \, c_h^2 \frac{\sigma_\ell^2}{\sigma_v^2}} S
-\end{align}
-
-Substituting $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$:
 \begin{equation*}
   \boxed{
     \hat{\ell}(\bm x) = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} S
   }
 \end{equation*}
 
+\subsubsection*{Interpretation of $\alpha$}
 
-\textbf{Interpretation of the parameter $\alpha$:}
+The parameter $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$ represents the \textbf{signal-to-noise ratio (SNR)}: the ratio of the fluid level variance to the measurement noise variance.
 
-The parameter $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$ represents the \textbf{signal-to-noise ratio} (SNR). Specifically, it is the ratio of the variance of the fluid level $\ell$ to the variance of the measurement noise $v_k$.
-
+\textbf{Physical meaning:}
 \begin{itemize}
-  \item When $\alpha \to 0$ (low SNR, noise dominates): The estimator approaches $\hat{\ell} \approx \mu_\ell$, meaning we rely heavily on the prior mean and trust the measurements less.
-
-  \item When $\alpha \to \infty$ (high SNR, signal dominates): The estimator gives more weight to the measurements $S$, and less weight to the prior $\mu_\ell$.
+  \item \textbf{$\alpha \to 0$ (low SNR):} Noisy measurements. The estimator $\hat{\ell} \approx \mu_\ell$ relies heavily on prior knowledge.
+  
+  \item \textbf{$\alpha \to \infty$ (high SNR):} Clean measurements. The estimator gives more weight to the data $S$ and less to the prior $\mu_\ell$.
 \end{itemize}
 
-This parameter controls the \textbf{trade-off between prior knowledge and observed data}. A higher $\alpha$ indicates that the true signal variance is large relative to the noise, so we should trust the measurements more. A lower $\alpha$ indicates noisy measurements, so we should rely more on our prior knowledge.
+This parameter controls the \textbf{trade-off between prior knowledge and observed data}. Higher $\alpha$ means we trust the measurements more; lower $\alpha$ means we rely more on the prior.
+
+The detailed algebraic derivation can be found in Appendix~\ref{app:handwritten}, Figure~\ref{fig:task1_q4}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Show that the normalized MSE obtained with this estimator is
+\vspace{0.5cm}
+\question{Question: Show that the normalized MSE obtained with this estimator is
   \[ \frac{\mathbb{E}\{(\ell-\hat \ell(\bm x))^2\}}{\sigma_\ell^2} = \frac{1}{1+n\alpha c_h^2}. \]}
 \vspace{0.5cm}
 
-We need to compute the mean squared error (MSE) of the estimator. Recall that:
+Recall that from the previous question, the LMMSE estimator can be written as:
 \begin{equation*}
   \hat{\ell}(\bm x) = a \, \mu_\ell + b \, S
 \end{equation*}
@@ -255,75 +224,43 @@ where:
   a = \frac{1}{1+n\alpha c_h^2}, \quad b = \frac{\alpha c_h}{1+n\alpha c_h^2}, \quad S = \sum_{k=0}^{n-1} x_k = n \, c_h \, \ell + \sum_{k=0}^{n-1} v_k
 \end{equation*}
 
-Also note that $\sigma_\ell^2 = \mathbb{E}\{\ell^2\} - \mu_\ell^2 \Rightarrow \mathbb{E}\{\ell^2\} = \sigma_\ell^2 + \mu_\ell^2$.
+We expand the MSE:
+\begin{equation*}
+  \mathbb{E}\{(\ell - \hat{\ell}(\bm x))^2\} = \mathbb{E}\{\ell^2\} - 2\mathbb{E}\{\ell \hat{\ell}(\bm x)\} + \mathbb{E}\{\hat{\ell}(\bm x)^2\}
+\end{equation*}
 
+Computing each term (using $\mathbb{E}\{\ell^2\} = \sigma_\ell^2 + \mu_\ell^2$ and independence of $\ell$ and $v_k$):
 
-\subsubsection*{Expansion of the MSE}
-
-First, we expand the squared error:
-\begin{align}
-  \mathbb{E}\{(\ell - \hat{\ell}(\bm x))^2\} & = \mathbb{E}\{\ell^2 - 2\ell \hat{\ell}(\bm x) + \hat{\ell}(\bm x)^2\}                             \\
-                                             & = \mathbb{E}\{\ell^2\} - 2\mathbb{E}\{\ell \hat{\ell}(\bm x)\} + \mathbb{E}\{\hat{\ell}(\bm x)^2\}
-\end{align}
-
-
-\textbf{Term 1:} $\mathbb{E}\{\ell^2\} = \sigma_\ell^2 + \mu_\ell^2$
-
+\textbf{Term 1:} 
+\begin{equation*}
+  \mathbb{E}\{\ell^2\} = \sigma_\ell^2 + \mu_\ell^2
+\end{equation*}
 
 \textbf{Term 2:}
-\begin{align}
-  \mathbb{E}\{\ell \hat{\ell}(\bm x)\} & = \mathbb{E}\{\ell(a \mu_\ell + b S)\}                                                          \\
-                                       & = a \mu_\ell \mathbb{E}\{\ell\} + b \mathbb{E}\left\{\ell \sum_{k=0}^{n-1} x_k\right\}          \\
-                                       & = a \mu_\ell^2 + b \mathbb{E}\left\{\ell \sum_{k=0}^{n-1} (c_h \ell + v_k)\right\}              \\
-                                       & = a \mu_\ell^2 + b \, n \, c_h \mathbb{E}\{\ell^2\} + b \sum_{k=0}^{n-1} \mathbb{E}\{\ell v_k\} \\
-                                       & = a \mu_\ell^2 + b \, n \, c_h (\sigma_\ell^2 + \mu_\ell^2)
-\end{align}
+\begin{equation*}
+  \mathbb{E}\{\ell \hat{\ell}(\bm x)\} = a \mu_\ell^2 + b \, n \, c_h (\sigma_\ell^2 + \mu_\ell^2)
+\end{equation*}
 
-where we used that $\ell$ and $v_k$ are independent, so $\mathbb{E}\{\ell v_k\} = 0$.
-
-
-\textbf{Term 3:}
-\begin{align}
-  \mathbb{E}\{\hat{\ell}(\bm x)^2\} & = \mathbb{E}\{(a \mu_\ell + b S)^2\}                                    \\
-                                    & = a^2 \mu_\ell^2 + 2ab \mu_\ell \mathbb{E}\{S\} + b^2 \mathbb{E}\{S^2\}
-\end{align}
-
-Now, $\mathbb{E}\{S\} = n \, c_h \mu_\ell$, and:
-\begin{align}
-  \mathbb{E}\{S^2\} & = \mathbb{E}\left\{\left(n \, c_h \, \ell + \sum_{k=0}^{n-1} v_k\right)^2\right\}                                                                    \\
-                    & = n^2 c_h^2 \mathbb{E}\{\ell^2\} + 2 n \, c_h \sum_{k=0}^{n-1} \mathbb{E}\{\ell v_k\} + \mathbb{E}\left\{\left(\sum_{k=0}^{n-1} v_k\right)^2\right\} \\
-                    & = n^2 c_h^2 (\sigma_\ell^2 + \mu_\ell^2) + n \, \sigma_v^2
-\end{align}
-
-Therefore:
+\textbf{Term 3:} Using $\mathbb{E}\{S^2\} = n^2 c_h^2 (\sigma_\ell^2 + \mu_\ell^2) + n \, \sigma_v^2$:
 \begin{equation*}
   \mathbb{E}\{\hat{\ell}(\bm x)^2\} = a^2 \mu_\ell^2 + 2ab \, n \, c_h \mu_\ell^2 + b^2[n^2 c_h^2(\sigma_\ell^2 + \mu_\ell^2) + n \, \sigma_v^2]
 \end{equation*}
 
+Combining all terms and factoring by $\sigma_\ell^2$ and $\mu_\ell^2$:
+\begin{align*}
+  \mathbb{E}\{(\ell - \hat{\ell}(\bm x))^2\} 
+  &= \sigma_\ell^2(1 - 2b \, n \, c_h + b^2 n^2 c_h^2) \\
+  &\quad + \mu_\ell^2(1 - 2a + 2ab \, n \, c_h - 2b \, n \, c_h + a^2 + b^2 n^2 c_h^2) \\
+  &\quad + b^2 n \, \sigma_v^2
+\end{align*}
 
-\subsubsection*{Combining all terms}
-
-Substituting into the MSE expression:
-\begin{align}
-  \mathbb{E}\{(\ell - \hat{\ell}(\bm x))^2\} & = (\sigma_\ell^2 + \mu_\ell^2) - 2[a \mu_\ell^2 + b \, n \, c_h(\sigma_\ell^2 + \mu_\ell^2)]                          \\
-                                             & \quad + a^2 \mu_\ell^2 + 2ab \, n \, c_h \mu_\ell^2 + b^2 n^2 c_h^2(\sigma_\ell^2 + \mu_\ell^2) + b^2 n \, \sigma_v^2
-\end{align}
-
-Grouping terms by $\mu_\ell^2$ and $\sigma_\ell^2$, and substituting the values of $a$ and $b$:
-\begin{align}
-  \mathbb{E}\{(\ell - \hat{\ell}(\bm x))^2\} & = \sigma_\ell^2(1 - 2b \, n \, c_h + b^2 n^2 c_h^2) + \mu_\ell^2(1 - 2a + a^2 + 2ab \, n \, c_h - 2b \, n \, c_h + b^2 n^2 c_h^2) \\
-                                             & \quad + b^2 n \, \sigma_v^2
-\end{align}
-
-After algebraic simplification using $a = \frac{1}{1+n\alpha c_h^2}$ and $b = \frac{\alpha c_h}{1+n\alpha c_h^2}$, and noting that $a + b \, n \, c_h = 1$, the terms involving $\mu_\ell^2$ cancel out, and we obtain:
-\begin{equation*}
-  \mathbb{E}\{(\ell - \hat{\ell}(\bm x))^2\} = \sigma_\ell^2 \left(\frac{1}{1+n\alpha c_h^2}\right)^2 + \mu_\ell^2 \cdot 0 + b^2 n \, \sigma_v^2
-\end{equation*}
-
-Further simplification using $b^2 n \, \sigma_v^2 = \frac{\alpha^2 c_h^2 n \sigma_v^2}{(1+n\alpha c_h^2)^2} = \frac{\sigma_\ell^2}{(1+n\alpha c_h^2)^2} \cdot \frac{\alpha^2 c_h^2 n \sigma_v^2}{\sigma_\ell^2} = \frac{\sigma_\ell^2}{(1+n\alpha c_h^2)^2} \cdot n \alpha c_h^2$ leads to:
-\begin{equation*}
-  \mathbb{E}\{(\ell - \hat{\ell}(\bm x))^2\} = \frac{\sigma_\ell^2}{(1+n\alpha c_h^2)^2}(1 + n\alpha c_h^2) = \frac{\sigma_\ell^2}{1+n\alpha c_h^2}
-\end{equation*}
+Using the identity $a + b \, n \, c_h = 1$, we find that $(1-a-b \, n \, c_h)^2 = 0$, which causes the $\mu_\ell^2$ terms to cancel. After algebraic simplification:
+\begin{align*}
+  \mathbb{E}\{(\ell - \hat{\ell}(\bm x))^2\} 
+  &= \sigma_\ell^2 \left[\frac{1}{(1+n\alpha c_h^2)^2} + \frac{\alpha^2 c_h^2 n \sigma_v^2}{(1+n\alpha c_h^2)^2}\right] \\
+  &= \frac{\sigma_\ell^2}{(1+n\alpha c_h^2)^2}(1 + n\alpha c_h^2) \\
+  &= \frac{\sigma_\ell^2}{1+n\alpha c_h^2}
+\end{align*}
 
 Therefore, the normalized MSE is:
 \begin{equation*}
@@ -332,44 +269,55 @@ Therefore, the normalized MSE is:
   }
 \end{equation*}
 
+The detailed step-by-step derivation can be found in Appendix~\ref{app:handwritten}, Figure~\ref{fig:task1_q5}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question:Show that the LMMSE estimator can be written as a {\em convex combination} (that is, a linear combination with positive coefficients that add up to one) of the {\em a priori} estimator and the LS estimator.}
+\vspace{0.5cm}
+\question{Question: Show that the LMMSE estimator can be written as a \emph{convex combination} (that is, a linear combination with positive coefficients that add up to one) of the \emph{a priori} estimator and the LS estimator.}
 \vspace{0.5cm}
 
-Recall that we have:
+Recall the estimators:
 \begin{itemize}
-  \item LMMSE estimator: $\hat{\ell}(\bm x) = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} S$
-  \item LS estimator: $\hat{\ell}_{\text{LS}} = \frac{\sum_k x_k}{n \, c_h} = \frac{S}{n \, c_h}$
-  \item A priori estimator (without measurements): $\hat{\ell}_{\text{prior}} = \mu_\ell$
+  \item LMMSE: $\hat{\ell}_{\text{LMMSE}}(\bm x) = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} S$, where $S = \sum_{k=0}^{n-1} x_k$
+  \item LS: $\hat{\ell}_{\text{LS}} = \frac{S}{n \, c_h}$
+  \item A priori: $\hat{\ell}_{\text{prior}} = \mu_\ell$
 \end{itemize}
 
-We can rewrite the LMMSE estimator as:
-\begin{align}
-  \hat{\ell}(\bm x) & = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} S                                       \\
-                    & = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} \cdot n \, c_h \cdot \frac{S}{n \, c_h} \\
-                    & = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{n \alpha c_h^2}{1+n\alpha c_h^2} \hat{\ell}_{\text{LS}}
-\end{align}
+We rewrite the LMMSE estimator by factoring $n \, c_h$ from the second term:
+\begin{align*}
+  \hat{\ell}_{\text{LMMSE}}(\bm x) 
+  &= \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} \cdot n \, c_h \cdot \frac{S}{n \, c_h} \\
+  &= \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{n \alpha c_h^2}{1+n\alpha c_h^2} \hat{\ell}_{\text{LS}} \\
+  &= \frac{1}{1+n\alpha c_h^2} \hat{\ell}_{\text{prior}} + \frac{n \alpha c_h^2}{1+n\alpha c_h^2} \hat{\ell}_{\text{LS}}
+\end{align*}
 
-Let:
+Define:
 \begin{equation*}
-  a = \frac{1}{1+n\alpha c_h^2}, \quad b = \frac{n \alpha c_h^2}{1+n\alpha c_h^2}
+  a = \frac{1}{1+n\alpha c_h^2}, \quad c = \frac{n \alpha c_h^2}{1+n\alpha c_h^2}
 \end{equation*}
 
 Then:
 \begin{equation*}
   \boxed{
-  \hat{\ell}(\bm x) = a \, \hat{\ell}_{\text{prior}} + b \, \hat{\ell}_{\text{LS}}
+  \hat{\ell}_{\text{LMMSE}}(\bm x) = a \, \hat{\ell}_{\text{prior}} + c \, \hat{\ell}_{\text{LS}}
   }
 \end{equation*}
 
-where $a + b = \frac{1 + n\alpha c_h^2}{1+n\alpha c_h^2} = 1$, and both $a, b > 0$ (since $n, \alpha, c_h^2 > 0$).
+\textbf{Verification:}
+\begin{itemize}
+  \item $a + c = \frac{1 + n\alpha c_h^2}{1+n\alpha c_h^2} = 1$ \quad $\checkmark$
+  \item $a, c > 0$ since $n, \alpha, c_h^2 > 0$ \quad $\checkmark$
+\end{itemize}
 
-Therefore, the LMMSE estimator is indeed a convex combination of the a priori estimator and the LS estimator.
+Therefore, the LMMSE estimator is a \textbf{convex combination} of the a priori estimator and the LS estimator.
+
+The detailed derivation can be found in Appendix~\ref{app:handwritten}, Figure~\ref{fig:task1_q6}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: For a given ratio of variances, what happens when $n$ becomes large? Explain.}
+\vspace{0.5cm}
+\question{Question: For a given ratio of variances, what happens when $n$ becomes large? Explain.}
 \vspace{0.5cm}
 
 When $n \to \infty$ (large number of observations) with $\alpha$ fixed:
@@ -377,19 +325,20 @@ When $n \to \infty$ (large number of observations) with $\alpha$ fixed:
   \lim_{n \to \infty} a = \lim_{n \to \infty} \frac{1}{1+n\alpha c_h^2} = 0
 \end{equation*}
 \begin{equation*}
-  \lim_{n \to \infty} b = \lim_{n \to \infty} \frac{n \alpha c_h^2}{1+n\alpha c_h^2} = 1
+  \lim_{n \to \infty} c = \lim_{n \to \infty} \frac{n \alpha c_h^2}{1+n\alpha c_h^2} = 1
 \end{equation*}
 
 Therefore:
 \begin{equation*}
-  \lim_{n \to \infty} \hat{\ell}(\bm x) = \hat{\ell}_{\text{LS}}
+  \lim_{n \to \infty} \hat{\ell}_{\text{LMMSE}}(\bm x) = \hat{\ell}_{\text{LS}}
 \end{equation*}
 
 \textbf{Interpretation:} As the number of observations becomes large, the information from the prior becomes negligible, and all the weight goes to the measurements. The LMMSE estimator approaches the LS estimator. This makes intuitive sense: with many observations, we have enough data to reliably estimate $\ell$, so the prior information becomes less important.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: For a given number of observations, what happens when $\alpha$ becomes large? Explain.}
+\vspace{0.5cm}
+\question{Question: For a given number of observations, what happens when $\alpha$ becomes large? Explain.}
 \vspace{0.5cm}
 
 When $\alpha \to \infty$ (large SNR, i.e., $\sigma_\ell^2 \gg \sigma_v^2$) with $n$ fixed:
@@ -397,19 +346,20 @@ When $\alpha \to \infty$ (large SNR, i.e., $\sigma_\ell^2 \gg \sigma_v^2$) with 
   \lim_{\alpha \to \infty} a = \lim_{\alpha \to \infty} \frac{1}{1+n\alpha c_h^2} = 0
 \end{equation*}
 \begin{equation*}
-  \lim_{\alpha \to \infty} b = \lim_{\alpha \to \infty} \frac{n \alpha c_h^2}{1+n\alpha c_h^2} = 1
+  \lim_{\alpha \to \infty} c = \lim_{\alpha \to \infty} \frac{n \alpha c_h^2}{1+n\alpha c_h^2} = 1
 \end{equation*}
 
 Therefore:
 \begin{equation*}
-  \lim_{\alpha \to \infty} \hat{\ell}(\bm x) = \hat{\ell}_{\text{LS}}
+  \lim_{\alpha \to \infty} \hat{\ell}_{\text{LMMSE}}(\bm x) = \hat{\ell}_{\text{LS}}
 \end{equation*}
 
-\textbf{Interpretation:} When $\alpha$ is large, the signal variance is much larger than the noise variance, meaning we have a high SNR. In this case, the noise has more variability than the signal itself, so it's important to trust the measurements more than the prior. The LMMSE estimator tends to the LS estimator, which relies solely on the data.
+\textbf{Interpretation:} When $\alpha$ is large, the signal variance is much larger than the noise variance, meaning we have a high SNR. In this case, the signal has more variability than the noise, so it's important to trust the measurements more than the prior. The LMMSE estimator tends to the LS estimator, which relies solely on the data.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: For a given number of observations, what happens when $\alpha$ becomes small? Explain.}
+\vspace{0.5cm}
+\question{Question: For a given number of observations, what happens when $\alpha$ becomes small? Explain.}
 \vspace{0.5cm}
 
 When $\alpha \to 0$ (low SNR, i.e., $\sigma_\ell^2 \ll \sigma_v^2$) with $n$ fixed:
@@ -417,12 +367,12 @@ When $\alpha \to 0$ (low SNR, i.e., $\sigma_\ell^2 \ll \sigma_v^2$) with $n$ fix
   \lim_{\alpha \to 0} a = \lim_{\alpha \to 0} \frac{1}{1+n\alpha c_h^2} = 1
 \end{equation*}
 \begin{equation*}
-  \lim_{\alpha \to 0} b = \lim_{\alpha \to 0} \frac{n \alpha c_h^2}{1+n\alpha c_h^2} = 0
+  \lim_{\alpha \to 0} c = \lim_{\alpha \to 0} \frac{n \alpha c_h^2}{1+n\alpha c_h^2} = 0
 \end{equation*}
 
 Therefore:
 \begin{equation*}
-  \lim_{\alpha \to 0} \hat{\ell}(\bm x) = \mu_\ell = \hat{\ell}_{\text{prior}}
+  \lim_{\alpha \to 0} \hat{\ell}_{\text{LMMSE}}(\bm x) = \mu_\ell = \hat{\ell}_{\text{prior}}
 \end{equation*}
 
 \textbf{Interpretation:} When $\alpha$ is small, the noise variance dominates the signal variance, resulting in very low SNR (noisy measurements). In this scenario, the measurements contain very little useful information about $\ell$, so we should rely more on our prior knowledge. The LMMSE estimator approaches the a priori estimator $\mu_\ell$, effectively ignoring the unreliable measurements.
