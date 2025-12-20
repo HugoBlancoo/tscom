@@ -1,4 +1,13 @@
-The detailed derivations and step-by-step justifications for all questions in this section can be found in Appendix~\ref{app:handwritten}.
+Consider a system consisting of a tank containing some amount of a certain fluid. Being interested in estimating the fluid level, we place a pressure sensor at the bottom of the tank and use it to collect measurements of hydrostatic pressure. Let $\ell$ denote the fluid level, which we model as a random variable with mean $\mu_\ell$ and variance $\sigma_\ell^2$ (this is our {\em a priori} knowledge). We let the sensor collect $n$ pressure measurements, given by:
+\begin{equation}\label{eq:simple_obs}
+  x_k = c_h \cdot\ell + v_k, \quad k=0,1,\ldots,n-1,
+\end{equation}
+where $v_0$, \ldots, $v_{n-1}$ are measurement errors, which we model as random, statistically independent, with zero mean, and variance $\sigma_v^2$. Also, $\ell$ and $v_k$ are statistically independent for all $k$. Constant $c_h$ relates hydrostatic pressure and fluid level\footnote{Recall that hydrostatic pressure equals [fluid density] $\times \,g\, \times$ [fluid level], where $g$ is the gravitational constant.}; for example, if pressure is in millibar\footnote{Recall that 1 mbar $=100$ Pa $=100$ kg/(m s$^2$).} and fluid level is in cm, then $c_h=0.98\rho$ mbar/cm, where $\rho$ is the fluid density in g/cm$^3$.
+
+We want to estimate the value taken by $\ell$, based on our $n$ available observations $x_0$,\ldots,$x_{n-1}$.
+
+\vspace{0.25cm}
+\noindent The detailed derivations and step-by-step justifications for all questions in this section can be found in Appendix~\ref{app:handwritten}.
 
 \vspace{0.5cm}
 \question{Question: Find the expression of the Least Squares (LS) estimate of the fluid level $\ell$, given the pressure observations $\bm x = [\begin{array}{cccc} x_0 & x_1 & \cdots & x_{n-1}\end{array}]^T$. How do you interpret this estimate?}

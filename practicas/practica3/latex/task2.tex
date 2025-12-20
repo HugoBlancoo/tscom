@@ -1,42 +1,50 @@
-\textbf{Question: Obtain $\hat \ell_n$ as a linear combination of $\hat \ell_{n-1}$ and the new measurement $x_n$.}
+Consider now the case in which pressure measurements arrive sequentially in time (at this point, the fluid level is assumed to remain constant through time). Therefore, at time $nT$ ($T$ is the sampling interval), a new measurement $x_n$ arrives, and we can refine our LMMSE estimator of the fluid level incorporating the new information available. Let us change the notation slightly to make the dependence on the time index more clear. Thus, now we denote the LMMSE estimate of the fluid level  based on these measurements as $\hat \ell_{n-1}$. Then, from \eqref{eq:lmmse_ave}, we know that
+\begin{equation}\label{eq:brute}
+  \hat \ell_{n-1} = \frac{1}{1+n\alpha c_h^2} \mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} (x_0 + x_1 + \ldots + x_{n-1}).
+\end{equation}
+When the new measurement $x_n$ arrives, we could use a similar expression to compute the LMMSE estimate $\hat \ell_n$. However, we may exploit the availability of $\hat \ell_{n-1}$ to save computations.
+
+\vspace{0.25cm}
+\noindent The detailed derivations for all questions in this section are available in Appendix~\ref{app:handwritten}.
+
+\vspace{0.5cm}
+\question{Question: Obtain $\hat \ell_n$ as a linear combination of $\hat \ell_{n-1}$ and the new measurement $x_n$.}
 \vspace{0.5cm}
 
-We know that:
-\begin{align}
-  \hat\ell_{n-1} & = \frac{1}{1+n\alpha c_h^2}\mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2}(x_0 + x_1 + \cdots + x_{n-1}), \\
-  \hat\ell_n     & = \frac{1}{1+(n+1)\alpha c_h^2}\mu_\ell + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}(x_0 + \cdots + x_n).
-\end{align}
+Recall that the LMMSE estimator at step $n-1$ and step $n$ are:
+\begin{align*}
+  \hat\ell_{n-1} & = \frac{1}{1+n\alpha c_h^2}\mu_\ell + \frac{\alpha c_h}{1+n\alpha c_h^2} S_{n-1}, \\
+  \hat\ell_n     & = \frac{1}{1+(n+1)\alpha c_h^2}\mu_\ell + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2} S_n,
+\end{align*}
 
-Define:
+where $S_{n-1} = \sum_{k=0}^{n-1} x_k$ and $S_n = S_{n-1} + x_n$.
+
+From the expression for $\hat\ell_{n-1}$, we can isolate $S_{n-1}$:
 \begin{equation*}
-  S_{n-1} = \sum_{k=0}^{n-1} x_k, \qquad S_n = S_{n-1} + x_n.
+  S_{n-1} = \frac{1+n\alpha c_h^2}{\alpha c_h}\hat\ell_{n-1} - \frac{1}{\alpha c_h}\mu_\ell
 \end{equation*}
 
-Then:
+Substituting into the expression for $\hat\ell_n$:
+\begin{align*}
+  \hat\ell_n 
+  &= \frac{1}{1+(n+1)\alpha c_h^2}\mu_\ell + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}\left(\frac{1+n\alpha c_h^2}{\alpha c_h}\hat\ell_{n-1} - \frac{1}{\alpha c_h}\mu_\ell + x_n\right) \\
+  &= \frac{1}{1+(n+1)\alpha c_h^2}\mu_\ell + \frac{1+n\alpha c_h^2}{1+(n+1)\alpha c_h^2}\hat\ell_{n-1} \\
+  &\quad - \frac{1}{1+(n+1)\alpha c_h^2}\mu_\ell + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}x_n
+\end{align*}
+
+The $\mu_\ell$ terms cancel, yielding:
 \begin{equation*}
-  \hat\ell_n = \frac{1}{1+(n+1)\alpha c_h^2}\mu_\ell + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}(S_{n-1} + x_n).
+  \boxed{\hat\ell_n = \frac{1+n\alpha c_h^2}{1+(n+1)\alpha c_h^2}\hat\ell_{n-1} + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}x_n}
 \end{equation*}
 
-From $\hat\ell_{n-1}$, we can express $S_{n-1}$:
-\begin{equation*}
-  S_{n-1} = \frac{1+n\alpha c_h^2}{\alpha c_h}\hat\ell_{n-1} - \frac{1}{\alpha c_h}\mu_\ell.
-\end{equation*}
+This is the recursive update formula: each new estimate is a weighted combination of the previous estimate and the new measurement.
 
-Substituting $S_{n-1}$ into $\hat\ell_n$:
-\begin{align}
-  \hat\ell_n & = \frac{1}{1+(n+1)\alpha c_h^2}\mu_\ell + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}\left(\frac{1+n\alpha c_h^2}{\alpha c_h}\hat\ell_{n-1} - \frac{1}{\alpha c_h}\mu_\ell + x_n\right) \\
-             & = \frac{1}{1+(n+1)\alpha c_h^2}\mu_\ell + \frac{1+n\alpha c_h^2}{1+(n+1)\alpha c_h^2}\hat\ell_{n-1}                                                                                \\
-             & \quad + \frac{n\alpha c_h^2}{1+(n+1)\alpha c_h^2}\hat\ell_{n-1} - \frac{1}{1+(n+1)\alpha c_h^2}\mu_\ell + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}x_n.
-\end{align}
-
-The terms with $\mu_\ell$ cancel, and we obtain:
-\begin{equation*}
-  \boxed{\hat\ell_n = \frac{1+n\alpha c_h^2}{1+(n+1)\alpha c_h^2}\hat\ell_{n-1} + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}x_n.}
-\end{equation*}
+The detailed derivation can be found in Appendix~\ref{app:handwritten}, Figure~\ref{fig:task2_q1}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Show that, for appropriate initial values $\beta_{-1}$ and $\hat\ell_{-1}$ that you should specify, the LMMSE estimate can be computed recursively as
+\vspace{0.5cm}
+\question{Question: Show that, for appropriate initial values $\beta_{-1}$ and $\hat\ell_{-1}$ that you should specify, the LMMSE estimate can be computed recursively as
   \[  \beta_n = \beta_{n-1} + \alpha c_h^2, \qquad \hat \ell_n = \frac{1}{\beta_n} (\beta_{n-1}\hat \ell_{n-1} + \alpha c_h x_n), \qquad n\geq 0. \]
   Using this recursion, how many additions, multiplications and divisions do we need in order to update the estimate with each new observation? Does this load depend on the time index $n$?}
 \vspace{0.5cm}
@@ -45,66 +53,63 @@ The terms with $\mu_\ell$ cancel, and we obtain:
 
 Define:
 \begin{equation*}
-  \beta_n = 1 + (n+1)\alpha c_h^2, \qquad \beta_{n-1} = 1 + n\alpha c_h^2.
+  \beta_n = 1 + (n+1)\alpha c_h^2, \qquad \beta_{n-1} = 1 + n\alpha c_h^2
 \end{equation*}
 
-Then:
+Then clearly:
 \begin{equation*}
-  \boxed{\beta_n = \beta_{n-1} + \alpha c_h^2.}
+  \boxed{\beta_n = \beta_{n-1} + \alpha c_h^2}
 \end{equation*}
 
-Substituting $\beta_n$ and $\beta_{n-1}$ into the expression for $\hat\ell_n$ obtained previously:
+Substituting $\beta_n$ and $\beta_{n-1}$ into the recursive formula from the previous question:
 \begin{equation*}
-  \hat\ell_n = \frac{\beta_{n-1}}{\beta_n}\hat\ell_{n-1} + \frac{\alpha c_h}{\beta_n}x_n.
+  \hat\ell_n = \frac{\beta_{n-1}}{\beta_n}\hat\ell_{n-1} + \frac{\alpha c_h}{\beta_n}x_n
 \end{equation*}
 
 Multiplying both sides by $\beta_n$:
 \begin{equation*}
-  \beta_n \hat\ell_n = \beta_{n-1}\hat\ell_{n-1} + \alpha c_h x_n.
+  \beta_n \hat\ell_n = \beta_{n-1}\hat\ell_{n-1} + \alpha c_h x_n
 \end{equation*}
 
 Therefore:
 \begin{equation*}
-  \boxed{\hat\ell_n = \frac{1}{\beta_n}(\beta_{n-1}\hat\ell_{n-1} + \alpha c_h x_n).}
+  \boxed{\hat\ell_n = \frac{1}{\beta_n}(\beta_{n-1}\hat\ell_{n-1} + \alpha c_h x_n)}
 \end{equation*}
 
 \subsubsection*{Initial values}
 
-For $n=0$ (first observation), we need initial values such that the recursion produces the correct result.
-
-With no observations, the best estimator (prior) is:
+For $n=0$ (first observation), with no prior measurements, the best estimate is the prior mean:
 \begin{equation*}
-  \hat\ell_{-1} = \mu_\ell.
+  \hat\ell_{-1} = \mu_\ell
 \end{equation*}
 
-For $n=0$:
+And from the definition:
 \begin{equation*}
-  \beta_{-1} = 1 + 0 \cdot \alpha c_h^2 = 1.
+  \beta_{-1} = 1 + 0 \cdot \alpha c_h^2 = 1
 \end{equation*}
 
-Verification: Using the recursion with $n=0$:
+\textbf{Verification:} Using the recursion with $n=0$:
 \begin{equation*}
   \hat\ell_0 = \frac{1}{\beta_0}(\beta_{-1}\hat\ell_{-1} + \alpha c_h x_0)
-  = \frac{1}{1+\alpha c_h^2}(\mu_\ell + \alpha c_h x_0)
-  = \frac{\mu_\ell + \alpha c_h x_0}{1+\alpha c_h^2},
+  = \frac{1}{1+\alpha c_h^2}(\mu_\ell + \alpha c_h x_0),
 \end{equation*}
-which matches the direct formula for the LMMSE estimate with one observation.
+which matches the LMMSE formula with one observation.
 
 Therefore:
 \begin{equation*}
-  \boxed{\beta_{-1} = 1, \qquad \hat\ell_{-1} = \mu_\ell.}
+  \boxed{\beta_{-1} = 1, \qquad \hat\ell_{-1} = \mu_\ell}
 \end{equation*}
 
 \subsubsection*{Computational complexity}
 
-To update the estimate from $\hat\ell_{n-1}$ to $\hat\ell_n$, we need:
+To update from $\hat\ell_{n-1}$ to $\hat\ell_n$:
 
 \begin{enumerate}
-  \item Update $\beta_n = \beta_{n-1} + \alpha c_h^2$: \textbf{1 addition}.
-  \item Compute $\beta_{n-1}\hat\ell_{n-1}$: \textbf{1 multiplication}.
-  \item Compute $\alpha c_h x_n$: \textbf{1 multiplication}.
-  \item Sum both terms: $\beta_{n-1}\hat\ell_{n-1} + \alpha c_h x_n$: \textbf{1 addition}.
-  \item Divide by $\beta_n$: \textbf{1 division}.
+  \item Update $\beta_n = \beta_{n-1} + \alpha c_h^2$: \textbf{1 addition}
+  \item Compute $\beta_{n-1}\hat\ell_{n-1}$: \textbf{1 multiplication}
+  \item Compute $\alpha c_h x_n$: \textbf{1 multiplication}
+  \item Add: $\beta_{n-1}\hat\ell_{n-1} + \alpha c_h x_n$: \textbf{1 addition}
+  \item Divide by $\beta_n$: \textbf{1 division}
 \end{enumerate}
 
 \textbf{Total per iteration:}
@@ -114,11 +119,29 @@ To update the estimate from $\hat\ell_{n-1}$ to $\hat\ell_n$, we need:
   \item 1 division
 \end{itemize}
 
-\textbf{Does it depend on $n$?} No. The computational load is \textbf{constant} and does not depend on the time index $n$. We only need to store two scalars: $\beta_{n-1}$ and $\hat\ell_{n-1}$.
+\textbf{Does it depend on $n$?} \textbf{No.} The computational load is constant ($O(1)$) and only requires storing two scalars: $\beta_{n-1}$ and $\hat\ell_{n-1}$.
+
+\subsubsection*{Comparison with direct computation}
+
+Computing the LMMSE naively using the direct formula:
+\begin{equation*}
+  \hat\ell_n = \frac{1}{1+(n+1)\alpha c_h^2}\mu_\ell + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}\sum_{k=0}^{n} x_k
+\end{equation*}
+requires:
+\begin{itemize}
+  \item \textbf{Memory:} Store all $n+1$ observations $x_0, x_1, \ldots, x_n$ → $O(n)$
+  \item \textbf{Additions:} Computing the sum requires $n$ additions → $O(n)$
+  \item \textbf{Scalability:} Both memory and computation grow linearly with $n$
+\end{itemize}
+
+In contrast, the recursive approach requires \textbf{constant memory and computation}, making it vastly more efficient for long observation sequences.
+
+The detailed derivation can be found in Appendix~\ref{app:handwritten}, Figure~\ref{fig:task2_q2}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Note that if one simply stored all samples in memory and then computed  the LMMSE estimate naively using \eqref{eq:brute} without using recursivity, then the memory size and the number of additions would grow with $n$.}
+\vspace{0.5cm}
+\question{Note that if one simply stored all samples in memory and then computed  the LMMSE estimate naively using \eqref{eq:brute} without using recursivity, then the memory size and the number of additions would grow with $n$.}
 \vspace{0.5cm}
 
 Specifically, using the direct formula:

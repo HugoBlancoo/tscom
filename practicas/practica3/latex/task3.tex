@@ -1,4 +1,14 @@
-\textbf{Question: Find a ``state evolution'' and ``measurement'' description for (1) in the form of (4).
+We are going to recast the estimation problem from the previous section in the framework of the Kalman filter, which is based in the following two equations ({\em state evolution} and {\em measurement}):
+\begin{equation}\label{eq:statespace}
+  \bm s_n = \bm A_n \bm s_{n-1} + \bm G_n \bm f_n + \bm u_n, \qquad \bm x_n = \bm H_n \bm s_n + \bm w_n.
+\end{equation}
+(The definitions of the different quantities should be familiar, and can be found in the class notes).
+In our problem we have a single variable to estimate (the fluid level), so the state vector $\bm s_n$ is actually a scalar $s_n$. At time $n$ we obtain a single new pressure measurement, so the vector $\bm x_n$ also reduces to a scalar, $x_n$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+\question{Question: Find a ``state evolution'' and ``measurement'' description for \eqref{eq:simple_obs} in the form of \eqref{eq:statespace}.
   Note that the state of the system (the fluid level) is static, i.e., $s_n = s$ is constant with $n$.}
 \vspace{0.5cm}
 
@@ -25,7 +35,10 @@ Comparing this to $x_n = H_n s_n + w_n$:
   \item Measurement noise covariance: $R_n = \sigma_v^2$ (given variance of $v_k$).
 \end{itemize}
 
-\textbf{Question:Derive the Kalman filter equations for this problem, in order to obtain the LMMSE estimate of the state given the observations $x_0$,\ldots,$x_n$ ( i.e., $\hat s_{n|n}$).}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+\question{Question:Derive the Kalman filter equations for this problem, in order to obtain the LMMSE estimate of the state given the observations $x_0$,\ldots,$x_n$ ( i.e., $\hat s_{n|n}$).}
 \vspace{0.5cm}
 
 \subsubsection*{Derivation of the Kalman Filter Equations}
@@ -76,23 +89,34 @@ Since the system state is a scalar constant ($s_n = s_{n-1}$), we identified tha
         \end{equation*}
 \end{enumerate}
 
-
-\textbf{Question: How should we choose the initial estimate $\hat s_{-1|-1}$ and estimation error covariance $\Sigma_{-1|-1}$?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vspace{0.5cm}
+\question{Question: How should we choose the initial estimate $\hat s_{-1|-1}$ and estimation error covariance $\Sigma_{-1|-1}$?}
+\vspace{0.5cm}
+
+Before collecting any measurements, we encode our a priori knowledge about the fluid level:
 
 \begin{enumerate}
   \item \textbf{$\hat{s}_{-1|-1}$:}
-        The initial value corresponds to the best best guess \textit{a priori} for the fluid level. This is the mean of the random variable.
+        The best guess a priori for the fluid level is its prior mean:
         \begin{equation*}
-          \hat{s}_{-1|-1} = \mu_l
+          \hat{s}_{-1|-1} = \mu_\ell
         \end{equation*}
+        
   \item \textbf{$\Sigma_{-1|-1}$:}
+        Our uncertainty about this guess is quantified by the prior variance:
         \begin{equation*}
-          \Sigma_{-1|-1} = \sigma_l^2
+          \Sigma_{-1|-1} = \sigma_\ell^2
         \end{equation*}
 \end{enumerate}
 
-\textbf{Question: Write a Matlab script\footnote{You may use the file {\tt kalman\_dc\_template.m} as starting point.} to simulate this dynamical system and the Kalman filter. Assume that the sensor measures pressure in mbar, fluid level is in cm, and that the fluid is benzene (density $874$ kg/m$^3$ at 25$^\circ$C).
+\textbf{Connection to Task 2:} These initial conditions ensure that $\hat{\ell}_0$ (obtained from the Kalman filter with $n=0$) matches the LMMSE formula with one observation, and similarly for $\Sigma_{0|0}$. This validates our choices.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+\question{Question: Write a Matlab script\footnote{You may use the file {\tt kalman\_dc\_template.m} as starting point.} to simulate this dynamical system and the Kalman filter. Assume that the sensor measures pressure in mbar, fluid level is in cm, and that the fluid is benzene (density $874$ kg/m$^3$ at 25$^\circ$C).
   Our initial guess of the fluid level is $\mu_\ell=250$ cm, and we assign a standard deviation $\sigma_\ell = 11$ cm to reflect our uncertainty about this guess. Measurement errors are uncorrelated, zero-mean Gaussian with standard deviation $\sigma_v = 25$ mbar, and the true fluid level is $340$ cm. Plot the time evolution of the state, the measurements, and the estimate, up to $n=200$, and for two different executions. Also, plot the time evolution of the standard deviation of the fluid level estimation error, in cm. Comment on your results.
 }
 
@@ -134,7 +158,10 @@ Based on the generated plots, we can draw the following conclusions:
 
 \vspace{0.5cm}
 
-\textbf{Question: Using mathematical induction, prove that $\Sigma_{n|n} = \frac{\sigma_\ell^2}{1+(n+1)\alpha c_h^2}$ for all $n\geq 0$. Does this expression look familiar? Evaluate it for $n=200$ with the parameters of the previous point, and check the result of your simulation.  What is the asymptotic value of $\Sigma_{n|n}$?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+\question{Question: Using mathematical induction, prove that $\Sigma_{n|n} = \frac{\sigma_\ell^2}{1+(n+1)\alpha c_h^2}$ for all $n\geq 0$. Does this expression look familiar? Evaluate it for $n=200$ with the parameters of the previous point, and check the result of your simulation.  What is the asymptotic value of $\Sigma_{n|n}$?}
 
 \vspace{0.5cm}
 \begin{itemize}
@@ -161,7 +188,7 @@ Based on the generated plots, we can draw the following conclusions:
   \item $\sigma_\ell = 11 cm \implies \sigma_\ell^2 = 121 $
   \item $\sigma_v = 25 mbar \implies \sigma_v^2 = 625$
   \item $\alpha = \frac{121}{625} = 0.1936$
-  \item Densitty $\rho = 0.874g/cm^3$
+  \item Density $\rho = 0.874g/cm^3$
   \item $c_h = 0.98 \times \rho = 0.98 \times 0.874 = 0.85652 mbar/cm$
   \item $c_h^2 \approx 0.7336$
 \end{itemize}
@@ -171,18 +198,92 @@ $$\Sigma_{200|200} = \frac{121}{1 + 201 \cdot 0.1420}$$
 $$\Sigma_{200|200} = \frac{121}{1 + 28.547} = \frac{121}{29.547} \approx 4.095 \text{ cm}^2$$
 
 $$\sqrt{\Sigma_{200|200}} = \sqrt{4.095} \approx \mathbf{2.02 \text{ cm}}$$
-In the plot of the Figure \label{fig:kalman_sigma} we can see how the curve drop to approximately 2 at $n = 200$
+In the plot of the Figure \ref{fig:kalman_sigma} we can see how the curve drop to approximately 2 at $n = 200$
 
-\textbf{Question: Show that
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+\question{Question: Show that
   \begin{equation*}\label{eq:est_2}
     \hat s_{n|n} = \frac{1+n\alpha c_h^2}{1+n\alpha c_h^2 + \alpha c_h^2} \hat s_{n-1|n-1} + \frac{\alpha c_h}{1+ n\alpha c_h^2 + \alpha c_h^2}x_n.
   \end{equation*}
   Compare this with your answer to the first point of Task 2 and give your conclusions.}
 
 \vspace{0.5cm}
-COMPLETAR
 
-\textbf{Question: Repeat your simulations after changing $\sigma_\ell$ to 50 cm. Repeat again for $\sigma_\ell = 5$ cm. Comment on your results.}
+\subsubsection*{Derivation}
+
+From the Kalman filter correction step, we have:
+\begin{equation*}
+  \hat{s}_{n|n} = \hat{s}_{n-1|n-1} + K_n(x_n - c_h \hat{s}_{n-1|n-1})
+\end{equation*}
+
+Rearranging:
+\begin{equation*}
+  \hat{s}_{n|n} = (1 - K_n c_h)\hat{s}_{n-1|n-1} + K_n x_n
+\end{equation*}
+
+From the previous question, we proved that:
+\begin{equation*}
+  \Sigma_{n|n} = \frac{\sigma_\ell^2}{1+(n+1)\alpha c_h^2}
+\end{equation*}
+
+We also know that $\Sigma_{n|n-1} = \Sigma_{n-1|n-1} = \frac{\sigma_\ell^2}{1+n\alpha c_h^2}$ (since $Q_n=0$).
+
+The Kalman gain is:
+\begin{equation*}
+  K_n = \frac{\Sigma_{n|n-1} c_h}{c_h^2 \Sigma_{n|n-1} + \sigma_v^2}
+\end{equation*}
+
+Substituting $\Sigma_{n|n-1}$:
+\begin{align*}
+  K_n &= \frac{\frac{\sigma_\ell^2}{1+n\alpha c_h^2} c_h}{c_h^2 \frac{\sigma_\ell^2}{1+n\alpha c_h^2} + \sigma_v^2} \\
+  &= \frac{\sigma_\ell^2 c_h}{c_h^2 \sigma_\ell^2 + \sigma_v^2(1+n\alpha c_h^2)} \\
+  &= \frac{\sigma_\ell^2 c_h}{\sigma_v^2(1+n\alpha c_h^2 + \alpha c_h^2)} \quad \text{(using } \alpha = \frac{\sigma_\ell^2}{\sigma_v^2}\text{)} \\
+  &= \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}
+\end{align*}
+
+Now, compute $1 - K_n c_h$:
+\begin{align*}
+  1 - K_n c_h &= 1 - \frac{\alpha c_h^2}{1+(n+1)\alpha c_h^2} \\
+  &= \frac{1+(n+1)\alpha c_h^2 - \alpha c_h^2}{1+(n+1)\alpha c_h^2} \\
+  &= \frac{1+n\alpha c_h^2}{1+(n+1)\alpha c_h^2}
+\end{align*}
+
+Substituting back into the correction equation:
+\begin{equation*}
+  \boxed{\hat{s}_{n|n} = \frac{1+n\alpha c_h^2}{1+(n+1)\alpha c_h^2} \hat{s}_{n-1|n-1} + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2} x_n}
+\end{equation*}
+
+Note that $1+(n+1)\alpha c_h^2 = 1+n\alpha c_h^2 + \alpha c_h^2$, so this is exactly the desired form.
+
+\subsubsection*{Comparison with Task 2}
+
+In Task 2, Question 1, we derived the recursive LMMSE estimator:
+\begin{equation*}
+  \hat{\ell}_n = \frac{1+n\alpha c_h^2}{1+(n+1)\alpha c_h^2} \hat{\ell}_{n-1} + \frac{\alpha c_h}{1+(n+1)\alpha c_h^2} x_n
+\end{equation*}
+
+\textbf{Conclusion:} The Kalman filter estimate $\hat{s}_{n|n}$ is \textbf{identical} to the recursive LMMSE estimator $\hat{\ell}_n$ from Task 2. This confirms a fundamental result:
+
+\begin{center}
+  \fbox{\parbox{0.9\textwidth}{%
+      \textbf{The Kalman filter is the optimal recursive implementation of the LMMSE estimator for linear Gaussian systems.}
+    }}
+\end{center}
+
+Both approaches yield the same estimate, but the Kalman filter framework provides:
+\begin{itemize}
+  \item A systematic way to incorporate process dynamics (state evolution)
+  \item Error covariance tracking ($\Sigma_{n|n}$)
+  \item Generalization to multivariate and time-varying systems
+  \item A recursive structure with constant computational complexity $O(1)$
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+\question{Question: Repeat your simulations after changing $\sigma_\ell$ to 50 cm. Repeat again for $\sigma_\ell = 5$ cm. Comment on your results.}
 \subsection*{Analysis of Sensitivity to Initial Uncertainty}
 
 We repeated the simulations modifying the standard deviation of the initial guess $\sigma_\ell$. The results are shown in Figure \ref{fig:sensitivity} and analyzed below.
