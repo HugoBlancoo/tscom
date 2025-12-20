@@ -1,7 +1,8 @@
-% task4_3.m - Kalman filter WITHOUT failure indicator (assumes no failures)
+% task4_4.m - Kalman filter using expected measurement matrix
+% H_eff = c_h * (1-p)
 close all;
 
-% Simulation parameters (same as task4_2.m)
+% Simulation parameters
 rho = 0.874;        % Density of benzene, g/cm^3
 cst_p = 0.98*rho;   % Measurement constant, in mbar/cm
 mean_s = 250;       % Initial guess of fluid level, in cm
@@ -24,9 +25,12 @@ for idx = 1:length(p_values)
     state = zeros(1,N+2);       % System state
     state(1) = s;
     x = zeros(1,N+2);           % Observations
-    delta = [1, (rand(1,N+1) > p), 1];  % ACTUAL failures (HIDDEN from filter)
+    delta = [1, (rand(1,N+1) > p), 1];  % ACTUAL failures (HIDDEN)
     
-    % Kalman filter WITHOUT failure indicator (ASSUMES all measurements are good)
+    % Expected measurement matrix (robust trick)
+    H_eff = cst_p * (1 - p);  % Accounts for failures statistically
+    
+    % Kalman filter with expected H
     for n = 2:N+2
         % System state (constant)
         state(n) = s;
@@ -35,17 +39,17 @@ for idx = 1:length(p_values)
         if delta(n) == 1
             x(n) = cst_p*state(n) + sqrt(var_v)*randn;  % Good measurement
         else
-            x(n) = sqrt(var_v)*randn;                    % Failed (pure noise, hidden)
+            x(n) = sqrt(var_v)*randn;                    % Failed (pure noise)
         end
         
-        % Kalman filter (NO check on delta - assumes p=0)
+        % Kalman filter with H_eff instead of H
         s_pred = s_est(n-1);
         cov_pred = cov_est(n-1);
         
-        % ALWAYS update (no awareness of failures)
-        Kgain = cst_p*cov_pred / (cst_p^2*cov_pred + var_v);
-        s_est(n) = s_pred + Kgain*(x(n) - cst_p*s_pred);
-        cov_est(n) = (1 - Kgain*cst_p)*cov_pred;
+        % Update with de-weighted measurement matrix
+        Kgain = H_eff*cov_pred / (H_eff^2*cov_pred + var_v);
+        s_est(n) = s_pred + Kgain*(x(n) - H_eff*s_pred);
+        cov_est(n) = (1 - Kgain*H_eff)*cov_pred;
     end
     
     % Plot
@@ -55,7 +59,7 @@ for idx = 1:length(p_values)
     plot(-1:N, s_est, 'r-', 'LineWidth', 1.5)
     xlabel('sample intervals')
     ylabel('Level (cm)')
-    title(sprintf('WITHOUT Indicator (assumes p=0): p_{actual} = %.2f', p))
+    title(sprintf('Expected Matrix (H_{eff}): p = %.2f', p))
     legend('True level','Observations','Estimate', 'Location', 'best')
     grid on
     
@@ -63,9 +67,9 @@ for idx = 1:length(p_values)
     semilogy(-1:N, sqrt(cov_est), 'k', 'LineWidth', 1.5)
     xlabel('sample intervals')
     ylabel('Std Dev (cm)')
-    title(sprintf('Error covariance: p_{actual} = %.2f', p))
+    title(sprintf('Error covariance: p = %.2f', p))
     grid on
 end
 
-sgtitle('Kalman Filter WITHOUT Failure Indicator (Model Mismatch)')
-saveas(gcf, 'task4_3_results.png');
+sgtitle('Robust Filter Using Expected Measurement Matrix H_{eff} = c_h(1-p)')
+saveas(gcf, 'task4_4_results.png');
