@@ -1,8 +1,8 @@
 Consider now a scenario in which the pressure sensor may produce erroneous measurements every now and then, in a random fashion.
 Under a sensor error event, the measurement is not related to the true pressure, and is just noise. Therefore, we have now
-\begin{equation}\label{eq:xno}
- x_n = \left\{ \begin{array}{cl} c_h s + v_n, & \mbox{if there is no failure,} \\ v_n, & \mbox{if there is a failure.} \end{array}\right.
-\end{equation}
+\begin{equation*}\label{eq:xno}
+  x_n = \left\{ \begin{array}{cl} c_h s + v_n, & \mbox{if there is no failure,} \\ v_n, & \mbox{if there is a failure.} \end{array}\right.
+\end{equation*}
 It is assumed that the sensor is equipped with a failure indicator, so that we know whether a sensor error event has taken place or not.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -13,30 +13,30 @@ It is assumed that the sensor is equipped with a failure indicator, so that we k
 \subsubsection*{State and Measurement Equations}
 
 Since the fluid level $\ell$ remains constant over time, the state evolution is:
-\begin{equation}
-s_n = s_{n-1},
-\end{equation}
+\begin{equation*}
+  s_n = s_{n-1},
+\end{equation*}
 where $s_n = \ell$ (the constant fluid level). There is no process noise since the level does not change.
 
 In the Kalman filter framework:
-\begin{equation}
-\boxed{s_n = A_n s_{n-1} + u_n, \quad \text{with } A_n = 1, \quad u_n = 0, \quad Q_n = 0.}
-\end{equation}
+\begin{equation*}
+  \boxed{s_n = A_n s_{n-1} + u_n, \quad \text{with } A_n = 1, \quad u_n = 0, \quad Q_n = 0.}
+\end{equation*}
 
 For the measurement equation, we introduce an indicator variable $\delta_n$:
-\begin{equation}
-\delta_n = \begin{cases}
-1, & \text{if there is no failure at time } n, \\
-0, & \text{if there is a failure at time } n.
-\end{cases}
-\end{equation}
+\begin{equation*}
+  \delta_n = \begin{cases}
+    1, & \text{if there is no failure at time } n, \\
+    0, & \text{if there is a failure at time } n.
+  \end{cases}
+\end{equation*}
 
 The measurement equation becomes:
-\begin{equation}
-\boxed{x_n = H_n s_n + w_n, \quad \text{with } H_n = \delta_n \cdot c_h, \quad w_n \sim \mathcal{N}(0, \sigma_v^2).}
-\end{equation}
+\begin{equation*}
+  \boxed{x_n = H_n s_n + w_n, \quad \text{with } H_n = \delta_n \cdot c_h, \quad w_n \sim \mathcal{N}(0, \sigma_v^2).}
+\end{equation*}
 
-When $\delta_n = 1$ (no failure): $x_n = c_h s_n + v_n$ (normal measurement).  
+When $\delta_n = 1$ (no failure): $x_n = c_h s_n + v_n$ (normal measurement).
 When $\delta_n = 0$ (failure): $x_n = v_n$ (pure noise, independent of $s_n$).
 
 \subsubsection*{Kalman Filter Equations}
@@ -45,17 +45,17 @@ The Kalman filter recursion consists of two steps:
 
 \textbf{Prediction step:}
 \begin{align}
-\hat{s}_{n|n-1} &= A_n \hat{s}_{n-1|n-1} = \hat{s}_{n-1|n-1}, \\
-P_{n|n-1} &= A_n P_{n-1|n-1} A_n^T + Q_n = P_{n-1|n-1}.
+  \hat{s}_{n|n-1} & = A_n \hat{s}_{n-1|n-1} = \hat{s}_{n-1|n-1}, \\
+  P_{n|n-1}       & = A_n P_{n-1|n-1} A_n^T + Q_n = P_{n-1|n-1}.
 \end{align}
 
 Since $A_n = 1$ and $Q_n = 0$, the predicted estimate and covariance remain equal to their previous values.
 
 \textbf{Update step:}
 \begin{align}
-K_n &= \frac{P_{n|n-1} H_n}{H_n P_{n|n-1} H_n + R_n} = \frac{P_{n|n-1} \cdot \delta_n c_h}{\delta_n^2 c_h^2 P_{n|n-1} + \sigma_v^2}, \\
-\hat{s}_{n|n} &= \hat{s}_{n|n-1} + K_n(x_n - H_n \hat{s}_{n|n-1}), \\
-P_{n|n} &= (1 - K_n H_n)P_{n|n-1}.
+  K_n           & = \frac{P_{n|n-1} H_n}{H_n P_{n|n-1} H_n + R_n} = \frac{P_{n|n-1} \cdot \delta_n c_h}{\delta_n^2 c_h^2 P_{n|n-1} + \sigma_v^2}, \\
+  \hat{s}_{n|n} & = \hat{s}_{n|n-1} + K_n(x_n - H_n \hat{s}_{n|n-1}),                                                                             \\
+  P_{n|n}       & = (1 - K_n H_n)P_{n|n-1}.
 \end{align}
 
 \subsubsection*{Handling Sensor Failures}
@@ -63,9 +63,9 @@ P_{n|n} &= (1 - K_n H_n)P_{n|n-1}.
 \textbf{Case 1: No failure ($\delta_n = 1$)}
 
 When there is no failure, $H_n = c_h$ and the filter operates normally:
-\begin{equation}
-K_n = \frac{c_h P_{n|n-1}}{c_h^2 P_{n|n-1} + \sigma_v^2} > 0.
-\end{equation}
+\begin{equation*}
+  K_n = \frac{c_h P_{n|n-1}}{c_h^2 P_{n|n-1} + \sigma_v^2} > 0.
+\end{equation*}
 
 The measurement is incorporated, the estimate is updated, and the uncertainty $P_{n|n}$ decreases.
 
@@ -73,9 +73,9 @@ The measurement is incorporated, the estimate is updated, and the uncertainty $P
 
 When a failure is detected, $H_n = 0$ and:
 \begin{align}
-K_n &= \frac{P_{n|n-1} \cdot 0}{0 + \sigma_v^2} = 0, \\
-\hat{s}_{n|n} &= \hat{s}_{n|n-1} + 0 \cdot (x_n - 0) = \hat{s}_{n|n-1}, \\
-P_{n|n} &= (1 - 0)P_{n|n-1} = P_{n|n-1}.
+  K_n           & = \frac{P_{n|n-1} \cdot 0}{0 + \sigma_v^2} = 0,          \\
+  \hat{s}_{n|n} & = \hat{s}_{n|n-1} + 0 \cdot (x_n - 0) = \hat{s}_{n|n-1}, \\
+  P_{n|n}       & = (1 - 0)P_{n|n-1} = P_{n|n-1}.
 \end{align}
 
 \textbf{Interpretation:} When a failure is detected via the indicator, the Kalman filter \textbf{completely ignores} that measurement. The estimate is not updated ($\hat{s}_{n|n} = \hat{s}_{n|n-1}$), and the uncertainty remains constant ($P_{n|n} = P_{n|n-1}$). This is the optimal behavior: since the measurement contains no information about the state, it should not influence the estimate.
@@ -83,18 +83,18 @@ P_{n|n} &= (1 - 0)P_{n|n-1} = P_{n|n-1}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textbf{Question: Write a script {\tt kalman\_dc\_errs.m} to simulate it. Use the same values of $\ell$, $\mu_\ell$, $\sigma_\ell$, $\sigma_v$ as in Task~3, (consider only the case $\sigma_\ell = 11$ cm) and assume that failures are random, statistically independent, and taking place with probability $p$.
-Observe what happens for $p=0.15$ and $p=0.85$, and comment on your results.}
+  Observe what happens for $p=0.15$ and $p=0.85$, and comment on your results.}
 \vspace{0.5cm}
 
 We simulate the Kalman filter for constant fluid level with sensor failures when the failure indicator is available. The filter can thus distinguish between reliable measurements ($\delta_n = 1$, where $H_n = c_h$) and failed measurements ($\delta_n = 0$, where $H_n = 0$).
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=0.9\textwidth]{img/task4_2_results.png}
-    \caption{Kalman filter WITH failure indicator for $p = 0.15$ and $p = 0.85$. 
-    Left column: estimated fluid level (red) compared to true value (blue dashed) and observations (magenta points). 
+  \centering
+  \includegraphics[width=0.9\textwidth]{img/task4_2_results.png}
+  \caption{Kalman filter WITH failure indicator for $p = 0.15$ and $p = 0.85$.
+    Left column: estimated fluid level (red) compared to true value (blue dashed) and observations (magenta points).
     Right column: evolution of estimation error standard deviation (log scale).}
-    \label{fig:task42}
+  \label{fig:task42}
 \end{figure}
 
 \subsubsection*{Results and Interpretation}
@@ -109,9 +109,9 @@ The left panel (bottom) shows a dramatically different scenario. Despite 85\% of
 
 \textbf{Key observations:}
 \begin{itemize}
-    \item When failures are detected, the Kalman gain becomes zero ($K_n = 0$), preventing corrupted measurements from affecting the estimate.
-    \item The filter's performance degrades gracefully: fewer reliable measurements lead to higher uncertainty, but the estimate bias remains small.
-    \item The indicator-based approach is optimal in the sense that it removes all information from failed measurements, which is the correct strategy when measurement reliability is unknown.
+  \item When failures are detected, the Kalman gain becomes zero ($K_n = 0$), preventing corrupted measurements from affecting the estimate.
+  \item The filter's performance degrades gracefully: fewer reliable measurements lead to higher uncertainty, but the estimate bias remains small.
+  \item The indicator-based approach is optimal in the sense that it removes all information from failed measurements, which is the correct strategy when measurement reliability is unknown.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -122,12 +122,12 @@ The left panel (bottom) shows a dramatically different scenario. Despite 85\% of
 In this scenario, the sensor failures are hidden from the filter. The filter continues to assume that $H_n = c_h$ for all measurements, even though failures actually occur with probability $p$. This represents a significant model mismatch that can degrade filter performance.
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=0.9\textwidth]{img/task4_3_results.png}
-    \caption{Kalman filter WITHOUT failure indicator (assumes no failures) for $p = 0.15$ and $p = 0.85$. 
-    Left column: estimated fluid level (red) compared to true value (blue dashed) and observations (magenta points). 
+  \centering
+  \includegraphics[width=0.9\textwidth]{img/task4_3_results.png}
+  \caption{Kalman filter WITHOUT failure indicator (assumes no failures) for $p = 0.15$ and $p = 0.85$.
+    Left column: estimated fluid level (red) compared to true value (blue dashed) and observations (magenta points).
     Right column: evolution of estimation error standard deviation (log scale).}
-    \label{fig:task43}
+  \label{fig:task43}
 \end{figure}
 
 \subsubsection*{Results and Interpretation}
@@ -144,10 +144,10 @@ The estimation error standard deviation (right panel, bottom) continues to decre
 
 \textbf{Key observations:}
 \begin{itemize}
-    \item This is an example of \textbf{filter divergence} caused by model mismatch: the filter's assumed measurement model ($H_n = c_h$ always) does not match reality (failures occur with probability $p$).
-    \item At high failure rates, divergence is severe and rapid, demonstrating that blindly trusting all measurements is dangerous.
-    \item The filter's internal uncertainty estimate (covariance) becomes unreliable --- it decreases while the actual error increases, a phenomenon called \textbf{inconsistency}.
-    \item Even at moderate failure rates ($p=0.15$), there is noticeable degradation compared to the indicator-based approach (Task 4.2).
+  \item This is an example of \textbf{filter divergence} caused by model mismatch: the filter's assumed measurement model ($H_n = c_h$ always) does not match reality (failures occur with probability $p$).
+  \item At high failure rates, divergence is severe and rapid, demonstrating that blindly trusting all measurements is dangerous.
+  \item The filter's internal uncertainty estimate (covariance) becomes unreliable --- it decreases while the actual error increases, a phenomenon called \textbf{inconsistency}.
+  \item Even at moderate failure rates ($p=0.15$), there is noticeable degradation compared to the indicator-based approach (Task 4.2).
 \end{itemize}
 
 \textbf{Conclusion:} Without a failure indicator, the Kalman filter is vulnerable to model mismatches. At high failure rates, the filter can diverge and produce severely biased estimates with overly optimistic uncertainty bounds. This underscores the critical importance of either: (i) having reliable measurement metadata (failure indicators), or (ii) designing robust filters that account for measurement uncertainty in the model itself.
@@ -160,31 +160,31 @@ The estimation error standard deviation (right panel, bottom) continues to decre
 \subsubsection*{Proposed Trick}
 
 When the sensor has no failure indicator, we do not know the actual value of $H_n = \delta_n c_h$ at each time instant. However, if we know the failure probability $p$, we can compute the \textbf{expected value} of $H_n$:
-\begin{equation}
-\mathbb{E}[H_n] = \mathbb{E}[\delta_n c_h] = c_h \mathbb{E}[\delta_n] = c_h (1-p).
-\end{equation}
+\begin{equation*}
+  \mathbb{E}[H_n] = \mathbb{E}[\delta_n c_h] = c_h \mathbb{E}[\delta_n] = c_h (1-p).
+\end{equation*}
 
 The trick is to replace the unknown $H_n$ in the Kalman filter equations by its expected value:
-\begin{equation}
-\boxed{H_n^{\text{eff}} = c_h(1-p).}
-\end{equation}
+\begin{equation*}
+  \boxed{H_n^{\text{eff}} = c_h(1-p).}
+\end{equation*}
 
 \subsubsection*{Modified Kalman Filter}
 
 Using $H_n^{\text{eff}} = c_h(1-p)$ in the update equations:
 \begin{align}
-K_n &= \frac{P_{n|n-1} c_h(1-p)}{c_h^2(1-p)^2 P_{n|n-1} + \sigma_v^2}, \\
-\hat{s}_{n|n} &= \hat{s}_{n|n-1} + K_n(x_n - c_h(1-p)\hat{s}_{n|n-1}), \\
-P_{n|n} &= (1 - K_n c_h(1-p))P_{n|n-1}.
+  K_n           & = \frac{P_{n|n-1} c_h(1-p)}{c_h^2(1-p)^2 P_{n|n-1} + \sigma_v^2}, \\
+  \hat{s}_{n|n} & = \hat{s}_{n|n-1} + K_n(x_n - c_h(1-p)\hat{s}_{n|n-1}),           \\
+  P_{n|n}       & = (1 - K_n c_h(1-p))P_{n|n-1}.
 \end{align}
 
 \subsubsection*{Intuition}
 
 This approach \textbf{de-weights} the measurements proportionally to the failure probability:
 \begin{itemize}
-    \item When $p = 0$ (no failures): $H_n^{\text{eff}} = c_h$, and the filter behaves as if all measurements are reliable.
-    \item When $p = 1$ (all failures): $H_n^{\text{eff}} = 0$, and the filter ignores all measurements.
-    \item When $0 < p < 1$: The effective gain $K_n$ is reduced, so each measurement has less influence on the estimate.
+  \item When $p = 0$ (no failures): $H_n^{\text{eff}} = c_h$, and the filter behaves as if all measurements are reliable.
+  \item When $p = 1$ (all failures): $H_n^{\text{eff}} = 0$, and the filter ignores all measurements.
+  \item When $0 < p < 1$: The effective gain $K_n$ is reduced, so each measurement has less influence on the estimate.
 \end{itemize}
 
 By using the average measurement quality, the filter avoids giving full trust to potentially failed measurements, while still extracting some information from the good ones. This is a form of \textbf{robust filtering} that accounts for the statistical uncertainty in the measurement model.
@@ -193,9 +193,9 @@ By using the average measurement quality, the filter avoids giving full trust to
 
 We expect this trick to:
 \begin{itemize}
-    \item Reduce the impact of failed measurements (which would otherwise corrupt the estimate).
-    \item Perform better than assuming $p=0$ (which trusts all measurements blindly).
-    \item Still be suboptimal compared to having the failure indicator (which perfectly identifies bad measurements).
+  \item Reduce the impact of failed measurements (which would otherwise corrupt the estimate).
+  \item Perform better than assuming $p=0$ (which trusts all measurements blindly).
+  \item Still be suboptimal compared to having the failure indicator (which perfectly identifies bad measurements).
 \end{itemize}
 
 The simulation results will confirm whether this theoretical reasoning holds in practice.

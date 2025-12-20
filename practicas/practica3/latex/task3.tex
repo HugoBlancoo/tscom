@@ -1,28 +1,28 @@
 \textbf{Question: Find a ``state evolution'' and ``measurement'' description for (1) in the form of (4).
-    Note that the state of the system (the fluid level) is static, i.e., $s_n = s$ is constant with $n$.}
+  Note that the state of the system (the fluid level) is static, i.e., $s_n = s$ is constant with $n$.}
 \vspace{0.5cm}
 
 Given that the fluid level is static ($s_n = s_{n-1} = l$) and a scalar, the state evolution equation simplifies.
 We identify the state transition matrix $A_n$ and the process noise $u_n$:
-\begin{equation}
-    s_n = 1 \cdot s_{n-1} + 0
-\end{equation}
+\begin{equation*}
+  s_n = 1 \cdot s_{n-1} + 0
+\end{equation*}
 Thus, identifying terms with the general form $s_n = A_n s_{n-1} + G_n f_n + u_n$:
 \begin{itemize}
-    \item State variable: $s_n = l$ (scalar).
-    \item State transition matrix: $A_n = 1$.
-    \item Control input: $G_n = 0$ (no external forcing).
-    \item Process noise: $u_n = 0$, which implies the process noise covariance is $Q_n = 0$.
+  \item State variable: $s_n = l$ (scalar).
+  \item State transition matrix: $A_n = 1$.
+  \item Control input: $G_n = 0$ (no external forcing).
+  \item Process noise: $u_n = 0$, which implies the process noise covariance is $Q_n = 0$.
 \end{itemize}
 For the measurement equation, we relate the pressure observation $x_n$ to the fluid level using the hydrostatic constant $c_h$:
-\begin{equation}
-    x_n = c_h \cdot s_n + v_n
-\end{equation}
+\begin{equation*}
+  x_n = c_h \cdot s_n + v_n
+\end{equation*}
 Comparing this to $x_n = H_n s_n + w_n$:
 \begin{itemize}
-    \item Observation matrix: $H_n = c_h$.
-    \item Measurement noise: $w_n = v_n$.
-    \item Measurement noise covariance: $R_n = \sigma_v^2$ (given variance of $v_k$).
+  \item Observation matrix: $H_n = c_h$.
+  \item Measurement noise: $w_n = v_n$.
+  \item Measurement noise covariance: $R_n = \sigma_v^2$ (given variance of $v_k$).
 \end{itemize}
 
 \textbf{Question:Derive the Kalman filter equations for this problem, in order to obtain the LMMSE estimate of the state given the observations $x_0$,\ldots,$x_n$ ( i.e., $\hat s_{n|n}$).}
@@ -33,47 +33,47 @@ Comparing this to $x_n = H_n s_n + w_n$:
 Since the system state is a scalar constant ($s_n = s_{n-1}$), we identified that $A_n = 1$, $G_n = 0$, $Q_n = 0$. The measurement follows $x_n = c_h s_n + v_n$, implying $H_n = c_h$ and $R_n = \sigma_v^2$. The Kalman filter recursive steps for $n \ge 0$ are derived as follows:
 
 \begin{enumerate}
-    \item \textbf{Prediction ($\hat{s}_{n|n-1}$):}
-          Using the state evolution equation with $f_n=0$:
-          \begin{equation}
-              \hat{s}_{n|n-1} = A_n \hat{s}_{n-1|n-1} = 1 \cdot \hat{s}_{n-1|n-1} = \hat{s}_{n-1|n-1}
-          \end{equation}
+  \item \textbf{Prediction ($\hat{s}_{n|n-1}$):}
+        Using the state evolution equation with $f_n=0$:
+        \begin{equation*}
+          \hat{s}_{n|n-1} = A_n \hat{s}_{n-1|n-1} = 1 \cdot \hat{s}_{n-1|n-1} = \hat{s}_{n-1|n-1}
+        \end{equation*}
 
-    \item \textbf{Prediction Error Covariance ($\Sigma_{n|n-1}$):}
-          Using the general prediction covariance formula with $Q_n=0$:
-          \begin{equation}
-              \Sigma_{n|n-1} = A_n \Sigma_{n-1|n-1} A_n^T + Q_n = 1 \cdot \Sigma_{n-1|n-1} \cdot 1 + 0 = \Sigma_{n-1|n-1}
-          \end{equation}
+  \item \textbf{Prediction Error Covariance ($\Sigma_{n|n-1}$):}
+        Using the general prediction covariance formula with $Q_n=0$:
+        \begin{equation*}
+          \Sigma_{n|n-1} = A_n \Sigma_{n-1|n-1} A_n^T + Q_n = 1 \cdot \Sigma_{n-1|n-1} \cdot 1 + 0 = \Sigma_{n-1|n-1}
+        \end{equation*}
 
-    \item \textbf{Kalman Gain ($K_n$):}
-          Since $H_n$ and $R_n$ are scalars ($c_h$ and $\sigma_v^2$), the matrix inversion becomes a scalar division:
-          \begin{equation}
-              K_n = \Sigma_{n|n-1} H_n^T (H_n \Sigma_{n|n-1} H_n^T + R_n)^{-1}
-          \end{equation}
-          Substituting the known values:
-          \begin{equation}
-              K_n = \frac{\Sigma_{n|n-1} \cdot c_h}{c_h^2 \Sigma_{n|n-1} + \sigma_v^2}
-          \end{equation}
+  \item \textbf{Kalman Gain ($K_n$):}
+        Since $H_n$ and $R_n$ are scalars ($c_h$ and $\sigma_v^2$), the matrix inversion becomes a scalar division:
+        \begin{equation*}
+          K_n = \Sigma_{n|n-1} H_n^T (H_n \Sigma_{n|n-1} H_n^T + R_n)^{-1}
+        \end{equation*}
+        Substituting the known values:
+        \begin{equation*}
+          K_n = \frac{\Sigma_{n|n-1} \cdot c_h}{c_h^2 \Sigma_{n|n-1} + \sigma_v^2}
+        \end{equation*}
 
-    \item \textbf{Correction ($\hat{s}_{n|n}$):}
-          Updating the a priori estimate with the new measurement $x_n$:
-          \begin{equation}
-              \hat{s}_{n|n} = \hat{s}_{n|n-1} + K_n (x_n - H_n \hat{s}_{n|n-1})
-          \end{equation}
-          Substituting the prediction from step 1:
-          \begin{equation}
-              \hat{s}_{n|n} = \hat{s}_{n-1|n-1} + K_n (x_n - c_h \hat{s}_{n-1|n-1})
-          \end{equation}
+  \item \textbf{Correction ($\hat{s}_{n|n}$):}
+        Updating the a priori estimate with the new measurement $x_n$:
+        \begin{equation*}
+          \hat{s}_{n|n} = \hat{s}_{n|n-1} + K_n (x_n - H_n \hat{s}_{n|n-1})
+        \end{equation*}
+        Substituting the prediction from step 1:
+        \begin{equation*}
+          \hat{s}_{n|n} = \hat{s}_{n-1|n-1} + K_n (x_n - c_h \hat{s}_{n-1|n-1})
+        \end{equation*}
 
-    \item \textbf{Estimation Error Covariance ($\Sigma_{n|n}$):}
-          Updating the error covariance. Note that the identity matrix $\mathbf{I}$ becomes the scalar $1$:
-          \begin{equation}
-              \Sigma_{n|n} = (I - K_n H_n) \Sigma_{n|n-1}
-          \end{equation}
-          Substituting scalars and the result from step 2:
-          \begin{equation}
-              \Sigma_{n|n} = (1 - K_n c_h) \Sigma_{n-1|n-1}
-          \end{equation}
+  \item \textbf{Estimation Error Covariance ($\Sigma_{n|n}$):}
+        Updating the error covariance. Note that the identity matrix $\mathbf{I}$ becomes the scalar $1$:
+        \begin{equation*}
+          \Sigma_{n|n} = (I - K_n H_n) \Sigma_{n|n-1}
+        \end{equation*}
+        Substituting scalars and the result from step 2:
+        \begin{equation*}
+          \Sigma_{n|n} = (1 - K_n c_h) \Sigma_{n-1|n-1}
+        \end{equation*}
 \end{enumerate}
 
 
@@ -81,19 +81,19 @@ Since the system state is a scalar constant ($s_n = s_{n-1}$), we identified tha
 \vspace{0.5cm}
 
 \begin{enumerate}
-    \item \textbf{$\hat{s}_{-1|-1}$:}
-          The initial value corresponds to the best best guess \textit{a priori} for the fluid level. This is the mean of the random variable.
-          \begin{equation}
-              \hat{s}_{-1|-1} = \mu_l
-          \end{equation}
-    \item \textbf{$\Sigma_{-1|-1}$:}
-          \begin{equation}
-              \Sigma_{-1|-1} = \sigma_l^2
-          \end{equation}
+  \item \textbf{$\hat{s}_{-1|-1}$:}
+        The initial value corresponds to the best best guess \textit{a priori} for the fluid level. This is the mean of the random variable.
+        \begin{equation*}
+          \hat{s}_{-1|-1} = \mu_l
+        \end{equation*}
+  \item \textbf{$\Sigma_{-1|-1}$:}
+        \begin{equation*}
+          \Sigma_{-1|-1} = \sigma_l^2
+        \end{equation*}
 \end{enumerate}
 
 \textbf{Question: Write a Matlab script\footnote{You may use the file {\tt kalman\_dc\_template.m} as starting point.} to simulate this dynamical system and the Kalman filter. Assume that the sensor measures pressure in mbar, fluid level is in cm, and that the fluid is benzene (density $874$ kg/m$^3$ at 25$^\circ$C).
-    Our initial guess of the fluid level is $\mu_\ell=250$ cm, and we assign a standard deviation $\sigma_\ell = 11$ cm to reflect our uncertainty about this guess. Measurement errors are uncorrelated, zero-mean Gaussian with standard deviation $\sigma_v = 25$ mbar, and the true fluid level is $340$ cm. Plot the time evolution of the state, the measurements, and the estimate, up to $n=200$, and for two different executions. Also, plot the time evolution of the standard deviation of the fluid level estimation error, in cm. Comment on your results.
+  Our initial guess of the fluid level is $\mu_\ell=250$ cm, and we assign a standard deviation $\sigma_\ell = 11$ cm to reflect our uncertainty about this guess. Measurement errors are uncorrelated, zero-mean Gaussian with standard deviation $\sigma_v = 25$ mbar, and the true fluid level is $340$ cm. Plot the time evolution of the state, the measurements, and the estimate, up to $n=200$, and for two different executions. Also, plot the time evolution of the standard deviation of the fluid level estimation error, in cm. Comment on your results.
 }
 
 \subsubsection*{Simulation Results}
@@ -103,19 +103,19 @@ The Kalman filter was simulated for the constant fluid level estimation problem 
 The simulation results for $N=200$ iterations and two different noise realizations are shown below:
 
 \begin{figure}[h!]
-    \centering
-    % Sustituye 'figura1.png' por el nombre real de tu archivo de imagen
-    \includegraphics[width=0.8\textwidth]{img/task1_4_1.png}
-    \caption{Time evolution of the true state (black dashed), noisy measurements (dots), and Kalman filter estimates (colored lines) for two executions.}
-    \label{fig:kalman_state}
+  \centering
+  % Sustituye 'figura1.png' por el nombre real de tu archivo de imagen
+  \includegraphics[width=0.8\textwidth]{img/task1_4_1.png}
+  \caption{Time evolution of the true state (black dashed), noisy measurements (dots), and Kalman filter estimates (colored lines) for two executions.}
+  \label{fig:kalman_state}
 \end{figure}
 
 \begin{figure}[h!]
-    \centering
-    % Sustituye 'figura2.png' por el nombre real de tu archivo de imagen
-    \includegraphics[width=0.8\textwidth]{img/task1_4_2.png}
-    \caption{Time evolution of the standard deviation of the estimation error ($\sqrt{\Sigma_{n|n}}$) for two executions.}
-    \label{fig:kalman_sigma}
+  \centering
+  % Sustituye 'figura2.png' por el nombre real de tu archivo de imagen
+  \includegraphics[width=0.8\textwidth]{img/task1_4_2.png}
+  \caption{Time evolution of the standard deviation of the estimation error ($\sqrt{\Sigma_{n|n}}$) for two executions.}
+  \label{fig:kalman_sigma}
 \end{figure}
 
 \subsubsection*{Comments on Results}
@@ -123,13 +123,13 @@ The simulation results for $N=200$ iterations and two different noise realizatio
 Based on the generated plots, we can draw the following conclusions:
 
 \begin{itemize}
-    \item \textbf{Convergence of the Estimate:} As seen in Figure \ref{fig:kalman_state}, the estimate starts at the initial guess ($\hat{s}_{-1|-1} = 250$ cm) and rapidly converges towards the true value ($340$ cm). The filter effectively corrects the large initial error (90 cm bias) within the first few iterations.
+  \item \textbf{Convergence of the Estimate:} As seen in Figure \ref{fig:kalman_state}, the estimate starts at the initial guess ($\hat{s}_{-1|-1} = 250$ cm) and rapidly converges towards the true value ($340$ cm). The filter effectively corrects the large initial error (90 cm bias) within the first few iterations.
 
-    \item \textbf{Noise Reduction:} The raw measurements (grey dots) exhibit high variance due to the sensor noise ($\sigma_v \approx 25$ mbar). The Kalman filter estimate behaves as a low-pass filter, smoothing out this noise. As time progresses ($n$ increases), the estimate becomes increasingly stable and closer to the true constant value.
+  \item \textbf{Noise Reduction:} The raw measurements (grey dots) exhibit high variance due to the sensor noise ($\sigma_v \approx 25$ mbar). The Kalman filter estimate behaves as a low-pass filter, smoothing out this noise. As time progresses ($n$ increases), the estimate becomes increasingly stable and closer to the true constant value.
 
-    \item \textbf{Error Covariance Behavior:} Figure \ref{fig:kalman_sigma} shows that the standard deviation of the estimation error ($\sqrt{\Sigma_{n|n}}$) decreases monotonically from the initial uncertainty ($\sigma_l = 11$ cm) towards zero. This asymptotic behavior towards zero is expected because the process noise is zero ($Q=0$); the filter assumes the state is perfectly constant, so it accumulates infinite information over time, theoretically achieving perfect precision as $n \to \infty$.
+  \item \textbf{Error Covariance Behavior:} Figure \ref{fig:kalman_sigma} shows that the standard deviation of the estimation error ($\sqrt{\Sigma_{n|n}}$) decreases monotonically from the initial uncertainty ($\sigma_l = 11$ cm) towards zero. This asymptotic behavior towards zero is expected because the process noise is zero ($Q=0$); the filter assumes the state is perfectly constant, so it accumulates infinite information over time, theoretically achieving perfect precision as $n \to \infty$.
 
-    \item \textbf{Independence from Realizations:} The error standard deviation curves for both executions are identical and superimposed. This confirms a fundamental property of the Kalman Filter: the covariance evolution ($\Sigma_{n|n}$) depends only on the system matrices ($A, H, Q, R$) and is independent of the specific random values of the measurements ($x_n$). Therefore, the performance metric is deterministic and can be computed offline.
+  \item \textbf{Independence from Realizations:} The error standard deviation curves for both executions are identical and superimposed. This confirms a fundamental property of the Kalman Filter: the covariance evolution ($\Sigma_{n|n}$) depends only on the system matrices ($A, H, Q, R$) and is independent of the specific random values of the measurements ($x_n$). Therefore, the performance metric is deterministic and can be computed offline.
 \end{itemize}
 
 \vspace{0.5cm}
@@ -138,32 +138,32 @@ Based on the generated plots, we can draw the following conclusions:
 
 \vspace{0.5cm}
 \begin{itemize}
-    \item For n = 0, $\Sigma_{0|-1} = \Sigma_{-1|-1} = \sigma_\ell^2$, $Q=0$ and $A=1$:
-          $$K_0 = \frac{\Sigma_{0|-1} c_h}{c_h^2 \Sigma_{0|-1} + \sigma_v^2} = \frac{\sigma_\ell^2 c_h}{c_h^2 \sigma_\ell^2 + \sigma_v^2}$$
-          $$\Sigma_{0|0} = (1 - K_0 c_h) \Sigma_{0|-1}$$
-          Substuying $K_0$:
-          $$\Sigma_{0|0} = \left( 1 - \frac{\sigma_\ell^2 c_h^2}{c_h^2 \sigma_\ell^2 + \sigma_v^2} \right) \sigma_\ell^2 = \left( \frac{c_h^2 \sigma_\ell^2 + \sigma_v^2 - \sigma_\ell^2 c_h^2}{c_h^2 \sigma_\ell^2 + \sigma_v^2} \right) \sigma_\ell^2$$
-          $$\Sigma_{0|0} = \frac{\sigma_v^2 \sigma_\ell^2}{c_h^2 \sigma_\ell^2 + \sigma_v^2} = \frac{\sigma_\ell^2}{c_h^2 \frac{\sigma_\ell^2}{\sigma_v^2} + 1} = \frac{\sigma_\ell^2}{1 + \alpha c_h^2}$$
-          So, cheking the formula for n=0:
-          $$\frac{\sigma_\ell^2}{1+(0+1)\alpha c_h^2} = \frac{\sigma_\ell^2}{1+\alpha c_h^2}$$
-    \item For n = k:
-          We know that $\Sigma_{k|k-1} = \Sigma_{k-1|k-1}$, so
-          $$\frac{1}{\Sigma_{k|k}} = \frac{1}{\Sigma_{k|k-1}} + \frac{H^2}{R} = \frac{1}{\Sigma_{k-1|k-1}} + \frac{c_h^2}{\sigma_v^2}$$
-          $$\frac{1}{\Sigma_{k|k}} = \frac{1 + k\alpha c_h^2}{\sigma_\ell^2} + \frac{c_h^2}{\sigma_v^2}$$
-          $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$, so $\frac{1}{\sigma_v^2} = \frac{\alpha}{\sigma_\ell^2}$
-          $$\frac{1}{\Sigma_{k|k}} = \frac{1 + k\alpha c_h^2}{\sigma_\ell^2} + \frac{c_h^2 \alpha}{\sigma_\ell^2}$$
-          $$\frac{1}{\Sigma_{k|k}} = \frac{1 + k\alpha c_h^2 + \alpha c_h^2}{\sigma_\ell^2} = \frac{1 + (k+1)\alpha c_h^2}{\sigma_\ell^2}$$
-          $$\Sigma_{k|k} = \frac{\sigma_\ell^2}{1 + (k+1)\alpha c_h^2}$$
+  \item For n = 0, $\Sigma_{0|-1} = \Sigma_{-1|-1} = \sigma_\ell^2$, $Q=0$ and $A=1$:
+        $$K_0 = \frac{\Sigma_{0|-1} c_h}{c_h^2 \Sigma_{0|-1} + \sigma_v^2} = \frac{\sigma_\ell^2 c_h}{c_h^2 \sigma_\ell^2 + \sigma_v^2}$$
+        $$\Sigma_{0|0} = (1 - K_0 c_h) \Sigma_{0|-1}$$
+        Substuying $K_0$:
+        $$\Sigma_{0|0} = \left( 1 - \frac{\sigma_\ell^2 c_h^2}{c_h^2 \sigma_\ell^2 + \sigma_v^2} \right) \sigma_\ell^2 = \left( \frac{c_h^2 \sigma_\ell^2 + \sigma_v^2 - \sigma_\ell^2 c_h^2}{c_h^2 \sigma_\ell^2 + \sigma_v^2} \right) \sigma_\ell^2$$
+        $$\Sigma_{0|0} = \frac{\sigma_v^2 \sigma_\ell^2}{c_h^2 \sigma_\ell^2 + \sigma_v^2} = \frac{\sigma_\ell^2}{c_h^2 \frac{\sigma_\ell^2}{\sigma_v^2} + 1} = \frac{\sigma_\ell^2}{1 + \alpha c_h^2}$$
+        So, cheking the formula for n=0:
+        $$\frac{\sigma_\ell^2}{1+(0+1)\alpha c_h^2} = \frac{\sigma_\ell^2}{1+\alpha c_h^2}$$
+  \item For n = k:
+        We know that $\Sigma_{k|k-1} = \Sigma_{k-1|k-1}$, so
+        $$\frac{1}{\Sigma_{k|k}} = \frac{1}{\Sigma_{k|k-1}} + \frac{H^2}{R} = \frac{1}{\Sigma_{k-1|k-1}} + \frac{c_h^2}{\sigma_v^2}$$
+        $$\frac{1}{\Sigma_{k|k}} = \frac{1 + k\alpha c_h^2}{\sigma_\ell^2} + \frac{c_h^2}{\sigma_v^2}$$
+        $\alpha = \frac{\sigma_\ell^2}{\sigma_v^2}$, so $\frac{1}{\sigma_v^2} = \frac{\alpha}{\sigma_\ell^2}$
+        $$\frac{1}{\Sigma_{k|k}} = \frac{1 + k\alpha c_h^2}{\sigma_\ell^2} + \frac{c_h^2 \alpha}{\sigma_\ell^2}$$
+        $$\frac{1}{\Sigma_{k|k}} = \frac{1 + k\alpha c_h^2 + \alpha c_h^2}{\sigma_\ell^2} = \frac{1 + (k+1)\alpha c_h^2}{\sigma_\ell^2}$$
+        $$\Sigma_{k|k} = \frac{\sigma_\ell^2}{1 + (k+1)\alpha c_h^2}$$
 \end{itemize}
 
 \subsubsection{Evaluate it for $n = 200$:}
 \begin{itemize}
-    \item $\sigma_\ell = 11 cm \implies \sigma_\ell^2 = 121 $
-    \item $\sigma_v = 25 mbar \implies \sigma_v^2 = 625$
-    \item $\alpha = \frac{121}{625} = 0.1936$
-    \item Densitty $\rho = 0.874g/cm^3$
-    \item $c_h = 0.98 \times \rho = 0.98 \times 0.874 = 0.85652 mbar/cm$
-    \item $c_h^2 \approx 0.7336$
+  \item $\sigma_\ell = 11 cm \implies \sigma_\ell^2 = 121 $
+  \item $\sigma_v = 25 mbar \implies \sigma_v^2 = 625$
+  \item $\alpha = \frac{121}{625} = 0.1936$
+  \item Densitty $\rho = 0.874g/cm^3$
+  \item $c_h = 0.98 \times \rho = 0.98 \times 0.874 = 0.85652 mbar/cm$
+  \item $c_h^2 \approx 0.7336$
 \end{itemize}
 
 $$\Sigma_{200|200} = \frac{121}{1 + (200+1) \cdot 0.1936 \cdot 0.7336}$$
@@ -174,10 +174,10 @@ $$\sqrt{\Sigma_{200|200}} = \sqrt{4.095} \approx \mathbf{2.02 \text{ cm}}$$
 In the plot of the Figure \label{fig:kalman_sigma} we can see how the curve drop to approximately 2 at $n = 200$
 
 \textbf{Question: Show that
-    \begin{equation}\label{eq:est_2}
-        \hat s_{n|n} = \frac{1+n\alpha c_h^2}{1+n\alpha c_h^2 + \alpha c_h^2} \hat s_{n-1|n-1} + \frac{\alpha c_h}{1+ n\alpha c_h^2 + \alpha c_h^2}x_n.
-    \end{equation}
-    Compare this with your answer to the first point of Task 2 and give your conclusions.}
+  \begin{equation*}\label{eq:est_2}
+    \hat s_{n|n} = \frac{1+n\alpha c_h^2}{1+n\alpha c_h^2 + \alpha c_h^2} \hat s_{n-1|n-1} + \frac{\alpha c_h}{1+ n\alpha c_h^2 + \alpha c_h^2}x_n.
+  \end{equation*}
+  Compare this with your answer to the first point of Task 2 and give your conclusions.}
 
 \vspace{0.5cm}
 COMPLETAR
@@ -189,22 +189,22 @@ We repeated the simulations modifying the standard deviation of the initial gues
 
 % --- Gráfica de Sensibilidad (Figura 3 de Matlab) ---
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{img/task3_7.png}
-    \caption{Effect of initial uncertainty $\sigma_\ell$ on the convergence speed. High uncertainty ($\sigma_\ell=50$) leads to fast convergence but high initial sensitivity. High confidence ($\sigma_\ell=5$) leads to slow convergence.}
-    \label{fig:sensitivity}
+  \centering
+  \includegraphics[width=0.85\textwidth]{img/task3_7.png}
+  \caption{Effect of initial uncertainty $\sigma_\ell$ on the convergence speed. High uncertainty ($\sigma_\ell=50$) leads to fast convergence but high initial sensitivity. High confidence ($\sigma_\ell=5$) leads to slow convergence.}
+  \label{fig:sensitivity}
 \end{figure}
 
 \subsubsection*{Case A: High Uncertainty ($\sigma_\ell = 50$ cm)}
 \begin{itemize}
-    \item \textbf{Observation:} The estimation curve jumps very rapidly from the initial guess ($250$) towards the true value ($340$) in just the first few samples ($n=1$ to $n=5$).
-    \item \textbf{Explanation:} By setting a high initial variance ($\Sigma_{-1|-1} = 2500$), the Kalman Gain ($K_0$) becomes very high. The filter assigns much more weight to the incoming measurements than to the previous estimate.
-    \item \textbf{Pros/Cons:} It corrects the initial bias ($90$ cm error) extremely fast, but the estimate is more sensitive to measurement noise in the very first steps.
+  \item \textbf{Observation:} The estimation curve jumps very rapidly from the initial guess ($250$) towards the true value ($340$) in just the first few samples ($n=1$ to $n=5$).
+  \item \textbf{Explanation:} By setting a high initial variance ($\Sigma_{-1|-1} = 2500$), the Kalman Gain ($K_0$) becomes very high. The filter assigns much more weight to the incoming measurements than to the previous estimate.
+  \item \textbf{Pros/Cons:} It corrects the initial bias ($90$ cm error) extremely fast, but the estimate is more sensitive to measurement noise in the very first steps.
 \end{itemize}
 
 \subsubsection*{Case B: Low Uncertainty / High Confidence ($\sigma_\ell = 5$ cm)}
 \begin{itemize}
-    \item \textbf{Observation:} The estimation curve rises very slowly. It takes many iterations to get close to the true level of $340$ cm.
-    \item \textbf{Explanation:} We are telling the filter that we are ``sure'' the level is $250 \pm 5$. The filter trusts this initial information heavily and treats the measurements as noise. The Kalman Gain is initially very small.
-    \item \textbf{Pros/Cons:} The filter is very smooth, but fails to correct the large initial bias quickly (overconfidence).
+  \item \textbf{Observation:} The estimation curve rises very slowly. It takes many iterations to get close to the true level of $340$ cm.
+  \item \textbf{Explanation:} We are telling the filter that we are ``sure'' the level is $250 \pm 5$. The filter trusts this initial information heavily and treats the measurements as noise. The Kalman Gain is initially very small.
+  \item \textbf{Pros/Cons:} The filter is very smooth, but fails to correct the large initial bias quickly (overconfidence).
 \end{itemize}
