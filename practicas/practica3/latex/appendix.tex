@@ -3,105 +3,54 @@
 \label{app:matlab}
 
 \subsection{Task 3}
-\subsubsection{task3\_4.m}
+\subsubsection{kalman\_dc.m}
 
 
 \begin{lstlisting}[language=Matlab]
-    clear; clc; close all;
-
-    rho_kgm3 = 874;
-    rho_gcm3 = rho_kgm3 / 1000;
-    ch = 0.98 * rho_gcm3;
+    rho = 0.874;
+    cst_p = 0.98*rho;
+    mean_s = 250;
+    var_s = 11^2;
+    var_v = 25^2;
     N = 200;
-    num_execs = 2;
-    l_true = 340;
-    mu_l = 250;
-    sigma_l = 11;
-    sigma_v = 25;
 
-    A = 1;
-    G = 0;
-    Q = 0;
-    H = ch;
-    R = sigma_v^2;
+    % Initialization
+    s = 340;
+    s_est = zeros(1,N+2);
+    s_est(1) = mean_s;
+    cov_est = zeros(1,N+2);
+    cov_est(1) = var_s;
+    state = zeros(1,N+2);
+    state(1) = s;
+    x = zeros(1,N+2);
 
-    figure(1); hold on; grid on;
-    title('Time Evolution: State, Measurements, and Estimate', 'Color', 'k');
-    xlabel('Time index (n)'); ylabel('Fluid Level (cm)');
-
-    figure(2); hold on; grid on;
-    title('Standard Deviation of Estimation Error', 'Color', 'k');
-    xlabel('Time index (n)'); ylabel('Std Dev (cm)');
-
-    colors = ['b', 'r'];
-
-    for k = 1:num_execs
-        s_true_hist = zeros(1, N+1);
-        x_hist      = zeros(1, N+1);
-        s_hat_hist  = zeros(1, N+1);
-        Sigma_hist  = zeros(1, N+1);
+    for n = 2:N+2
+        state(n) = s;
         
-        s_hat = mu_l;
-        Sigma = sigma_l^2;
+        x(n) = cst_p*state(n) + sqrt(var_v)*randn;
         
-        for i = 1:(N+1)
-            n = i - 1;
-            
-            s_n = l_true;
-            v_n = sigma_v * randn;
-            x_n = H * s_n + v_n;
-            
-            s_pred = A * s_hat;
-            Sigma_pred = A * Sigma * A' + Q;
-            
-            K = Sigma_pred * H' / (H * Sigma_pred * H' + R);
-            
-            s_hat = s_pred + K * (x_n - H * s_pred);
-            
-            Sigma = (1 - K * H) * Sigma_pred;
-            
-            s_true_hist(i) = s_n;
-            x_hist(i)      = x_n;
-            s_hat_hist(i)  = s_hat;
-            Sigma_hist(i)  = Sigma;
-        end
-        
-        time_vec = 0:N;
-        
-        figure(1);
-        set(gcf, 'Color', 'w');
-        set(gca, 'Color', 'w');
-        grid on;
-        set(gca, 'GridColor', 'k');
-        set(gca, 'GridAlpha', 1);
-        set(gca, 'XColor', 'k', 'YColor', 'k');
-        plot(time_vec, x_hist/ch, '.', 'Color', [0.7 0.7 0.7], ...
-            'DisplayName', sprintf('Measurements (Exec %d)', k));
-        
-        plot(time_vec, s_hat_hist, 'Color', colors(k), 'LineWidth', 1.5, ...
-            'DisplayName', sprintf('Estimate (Exec %d)', k));
-        
-        figure(2);
-        set(gcf, 'Color', 'w');
-        set(gca, 'Color', 'w');
-        grid on;
-        set(gca, 'GridColor', 'k');
-        set(gca, 'GridAlpha', 1);
-        set(gca, 'XColor', 'k', 'YColor', 'k');
-        plot(time_vec, sqrt(Sigma_hist), 'Color', colors(k), 'LineWidth', 1.5, ...
-            'DisplayName', sprintf('Exec %d', k));
+        s_pred = s_est(n-1);
+        cov_pred = cov_est(n-1);
+        Kgain = cov_pred*cst_p / (cst_p^2*cov_pred + var_v);
+        s_est(n) = s_pred + Kgain*(x(n) - cst_p*s_pred);
+        cov_est(n) = (1 - Kgain*cst_p)*cov_pred;
     end
 
-    figure(1);
-    plot(time_vec, s_true_hist, 'k--', 'LineWidth', 2, 'DisplayName', 'True Level');
-    legend('Location', 'best', 'Color','w', 'TextColor','k');
-    ylim([200 450]);
+    subplot(211)
+    plot(-1:N,state,'b--',0:N,x(2:N+2),'c*',-1:N,s_est,'r-');
+    xlabel('sample intervals');
+    ylabel('Level (cm)');
+    legend('Fluid level (true)','Observations','Level estimate','Location','SouthEast')
+    title('Kalman Filter: Constant Fluid Level')
+    grid on
 
-    figure(2);
-    legend('Location', 'best', 'Color','w', 'TextColor','k');
-    alpha = sigma_l^2 / sigma_v^2;
-    Sigma_analytic = sigma_l^2 ./ (1 + ((0:N)+1) * alpha * ch^2);
-    plot(time_vec, sqrt(Sigma_analytic), 'g:', 'LineWidth', 2, 'DisplayName', 'Analytic Theory');
+    subplot(212)
+    semilogy(-1:N,sqrt(cov_est),'k');
+    xlabel('sample intervals');
+    ylabel('cm');
+    legend('Std Dev of fluid level estimate')
+    grid on
+
 \end{lstlisting}
 \subsubsection{task3\_7.m}
 

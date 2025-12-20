@@ -103,7 +103,7 @@ Before collecting any measurements, we encode our a priori knowledge about the f
         \begin{equation*}
           \hat{s}_{-1|-1} = \mu_\ell
         \end{equation*}
-        
+
   \item \textbf{$\Sigma_{-1|-1}$:}
         Our uncertainty about this guess is quantified by the prior variance:
         \begin{equation*}
@@ -120,26 +120,26 @@ Before collecting any measurements, we encode our a priori knowledge about the f
   Our initial guess of the fluid level is $\mu_\ell=250$ cm, and we assign a standard deviation $\sigma_\ell = 11$ cm to reflect our uncertainty about this guess. Measurement errors are uncorrelated, zero-mean Gaussian with standard deviation $\sigma_v = 25$ mbar, and the true fluid level is $340$ cm. Plot the time evolution of the state, the measurements, and the estimate, up to $n=200$, and for two different executions. Also, plot the time evolution of the standard deviation of the fluid level estimation error, in cm. Comment on your results.
 }
 
+We implemented the Kalman filter using the provided MATLAB script to estimate the level of a constant fluid in a tank. The system parameters are defined as follows: Benzene density $\rho \approx 0.874$ g/cm$^3$, hydrostatic constant $c_p = 0.98\rho$, true level $s=340$ cm, and initial guess $\mu_s = 250$ cm with uncertainty $\sigma_s = 11$ cm.
+
 \subsubsection*{Simulation Results}
 
-The Kalman filter was simulated for the constant fluid level estimation problem using the derived scalar equations. The system parameters were set to $\mu_l = 250$ cm, $\sigma_l = 11$ cm, and the true level $l_{true} = 340$ cm. The measurement noise standard deviation was $\sigma_v = 25$ mbar.
+The simulation was executed twice to observe the effect of random noise realizations. The results are shown in Figure \ref{fig:exec1} and Figure \ref{fig:exec2}.
 
-The simulation results for $N=200$ iterations and two different noise realizations are shown below:
-
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
-  % Sustituye 'figura1.png' por el nombre real de tu archivo de imagen
-  \includegraphics[width=0.8\textwidth]{img/task1_4_1.png}
-  \caption{Time evolution of the true state (black dashed), noisy measurements (dots), and Kalman filter estimates (colored lines) for two executions.}
-  \label{fig:kalman_state}
+  % Ensure the filename matches your uploaded file for the first execution
+  \includegraphics[width=0.9\textwidth]{img/task3_4_1.png}
+  \caption{Execution 1: Time evolution of the state, measurements, and estimation error standard deviation.}
+  \label{fig:exec1}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
-  % Sustituye 'figura2.png' por el nombre real de tu archivo de imagen
-  \includegraphics[width=0.8\textwidth]{img/task1_4_2.png}
-  \caption{Time evolution of the standard deviation of the estimation error ($\sqrt{\Sigma_{n|n}}$) for two executions.}
-  \label{fig:kalman_sigma}
+  % Ensure the filename matches your uploaded file for the second execution
+  \includegraphics[width=0.9\textwidth]{img/task3_4_2.png}
+  \caption{Execution 2: Comparison with a different noise realization.}
+  \label{fig:exec2}
 \end{figure}
 
 \subsubsection*{Comments on Results}
@@ -147,15 +147,14 @@ The simulation results for $N=200$ iterations and two different noise realizatio
 Based on the generated plots, we can draw the following conclusions:
 
 \begin{itemize}
-  \item \textbf{Convergence of the Estimate:} As seen in Figure \ref{fig:kalman_state}, the estimate starts at the initial guess ($\hat{s}_{-1|-1} = 250$ cm) and rapidly converges towards the true value ($340$ cm). The filter effectively corrects the large initial error (90 cm bias) within the first few iterations.
+  \item \textbf{Convergence of the Estimate:} In the top subplot of both figures, the estimate (red solid line) starts at the initial guess of $250$ cm. It rapidly corrects this initial error, converging towards the true fluid level (blue dashed line at $340$ cm) within the first 20 to 30 iterations. The filter effectively smooths the noisy data.
 
-  \item \textbf{Noise Reduction:} The raw measurements (grey dots) exhibit high variance due to the sensor noise ($\sigma_v \approx 25$ mbar). The Kalman filter estimate behaves as a low-pass filter, smoothing out this noise. As time progresses ($n$ increases), the estimate becomes increasingly stable and closer to the true constant value.
+  \item \textbf{Unit Discrepancy in Visualization:} It is important to note that the observations (cyan stars) appear visually shifted downwards, centered around approximately $290$. This is not an error in the filter, but a visualization artifact. The plot displays the state in \textbf{cm} ($340$) and the measurements in \textbf{mbar} on the same Y-axis without scaling. Since $c_p \approx 0.856$ mbar/cm, the expected pressure measurement is $340 \times 0.856 \approx 291$ mbar. The filter internally handles this conversion via the observation constant $cst\_p$ ($H$).
 
-  \item \textbf{Error Covariance Behavior:} Figure \ref{fig:kalman_sigma} shows that the standard deviation of the estimation error ($\sqrt{\Sigma_{n|n}}$) decreases monotonically from the initial uncertainty ($\sigma_l = 11$ cm) towards zero. This asymptotic behavior towards zero is expected because the process noise is zero ($Q=0$); the filter assumes the state is perfectly constant, so it accumulates infinite information over time, theoretically achieving perfect precision as $n \to \infty$.
+  \item \textbf{Error Covariance Evolution:} The bottom subplot shows the standard deviation of the estimation error ($\sqrt{P_{n|n}}$). It decreases monotonically from the initial uncertainty ($\sigma_l = 11$ cm) towards zero. This asymptotic behavior is expected because the system is static with no process noise ($Q=0$). The filter accumulates information indefinitely, theoretically achieving perfect precision as $n \to \infty$.
 
-  \item \textbf{Independence from Realizations:} The error standard deviation curves for both executions are identical and superimposed. This confirms a fundamental property of the Kalman Filter: the covariance evolution ($\Sigma_{n|n}$) depends only on the system matrices ($A, H, Q, R$) and is independent of the specific random values of the measurements ($x_n$). Therefore, the performance metric is deterministic and can be computed offline.
+  \item \textbf{Independence from Realizations:} Comparing Figure \ref{fig:exec1} and Figure \ref{fig:exec2}, while the specific noise samples (cyan stars) and the exact path of the estimate (red line) differ due to randomness, the error standard deviation curve (bottom plot) is \textbf{identical} in both cases. This confirms that the covariance evolution in the Kalman filter depends only on the system matrices ($A, H, R, Q$) and is deterministic, independent of the actual measurement values.
 \end{itemize}
-
 \vspace{0.5cm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -237,17 +236,17 @@ The Kalman gain is:
 
 Substituting $\Sigma_{n|n-1}$:
 \begin{align*}
-  K_n &= \frac{\frac{\sigma_\ell^2}{1+n\alpha c_h^2} c_h}{c_h^2 \frac{\sigma_\ell^2}{1+n\alpha c_h^2} + \sigma_v^2} \\
-  &= \frac{\sigma_\ell^2 c_h}{c_h^2 \sigma_\ell^2 + \sigma_v^2(1+n\alpha c_h^2)} \\
-  &= \frac{\sigma_\ell^2 c_h}{\sigma_v^2(1+n\alpha c_h^2 + \alpha c_h^2)} \quad \text{(using } \alpha = \frac{\sigma_\ell^2}{\sigma_v^2}\text{)} \\
-  &= \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}
+  K_n & = \frac{\frac{\sigma_\ell^2}{1+n\alpha c_h^2} c_h}{c_h^2 \frac{\sigma_\ell^2}{1+n\alpha c_h^2} + \sigma_v^2}                                  \\
+      & = \frac{\sigma_\ell^2 c_h}{c_h^2 \sigma_\ell^2 + \sigma_v^2(1+n\alpha c_h^2)}                                                                 \\
+      & = \frac{\sigma_\ell^2 c_h}{\sigma_v^2(1+n\alpha c_h^2 + \alpha c_h^2)} \quad \text{(using } \alpha = \frac{\sigma_\ell^2}{\sigma_v^2}\text{)} \\
+      & = \frac{\alpha c_h}{1+(n+1)\alpha c_h^2}
 \end{align*}
 
 Now, compute $1 - K_n c_h$:
 \begin{align*}
-  1 - K_n c_h &= 1 - \frac{\alpha c_h^2}{1+(n+1)\alpha c_h^2} \\
-  &= \frac{1+(n+1)\alpha c_h^2 - \alpha c_h^2}{1+(n+1)\alpha c_h^2} \\
-  &= \frac{1+n\alpha c_h^2}{1+(n+1)\alpha c_h^2}
+  1 - K_n c_h & = 1 - \frac{\alpha c_h^2}{1+(n+1)\alpha c_h^2}                   \\
+              & = \frac{1+(n+1)\alpha c_h^2 - \alpha c_h^2}{1+(n+1)\alpha c_h^2} \\
+              & = \frac{1+n\alpha c_h^2}{1+(n+1)\alpha c_h^2}
 \end{align*}
 
 Substituting back into the correction equation:
@@ -284,28 +283,69 @@ Both approaches yield the same estimate, but the Kalman filter framework provide
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vspace{0.5cm}
 \question{Question: Repeat your simulations after changing $\sigma_\ell$ to 50 cm. Repeat again for $\sigma_\ell = 5$ cm. Comment on your results.}
-\subsection*{Analysis of Sensitivity to Initial Uncertainty}
+\subsubsection*{Analysis of Sensitivity to Initial Uncertainty}
 
-We repeated the simulations modifying the standard deviation of the initial guess $\sigma_\ell$. The results are shown in Figure \ref{fig:sensitivity} and analyzed below.
+\section*{Analysis of Sensitivity to Initial Uncertainty ($\sigma_\ell$)}
 
-% --- Gráfica de Sensibilidad (Figura 3 de Matlab) ---
+The simulations were repeated modifying the standard deviation of the initial guess, $\sigma_\ell$, to analyze how the filter's confidence in the initial state affects the estimation process.
+
+\subsubsection*{Case 1: High Initial Uncertainty ($\sigma_\ell = 50$ cm)}
+
+In this scenario, we set $\sigma_\ell = 50$ cm, which implies a very high initial variance ($P_{0|-1} = 2500$ cm$^2$). This indicates to the filter that the initial guess $\mu_\ell = 250$ cm is unreliable.
+
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.85\textwidth]{img/task3_7.png}
-  \caption{Effect of initial uncertainty $\sigma_\ell$ on the convergence speed. High uncertainty ($\sigma_\ell=50$) leads to fast convergence but high initial sensitivity. High confidence ($\sigma_\ell=5$) leads to slow convergence.}
-  \label{fig:sensitivity}
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{img/50_1.png}
+    \caption{Execution 1}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{img/50_2.png}
+    \caption{Execution 2}
+  \end{subfigure}
+  \caption{Simulation results for $\sigma_\ell = 50$ cm. The estimate (red line) jumps almost immediately to the true level.}
+  \label{fig:sigma50}
 \end{figure}
 
-\subsubsection*{Case A: High Uncertainty ($\sigma_\ell = 50$ cm)}
+\textbf{Comments on Results:}
+As observed in Figure \ref{fig:sigma50}, the convergence is extremely fast. In the very first iterations ($n=0, 1$), the estimate jumps from $250$ cm to the vicinity of the true value ($340$ cm).
 \begin{itemize}
-  \item \textbf{Observation:} The estimation curve jumps very rapidly from the initial guess ($250$) towards the true value ($340$) in just the first few samples ($n=1$ to $n=5$).
-  \item \textbf{Explanation:} By setting a high initial variance ($\Sigma_{-1|-1} = 2500$), the Kalman Gain ($K_0$) becomes very high. The filter assigns much more weight to the incoming measurements than to the previous estimate.
-  \item \textbf{Pros/Cons:} It corrects the initial bias ($90$ cm error) extremely fast, but the estimate is more sensitive to measurement noise in the very first steps.
+  \item Because the initial uncertainty is high relative to the measurement noise ($\sigma_\ell^2 \gg \sigma_v^2$), the Kalman Gain is close to 1.
+  \item The filter places almost all weight on the incoming measurements and ignores the initial guess.
+  \item While this corrects the initial bias quickly, the estimate is more susceptible to measurement noise in the initial steps.
 \end{itemize}
 
-\subsubsection*{Case B: Low Uncertainty / High Confidence ($\sigma_\ell = 5$ cm)}
+\subsubsection*{Case 2: Low Initial Uncertainty ($\sigma_\ell = 5$ cm)}
+
+In this scenario, we set $\sigma_\ell = 5$ cm. This implies a high confidence in the initial guess ($P_{0|-1} = 25$ cm$^2$). The filter assumes the initial value of $250$ cm is likely correct.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{img/5_1.png}
+    \caption{Execution 1}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{img/5_2.png}
+    \caption{Execution 2}
+  \end{subfigure}
+  \caption{Simulation results for $\sigma_\ell = 5$ cm. The estimate (red line) converges very slowly towards the true level.}
+  \label{fig:sigma5}
+\end{figure}
+
+\textbf{Comments on Results:}
+Figure \ref{fig:sigma5} shows a much slower convergence (sluggish response). The estimate starts at $250$ cm and takes a significant number of iterations (over 50 samples) to get close to the true level of $340$ cm.
 \begin{itemize}
-  \item \textbf{Observation:} The estimation curve rises very slowly. It takes many iterations to get close to the true level of $340$ cm.
-  \item \textbf{Explanation:} We are telling the filter that we are ``sure'' the level is $250 \pm 5$. The filter trusts this initial information heavily and treats the measurements as noise. The Kalman Gain is initially very small.
-  \item \textbf{Pros/Cons:} The filter is very smooth, but fails to correct the large initial bias quickly (overconfidence).
+  \item Because the initial uncertainty is low ($\sigma_\ell^2 \ll \sigma_v^2$), the Kalman Gain is initially very small.
+  \item The filter trusts the initial prediction heavily and treats the incoming measurements (which differ by $\approx 90$ cm) as noise/outliers.
+  \item This is a case of \textit{overconfidence}: the filter relies too much on an incorrect prior, leading to a persistent bias that takes time to correct.
+\end{itemize}
+
+\subsubsection*{Conclusion}
+The comparison demonstrates that $\sigma_\ell$ controls the **speed of convergence**:
+\begin{itemize}
+  \item A **large $\sigma_\ell$** allows the filter to "forget" the initial guess quickly and trust the data, which is preferred when the initial state is not well known.
+  \item A **small $\sigma_\ell$** acts as an "anchor," making the filter resistant to noise but also slow to react to large initial errors.
 \end{itemize}
