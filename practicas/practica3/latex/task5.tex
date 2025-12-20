@@ -45,12 +45,11 @@ Our measurements, as before, are given by the hydrostatic pressure at the bottom
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \question{Question: Write a Matlab script {\tt kalman\_flow.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid level and the fluid flow. Assume that the sensor works correctly (i.e., $p=0$ in \eqref{eq:xno}), measures pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.
-    The initial true fluid level is 340 cm; our guess is 250 cm, with a standard deviation of 11 cm. The true fluid flow is constant with time and equal to 33 cm$^3$/s; our guess is 0 cm$^3/$s, with standard deviation of 10 cm$^3/$s. Measurement errors are zero-mean uncorrelated Gaussian, with standard deviation of 25 mbar
+    The initial true fluid level is 340 cm; our guess is 250 cm, with a standard deviation of 11 cm. The true fluid flow is constant with time and equal to 33 cm$^3$/s; our guess is 0 cm$^3/$s, with standard deviation of 10 cm$^3/$s. Measurement errors are zero-mean uncorrelated Gaussian, with standard deviation of 25 mbar.
 }
 \vspace{0.5cm}
 
-%% Meter anexo
-
+The script \texttt{kalman\_flow.m~\ref{app:kalman_flow}} implements the Kalman filter for the dynamic system described.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,14 +72,14 @@ The state transition matrix $\bm{A}$ and observation matrix $\bm{H}$ were implem
 \subsection*{Simulation Results}
 The simulation was executed for 60 minutes. The results are illustrated below.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{img/fig_level.png}
     \caption{Time evolution of the Fluid Level. The true level (dashed black) increases linearly due to the constant positive input flow. The Kalman filter estimate (blue) converges rapidly to the true trajectory, correcting the initial error of 90 cm.}
     \label{fig:sim_level}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{img/fig_flow.png}
     \caption{Time evolution of the Fluid Flow. The true flow is constant at 33 cm$^3$/s (dashed black). The filter starts with a guess of 0 cm$^3$/s (red line at t=0). Over time, the filter successfully estimates the hidden flow variable, stabilizing around the true value.}

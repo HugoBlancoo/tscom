@@ -20,7 +20,7 @@ radius = diameter / 2;
 Area = pi * radius^2;
 
 % --- Simulation Duration ---
-duration_min = 60;
+duration_min = 200;
 N = (duration_min * 60) / T;
 num_execs = 2;
 

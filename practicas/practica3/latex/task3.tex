@@ -116,27 +116,25 @@ Before collecting any measurements, we encode our a priori knowledge about the f
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \vspace{0.5cm}
-\question{Question: Write a Matlab script\footnote{You may use the file {\tt kalman\_dc\_template.m} as starting point.} to simulate this dynamical system and the Kalman filter. Assume that the sensor measures pressure in mbar, fluid level is in cm, and that the fluid is benzene (density $874$ kg/m$^3$ at 25$^\circ$C).
+\question{Question: Write a Matlab script (You may use the file {\tt kalman\_dc\_template.m} as starting point) to simulate this dynamical system and the Kalman filter. Assume that the sensor measures pressure in mbar, fluid level is in cm, and that the fluid is benzene (density $874$ kg/m$^3$ at 25$^\circ$C).
   Our initial guess of the fluid level is $\mu_\ell=250$ cm, and we assign a standard deviation $\sigma_\ell = 11$ cm to reflect our uncertainty about this guess. Measurement errors are uncorrelated, zero-mean Gaussian with standard deviation $\sigma_v = 25$ mbar, and the true fluid level is $340$ cm. Plot the time evolution of the state, the measurements, and the estimate, up to $n=200$, and for two different executions. Also, plot the time evolution of the standard deviation of the fluid level estimation error, in cm. Comment on your results.
 }
 
-We implemented the Kalman filter using the provided MATLAB script to estimate the level of a constant fluid in a tank. The system parameters are defined as follows: Benzene density $\rho \approx 0.874$ g/cm$^3$, hydrostatic constant $c_p = 0.98\rho$, true level $s=340$ cm, and initial guess $\mu_s = 250$ cm with uncertainty $\sigma_s = 11$ cm.
+We implemented the Kalman filter~\ref{app:kalman_dc} using the provided MATLAB script to estimate the level of a constant fluid in a tank. The system parameters are defined as follows: Benzene density $\rho \approx 0.874$ g/cm$^3$, hydrostatic constant $c_p = 0.98\rho$, true level $s=340$ cm, and initial guess $\mu_s = 250$ cm with uncertainty $\sigma_s = 11$ cm.
 
 \subsubsection*{Simulation Results}
 
 The simulation was executed twice to observe the effect of random noise realizations. The results are shown in Figure \ref{fig:exec1} and Figure \ref{fig:exec2}.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
-  % Ensure the filename matches your uploaded file for the first execution
   \includegraphics[width=0.9\textwidth]{img/task3_4_1.png}
   \caption{Execution 1: Time evolution of the state, measurements, and estimation error standard deviation.}
   \label{fig:exec1}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
-  % Ensure the filename matches your uploaded file for the second execution
   \includegraphics[width=0.9\textwidth]{img/task3_4_2.png}
   \caption{Execution 2: Comparison with a different noise realization.}
   \label{fig:exec2}
@@ -149,7 +147,7 @@ Based on the generated plots, we can draw the following conclusions:
 \begin{itemize}
   \item \textbf{Convergence of the Estimate:} In the top subplot of both figures, the estimate (red solid line) starts at the initial guess of $250$ cm. It rapidly corrects this initial error, converging towards the true fluid level (blue dashed line at $340$ cm) within the first 20 to 30 iterations. The filter effectively smooths the noisy data.
 
-  \item \textbf{Unit Discrepancy in Visualization:} It is important to note that the observations (cyan stars) appear visually shifted downwards, centered around approximately $290$. This is not an error in the filter, but a visualization artifact. The plot displays the state in \textbf{cm} ($340$) and the measurements in \textbf{mbar} on the same Y-axis without scaling. Since $c_p \approx 0.856$ mbar/cm, the expected pressure measurement is $340 \times 0.856 \approx 291$ mbar. The filter internally handles this conversion via the observation constant $cst\_p$ ($H$).
+  \item \textbf{Measurements in Different Units:} The observations (cyan stars) are pressure in mbar, while level and estimate are in cm. Since $c_h \approx 0.856$ mbar/cm, the true level 340 cm gives pressure $340 \times 0.856 \approx 291$ mbar, explaining the apparent shift. The filter handles this via $H_n = c_h$.
 
   \item \textbf{Error Covariance Evolution:} The bottom subplot shows the standard deviation of the estimation error ($\sqrt{P_{n|n}}$). It decreases monotonically from the initial uncertainty ($\sigma_l = 11$ cm) towards zero. This asymptotic behavior is expected because the system is static with no process noise ($Q=0$). The filter accumulates information indefinitely, theoretically achieving perfect precision as $n \to \infty$.
 

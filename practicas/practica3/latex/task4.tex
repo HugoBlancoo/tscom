@@ -73,7 +73,7 @@ The Kalman filter recursion consists of two steps:
   Observe what happens for $p=0.15$ and $p=0.85$, and comment on your results.}
 \vspace{0.5cm}
 
-We simulate the Kalman filter with a working failure indicator. Simulation parameters: $\mu_\ell = 250$ cm, $\sigma_\ell = 11$ cm, $\ell_{\text{true}} = 340$ cm, $\sigma_v = 25$ mbar, $c_h = 0.85652$ mbar/cm.
+We simulate the Kalman filter with a working failure indicator~\ref{app:kalman_dc_errs}. Simulation parameters: $\mu_\ell = 250$ cm, $\sigma_\ell = 11$ cm, $\ell_{\text{true}} = 340$ cm, $\sigma_v = 25$ mbar, $c_h = 0.85652$ mbar/cm.
 
 \begin{figure}[h!]
   \centering
@@ -120,7 +120,7 @@ In this scenario, failures are hidden from the filter. The filter mistakenly ass
 
 The estimate (red line, left panel top) converges to approximately the true value, with slightly more oscillation than in Task 4.2. Since most measurements are reliable, the occasional corrupted ones have limited overall impact. The standard deviation (right panel) follows a similar decreasing trend as Task 4.2.
 
-\textbf{Case $p = 0.85$ (85\% failure rate) --- SEVERE DIVERGENCE:}
+\textbf{Case $p = 0.85$ (85\% failure rate) - Severe divergence:}
 
 \textbf{Observed divergence due to model mismatch:} The estimate (red line, left panel bottom) diverges from the true level when p = 0.85. In the first iterations the filter receives mostly pure noise from failed measurements, but, since failures are not modelled, it interprets this noise as valid information about the state and updates accordingly. This produces a large bias while the internal covariance keeps decreasing, illustrating filter inconsistency.
 
@@ -164,7 +164,7 @@ This de-weights measurements proportionally to the failure probability.
 
 Performance is similar to Task 4.3. The estimate converges accurately. At low failure rates, knowledge of $p$ provides only marginal improvement.
 
-\textbf{Case $p = 0.85$ --- PARTIAL RECOVERY:}
+\textbf{Case $p = 0.85$ - Partial recovery:}
 
 The estimate (red line, left panel) no longer diverges catastrophically as in Task 4.3. Instead, it oscillates around a value closer to the true level (340 cm), with noticeable bias but without the extreme divergence. By de-weighting measurements with $H_n^{\text{eff}} = 0.15 \cdot c_h$, the filter trusts the data less, preventing misleading noise from dominating the estimate.
 

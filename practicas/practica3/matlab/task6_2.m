@@ -169,3 +169,59 @@ figure(3);
 legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
 title('Std Dev: Solid=Level (cm), Dashed=Flow (cm^3/s)', 'Color', 'k');
 set(gca, 'YScale', 'log');
+
+%% 4. COMPARISON FIGURE: Task 5 vs Task 6 (Std Dev)
+
+% Re-calculate Task 5 (single sensor) covariance evolution
+sigma_v5 = 25;
+R_one = sigma_v5^2;
+H_one = [ch, 0];
+
+Sigma_one = Sigma_init;
+Sigma_hist_l_one = zeros(1, N+1);
+Sigma_hist_q_one = zeros(1, N+1);
+
+for i = 1:(N+1)
+    % Prediction
+    Sigma_pred = A * Sigma_one * A' + Q;
+    
+    % Update with one sensor
+    S = H_one * Sigma_pred * H_one' + R_one;
+    K = Sigma_pred * H_one' / S;
+    Sigma_one = (eye(2) - K * H_one) * Sigma_pred;
+    
+    % Storage
+    Sigma_hist_l_one(i) = Sigma_one(1,1);
+    Sigma_hist_q_one(i) = Sigma_one(2,2);
+end
+
+% Plot Comparison
+figure(4); clf;
+time_vec = (0:N) * T / 60;
+
+% Level comparison
+subplot(1,2,1)
+semilogy(time_vec, sqrt(Sigma_hist_l), 'b-', 'LineWidth', 2.5, ...
+    'DisplayName', 'Task 6 (2 sensors)'); hold on
+semilogy(time_vec, sqrt(Sigma_hist_l_one), 'r-', 'LineWidth', 2.5, ...
+    'DisplayName', 'Task 5 (1 sensor)');
+xlabel('Time (minutes)', 'FontSize', 11);
+ylabel('Std Dev (cm)', 'FontSize', 11);
+title('Level Uncertainty', 'FontSize', 12, 'FontWeight', 'bold');
+legend('FontSize', 10, 'Location', 'best');
+grid on
+
+% Flow comparison
+subplot(1,2,2)
+semilogy(time_vec, sqrt(Sigma_hist_q), 'b--', 'LineWidth', 2.5, ...
+    'DisplayName', 'Task 6 (2 sensors)'); hold on
+semilogy(time_vec, sqrt(Sigma_hist_q_one), 'r--', 'LineWidth', 2.5, ...
+    'DisplayName', 'Task 5 (1 sensor)');
+xlabel('Time (minutes)', 'FontSize', 11);
+ylabel('Std Dev (cm³/s)', 'FontSize', 11);
+title('Flow Uncertainty', 'FontSize', 12, 'FontWeight', 'bold');
+legend('FontSize', 10, 'Location', 'best');
+grid on
+
+sgtitle('Comparison - 1 vs 2 Sensors', 'FontSize', 13, 'FontWeight', 'bold');
+saveas(gcf, 'task6_comparison_std.png');
