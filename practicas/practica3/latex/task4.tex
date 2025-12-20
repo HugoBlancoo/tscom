@@ -7,7 +7,7 @@ It is assumed that the sensor is equipped with a failure indicator, so that we k
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Develop the state and measurement equations for this system. Develop the Kalman filter equations, and in view of them, explain how the effect of sensor error events is handled by the filter.}
+\question{Question: Develop the state and measurement equations for this system. Develop the Kalman filter equations, and in view of them, explain how the effect of sensor error events is handled by the filter.}
 \vspace{0.5cm}
 
 \subsubsection*{State and Measurement Equations}
@@ -82,7 +82,7 @@ When a failure is detected, $H_n = 0$ and:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Write a script {\tt kalman\_dc\_errs.m} to simulate it. Use the same values of $\ell$, $\mu_\ell$, $\sigma_\ell$, $\sigma_v$ as in Task~3, (consider only the case $\sigma_\ell = 11$ cm) and assume that failures are random, statistically independent, and taking place with probability $p$.
+\question{Question: Write a script {\tt kalman\_dc\_errs.m} to simulate it. Use the same values of $\ell$, $\mu_\ell$, $\sigma_\ell$, $\sigma_v$ as in Task~3, (consider only the case $\sigma_\ell = 11$ cm) and assume that failures are random, statistically independent, and taking place with probability $p$.
   Observe what happens for $p=0.15$ and $p=0.85$, and comment on your results.}
 \vspace{0.5cm}
 
@@ -116,7 +116,7 @@ The left panel (bottom) shows a dramatically different scenario. Despite 85\% of
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Now suppose that the sensor has no failure indicator, and thus we cannot know the time instants at which error events take place. We decide to assume that they {\em never} take place and run the Kalman filter under such assumption. Modify your code accordingly and observe what happens  for $p=0.15$ and $p=0.85$.}
+\question{Question: Now suppose that the sensor has no failure indicator, and thus we cannot know the time instants at which error events take place. We decide to assume that they {\em never} take place and run the Kalman filter under such assumption. Modify your code accordingly and observe what happens  for $p=0.15$ and $p=0.85$.}
 \vspace{0.5cm}
 
 In this scenario, the sensor failures are hidden from the filter. The filter continues to assume that $H_n = c_h$ for all measurements, even though failures actually occur with probability $p$. This represents a significant model mismatch that can degrade filter performance.
@@ -154,7 +154,7 @@ The estimation error standard deviation (right panel, bottom) continues to decre
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Assuming we know $p$, can you think of any trick to improve the performance of the Kalman filter in the situation from the previous point? [Hint: think of the measurement equation having a measurement matrix which is now random, and consider replacing in the Kalman filter its actual value (which is unknown) by its expected value]. Try it out and comment on your results.}
+\question{Question: Assuming we know $p$, can you think of any trick to improve the performance of the Kalman filter in the situation from the previous point? [Hint: think of the measurement equation having a measurement matrix which is now random, and consider replacing in the Kalman filter its actual value (which is unknown) by its expected value]. Try it out and comment on your results.}
 \vspace{0.5cm}
 
 \subsubsection*{Proposed Trick}

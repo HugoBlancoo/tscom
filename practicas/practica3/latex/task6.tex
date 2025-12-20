@@ -2,7 +2,7 @@ We decide to invest in an additional pressure sensor, which we install it at the
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Note that the addition of a new sensor does not alter the ''state evolution'' description of the system, but it obviously changes its ``measurement'' description. Give the corresponding details.}
+\question{Question: Note that the addition of a new sensor does not alter the ''state evolution'' description of the system, but it obviously changes its ``measurement'' description. Give the corresponding details.}
 \vspace{0.5cm}
 
 \begin{itemize}
@@ -43,7 +43,7 @@ We decide to invest in an additional pressure sensor, which we install it at the
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Write a Matlab script {\tt kalman\_flow2.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid (benzene) level and the fluid flow. Assume that the two sensors work correctly (i.e., $p=0$ in \eqref{eq:xno}), measuring pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.
+\question{Question: Write a Matlab script {\tt kalman\_flow2.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid (benzene) level and the fluid flow. Assume that the two sensors work correctly (i.e., $p=0$ in \eqref{eq:xno}), measuring pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.
 }
 \textbf{The initial true fluid level is 340 cm; our guess is 250 cm, with a standard deviation of 11 cm. The true fluid flow is constant with time and equal to 33 cm$^3$/s; our guess is 0 cm$^3$/s, with standard deviation of 10 cm$^3$/s. Measurement errors are zero-mean uncorrelated Gaussian, with standard deviation of 20 mbar at the first sensor and of 80 mbar at the second.
 }
@@ -53,7 +53,7 @@ We decide to invest in an additional pressure sensor, which we install it at the
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Plot the time evolution of the fluid level and fluid flow, the measurements, and the estimates, for up to $60$ minutes, and for two different executions. Comment on your results.}
+\question{Question: Plot the time evolution of the fluid level and fluid flow, the measurements, and the estimates, for up to $60$ minutes, and for two different executions. Comment on your results.}
 \vspace{0.5cm}
 
 We executed the simulation for 60 minutes with two independent executions. The results are shown below.
@@ -104,7 +104,7 @@ We executed the simulation for 60 minutes with two independent executions. The r
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Plot the time evolution of the standard deviation of the estimation error for both the fluid level (in cm) and the fluid flow (in cm$^3/$s), also for two different realizations. Superimpose the corresponding curves when only the first sensor is available, and explain what you see.}
+\question{Question: Plot the time evolution of the standard deviation of the estimation error for both the fluid level (in cm) and the fluid flow (in cm$^3/$s), also for two different realizations. Superimpose the corresponding curves when only the first sensor is available, and explain what you see.}
 \vspace{0.5cm}
 
 Figure~\ref{fig:task6_std} shows the evolution of the estimation error standard deviation for both level and flow, comparing the two-sensor case (Task 6) with the single-sensor case (Task 5).

@@ -9,7 +9,7 @@ Our measurements, as before, are given by the hydrostatic pressure at the bottom
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Find a ``state evolution'' and ``measurement'' description for the system in the form of (4), assuming that the fluid flow remains constant with time. (Assume that the tank is sufficiently big so that it never overflows, and that the initial fluid level is sufficiently high so that the tank never empties out).}
+\question{Question: Find a ``state evolution'' and ``measurement'' description for the system in the form of (4), assuming that the fluid flow remains constant with time. (Assume that the tank is sufficiently big so that it never overflows, and that the initial fluid level is sufficiently high so that the tank never empties out).}
 \vspace{0.5cm}
 
 \begin{itemize}
@@ -44,7 +44,7 @@ Our measurements, as before, are given by the hydrostatic pressure at the bottom
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Write a Matlab script {\tt kalman\_flow.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid level and the fluid flow. Assume that the sensor works correctly (i.e., $p=0$ in \eqref{eq:xno}), measures pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.
+\question{Question: Write a Matlab script {\tt kalman\_flow.m} to simulate this dynamical system and the corresponding Kalman filter to estimate the fluid level and the fluid flow. Assume that the sensor works correctly (i.e., $p=0$ in \eqref{eq:xno}), measures pressure in mbar, taking one measurement every 5 seconds, and that the cross-section of the tank is circular with diameter 22 cm. Fluid level is to be expressed in cm, as before, whereas fluid flow is to be expressed in cm$^3/$s.
     The initial true fluid level is 340 cm; our guess is 250 cm, with a standard deviation of 11 cm. The true fluid flow is constant with time and equal to 33 cm$^3$/s; our guess is 0 cm$^3/$s, with standard deviation of 10 cm$^3/$s. Measurement errors are zero-mean uncorrelated Gaussian, with standard deviation of 25 mbar
 }
 \vspace{0.5cm}
@@ -54,7 +54,7 @@ Our measurements, as before, are given by the hydrostatic pressure at the bottom
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Plot the time evolution of the fluid level and fluid flow, the measurements, and the estimates, for up to $60$ minutes, and for two different executions. Comment on your results.}
+\question{Question: Plot the time evolution of the fluid level and fluid flow, the measurements, and the estimates, for up to $60$ minutes, and for two different executions. Comment on your results.}
 \vspace{0.5cm}
 
 We implemented a Matlab script \texttt{kalman\_flow.m} to simulate the dynamic system and the Kalman filter. The state vector is defined as $\bm{s}_n = [l_n, q_n]^T$, including both fluid level and fluid flow.
@@ -97,7 +97,7 @@ The results confirm the correct operation of the filter:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question: Plot the time evolution of the standard deviation of the estimation error for both the fluid level (in cm) and the fluid flow (in cm$^3/$s), also for two different realizations. Comment on your results.}
+\question{Question: Plot the time evolution of the standard deviation of the estimation error for both the fluid level (in cm) and the fluid flow (in cm$^3/$s), also for two different realizations. Comment on your results.}
 \vspace{0.5cm}
 
 Figure \ref{fig:sigma_dynamic} shows the time evolution of the standard deviation of the estimation error for both the fluid level ($\sqrt{\Sigma_{11}}$) and the fluid flow ($\sqrt{\Sigma_{22}}$) for two different simulation runs.
@@ -127,7 +127,7 @@ Based on the results, we can draw the following conclusions:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Question:  Repeat the above two points if we change the standard deviation for our guess of the flow to 2 cm$^3/$s, and comment on your results.}
+\question{Question:  Repeat the above two points if we change the standard deviation for our guess of the flow to 2 cm$^3/$s, and comment on your results.}
 \vspace{0.5cm}
 
 We repeated the simulation reducing the standard deviation of the initial flow guess from $10$ cm$^3$/s to $2$ cm$^3$/s. This implies that the filter is initialized with a higher confidence in the incorrect guess ($\hat{q}_{-1}=0$). The results differ significantly from the previous case:
