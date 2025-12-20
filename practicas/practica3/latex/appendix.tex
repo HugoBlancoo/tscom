@@ -2,17 +2,912 @@
 \section{Appendix: MATLAB scripts and data}
 \label{app:matlab}
 
-\subsection{Task 1}
-\subsubsection{task1\_3.m}
+\subsection{Task 3}
+\subsubsection{task3\_4.m}
 
 
 \begin{lstlisting}[language=Matlab]
-    EJ
+    clear; clc; close all;
+
+    rho_kgm3 = 874;
+    rho_gcm3 = rho_kgm3 / 1000;
+    ch = 0.98 * rho_gcm3;
+    N = 200;
+    num_execs = 2;
+    l_true = 340;
+    mu_l = 250;
+    sigma_l = 11;
+    sigma_v = 25;
+
+    A = 1;
+    G = 0;
+    Q = 0;
+    H = ch;
+    R = sigma_v^2;
+
+    figure(1); hold on; grid on;
+    title('Time Evolution: State, Measurements, and Estimate', 'Color', 'k');
+    xlabel('Time index (n)'); ylabel('Fluid Level (cm)');
+
+    figure(2); hold on; grid on;
+    title('Standard Deviation of Estimation Error', 'Color', 'k');
+    xlabel('Time index (n)'); ylabel('Std Dev (cm)');
+
+    colors = ['b', 'r'];
+
+    for k = 1:num_execs
+        s_true_hist = zeros(1, N+1);
+        x_hist      = zeros(1, N+1);
+        s_hat_hist  = zeros(1, N+1);
+        Sigma_hist  = zeros(1, N+1);
+        
+        s_hat = mu_l;
+        Sigma = sigma_l^2;
+        
+        for i = 1:(N+1)
+            n = i - 1;
+            
+            s_n = l_true;
+            v_n = sigma_v * randn;
+            x_n = H * s_n + v_n;
+            
+            s_pred = A * s_hat;
+            Sigma_pred = A * Sigma * A' + Q;
+            
+            K = Sigma_pred * H' / (H * Sigma_pred * H' + R);
+            
+            s_hat = s_pred + K * (x_n - H * s_pred);
+            
+            Sigma = (1 - K * H) * Sigma_pred;
+            
+            s_true_hist(i) = s_n;
+            x_hist(i)      = x_n;
+            s_hat_hist(i)  = s_hat;
+            Sigma_hist(i)  = Sigma;
+        end
+        
+        time_vec = 0:N;
+        
+        figure(1);
+        set(gcf, 'Color', 'w');
+        set(gca, 'Color', 'w');
+        grid on;
+        set(gca, 'GridColor', 'k');
+        set(gca, 'GridAlpha', 1);
+        set(gca, 'XColor', 'k', 'YColor', 'k');
+        plot(time_vec, x_hist/ch, '.', 'Color', [0.7 0.7 0.7], ...
+            'DisplayName', sprintf('Measurements (Exec %d)', k));
+        
+        plot(time_vec, s_hat_hist, 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Estimate (Exec %d)', k));
+        
+        figure(2);
+        set(gcf, 'Color', 'w');
+        set(gca, 'Color', 'w');
+        grid on;
+        set(gca, 'GridColor', 'k');
+        set(gca, 'GridAlpha', 1);
+        set(gca, 'XColor', 'k', 'YColor', 'k');
+        plot(time_vec, sqrt(Sigma_hist), 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Exec %d', k));
+    end
+
+    figure(1);
+    plot(time_vec, s_true_hist, 'k--', 'LineWidth', 2, 'DisplayName', 'True Level');
+    legend('Location', 'best', 'Color','w', 'TextColor','k');
+    ylim([200 450]);
+
+    figure(2);
+    legend('Location', 'best', 'Color','w', 'TextColor','k');
+    alpha = sigma_l^2 / sigma_v^2;
+    Sigma_analytic = sigma_l^2 ./ (1 + ((0:N)+1) * alpha * ch^2);
+    plot(time_vec, sqrt(Sigma_analytic), 'g:', 'LineWidth', 2, 'DisplayName', 'Analytic Theory');
+\end{lstlisting}
+\subsubsection{task3\_7.m}
+
+\begin{lstlisting}[language=Matlab]
+    clear; clc; close all;
+
+    rho_kgm3 = 874; 
+    rho_gcm3 = rho_kgm3 / 1000; 
+    ch = 0.98 * rho_gcm3;
+
+    N = 200;                        
+    num_execs = 2;                  
+
+    l_true = 340;                   
+    mu_l_guess = 250;               
+    sigma_v = 25;                   
+
+    A = 1;                          
+    G = 0;                          
+    Q = 0;                          
+    H = ch;                         
+    R = sigma_v^2;                  
+
+    sigma_l_base = 11;              
+
+    figure(1); 
+    set(gcf, 'Color', 'w'); set(gca, 'Color', 'w');
+    hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.5, 'LineWidth', 0.5);
+    set(gca, 'XColor', 'k', 'YColor', 'k', 'FontName', 'Helvetica', 'FontSize', 10);
+    title('Fig 1: Time Evolution of State and Estimates', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time index (n)', 'Color', 'k'); ylabel('Fluid Level (cm)', 'Color', 'k');
+
+    figure(2); 
+    set(gcf, 'Color', 'w'); set(gca, 'Color', 'w');
+    hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.5, 'LineWidth', 0.5);
+    set(gca, 'XColor', 'k', 'YColor', 'k', 'FontName', 'Helvetica', 'FontSize', 10);
+    title('Fig 2: Std Dev of Estimation Error (\surd\Sigma_{n|n})', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time index (n)', 'Color', 'k'); ylabel('Std Dev (cm)', 'Color', 'k');
+
+    colors = ['b', 'r']; 
+
+    for k = 1:num_execs
+        s_hat_hist = zeros(1, N+1);
+        Sigma_hist = zeros(1, N+1);
+        x_hist     = zeros(1, N+1);
+        
+        s_hat = mu_l_guess;
+        Sigma = sigma_l_base^2;
+        
+        for i = 1:(N+1)
+            s_n = l_true;
+            v_n = sigma_v * randn; 
+            x_n = H * s_n + v_n;
+            
+            s_pred = A * s_hat;
+            Sigma_pred = A * Sigma * A' + Q;
+            
+            K = Sigma_pred * H' / (H * Sigma_pred * H' + R);
+            s_hat = s_pred + K * (x_n - H * s_pred);
+            Sigma = (1 - K * H) * Sigma_pred;
+            
+            s_hat_hist(i) = s_hat;
+            Sigma_hist(i) = Sigma;
+            x_hist(i)     = x_n;
+        end
+        
+        time_vec = 0:N;
+        
+        figure(1);
+        plot(time_vec, x_hist/ch, '.', 'Color', [0.7 0.7 0.7], 'MarkerSize', 8, ...
+            'DisplayName', sprintf('Meas. (Exec %d)', k));
+        plot(time_vec, s_hat_hist, 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Est. (Exec %d)', k));
+        
+        figure(2);
+        plot(time_vec, sqrt(Sigma_hist), 'Color', colors(k), 'LineWidth', 2, ...
+            'DisplayName', sprintf('Sim. Exec %d', k));
+    end
+
+    figure(1);
+    plot([0 N], [l_true l_true], 'k--', 'LineWidth', 2, 'DisplayName', 'True Level');
+    legend('Location', 'best', 'TextColor', 'k', 'Color','w');
+    ylim([200 450]);
+    figure(2);
+    alpha = sigma_l_base^2 / sigma_v^2;
+    Sigma_analytic = sigma_l_base^2 ./ (1 + ((0:N)+1) * alpha * ch^2);
+    plot(time_vec, sqrt(Sigma_analytic), 'g:', 'LineWidth', 2, 'DisplayName', 'Analytic Theory');
+    legend('Location', 'best', 'TextColor', 'k', 'Color','w');
+
+    sigmas_to_test = [11, 50, 5];
+    labels = {'\sigma_l = 11 cm (Original)', '\sigma_l = 50 cm (High Uncertainty)', '\sigma_l = 5 cm (High Confidence)'};
+    line_styles = {'b-', 'm-', 'g-'};
+
+    figure(3);
+    set(gcf, 'Color', 'w'); set(gca, 'Color', 'w');
+    hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.5);
+    set(gca, 'XColor', 'k', 'YColor', 'k');
+    title('Fig 3: Effect of Initial Uncertainty on Convergence', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time index (n)', 'Color', 'k'); ylabel('Estimate (cm)', 'Color', 'k');
+    plot([0 N], [l_true l_true], 'k--', 'LineWidth', 1.5, 'DisplayName', 'True Level');
+
+    rng(100); 
+    common_noise = sigma_v * randn(1, N+1);
+
+    for j = 1:length(sigmas_to_test)
+        curr_sigma = sigmas_to_test(j);
+        s_hat = mu_l_guess;
+        Sigma = curr_sigma^2;
+        
+        hist_est = zeros(1, N+1);
+        
+        for i = 1:(N+1)
+            s_n = l_true;
+            x_n = H * s_n + common_noise(i);
+            
+            s_pred = s_hat;
+            Sigma_pred = Sigma;
+            
+            K = Sigma_pred * H' / (H * Sigma_pred * H' + R);
+            s_hat = s_pred + K * (x_n - H * s_pred);
+            Sigma = (1 - K * H) * Sigma_pred;
+            
+            hist_est(i) = s_hat;
+        end
+        
+        plot(0:N, hist_est, line_styles{j}, 'LineWidth', 2, 'DisplayName', labels{j});
+    end
+
+    legend('Location', 'southeast', 'TextColor', 'k', 'Color','w');
+    ylim([240 360]);
 \end{lstlisting}
 
-\subsection{Task 3}
-\subsubsection{task3\_1.m}
+\subsection{Task 4}
+\subsubsection{task4\_2.m}
 
 \begin{lstlisting}[language=Matlab]
-    EJ
+    cst_p  = 1;
+    mean_s = 100;
+    var_s  = 11^2;
+    var_v  = 5^2;
+    N      = 100;
+
+    p_values = [0.15, 0.85];
+
+    figure;
+    for idx = 1:2
+        p = p_values(idx);
+        
+        s = 100;
+        s_est = zeros(1, N+2);
+        s_est(1) = mean_s;
+        cov_est = zeros(1, N+2);
+        cov_est(1) = var_s;
+        state = zeros(1, N+2);
+        state(1) = s;
+        x = zeros(1, N+2);
+        delta = [0, (rand(1, N+1) > p), 0];
+        
+        for n = 2:N+2
+            state(n) = s;
+            
+            if delta(n) == 1
+                x(n) = cst_p * state(n) + sqrt(var_v) * randn;
+            else
+                x(n) = sqrt(var_v) * randn;
+            end
+            
+            s_pred = s_est(n-1);
+            cov_pred = cov_est(n-1);
+            
+            if delta(n) == 1
+                Kgain = (cst_p * cov_pred) / (cst_p^2 * cov_pred + var_v);
+                s_est(n) = s_pred + Kgain * (x(n) - cst_p * s_pred);
+                cov_est(n) = (1 - Kgain * cst_p) * cov_pred;
+            else
+                s_est(n) = s_pred;
+                cov_est(n) = cov_pred;
+            end
+        end
+        
+        subplot(2, 2, 2*idx-1);
+        plot(-1:N, state, 'b--', 'LineWidth', 1.5); hold on;
+        plot(0:N, x(2:N+2), 'm*', 'MarkerSize', 4);
+        plot(-1:N, s_est, 'r-', 'LineWidth', 1.5);
+        xlabel('n'); ylabel('Level [cm]');
+        title(sprintf('p = %.2f', p));
+        legend('True', 'Meas.', 'Estimate');
+        grid on;
+        
+        subplot(2, 2, 2*idx);
+        semilogy(-1:N, sqrt(cov_est), 'k'); hold on;
+        xlabel('n'); ylabel('Std [cm]');
+        grid on;
+        
+        fprintf('p=%.2f: MSE=%.4f, Final error=%.2f cm\n', p, mean((s_est-s).^2), abs(s_est(end)-s));
+    end
+
+    sgtitle('Kalman with Indicator');
+    saveas(gcf, 'task4_2_results.png');
+
+\end{lstlisting}
+
+\subsubsection{task4\_3.m}
+
+\begin{lstlisting}[language=Matlab]
+    cst_p  = 1;
+    mean_s = 100;
+    var_s  = 11^2;
+    var_v  = 5^2;
+    N      = 100;
+
+    p_values = [0.15, 0.85];
+
+    figure;
+    for idx = 1:2
+        p = p_values(idx);
+        
+        s = 100;
+        s_est = zeros(1, N+2);
+        s_est(1) = mean_s;
+        cov_est = zeros(1, N+2);
+        cov_est(1) = var_s;
+        state = zeros(1, N+2);
+        state(1) = s;
+        x = zeros(1, N+2);
+        delta = [0, (rand(1, N+1) > p), 0];
+        
+        for n = 2:N+2
+            state(n) = s;
+            
+            if delta(n) == 1
+                x(n) = cst_p * state(n) + sqrt(var_v) * randn;
+            else
+                x(n) = sqrt(var_v) * randn;
+            end
+            
+            s_pred = s_est(n-1);
+            cov_pred = cov_est(n-1);
+            
+            Kgain = (cst_p * cov_pred) / (cst_p^2 * cov_pred + var_v);
+            s_est(n) = s_pred + Kgain * (x(n) - cst_p * s_pred);
+            cov_est(n) = (1 - Kgain * cst_p) * cov_pred;
+        end
+        
+        subplot(2, 2, 2*idx-1);
+        plot(-1:N, state, 'b--', 'LineWidth', 1.5); hold on;
+        plot(0:N, x(2:N+2), 'm*', 'MarkerSize', 4);
+        plot(-1:N, s_est, 'r-', 'LineWidth', 1.5);
+        xlabel('n'); ylabel('Level [cm]');
+        title(sprintf('p = %.2f', p));
+        legend('True', 'Meas.', 'Estimate');
+        grid on;
+        
+        subplot(2, 2, 2*idx);
+        semilogy(-1:N, sqrt(cov_est), 'k'); hold on;
+        xlabel('n'); ylabel('Std [cm]');
+        grid on;
+        
+        fprintf('p=%.2f: MSE=%.4f, Final error=%.2f cm\n', p, mean((s_est-s).^2), abs(s_est(end)-s));
+    end
+
+    sgtitle('Kalman without Indicator (Assumes No Failures)');
+    saveas(gcf, 'task4_3_results.png');
+
+\end{lstlisting}
+
+\subsection{Task 5}
+\subsubsection{task5\_2.m}
+
+\begin{lstlisting}[language=Matlab]
+    clear; clc; close all;
+
+    rho_kgm3 = 874;
+    rho_gcm3 = rho_kgm3 / 1000;
+    ch = 0.98 * rho_gcm3;
+
+    T = 5;
+    diameter = 22;
+    radius = diameter / 2;
+    Area = pi * radius^2;
+
+    duration_min = 60;
+    N = (duration_min * 60) / T;
+    num_execs = 2;
+
+    l_true_init = 340;
+    q_true_val  = 33;
+
+    mu_l = 250;
+    sigma_l = 11;
+    mu_q = 0;
+    sigma_q = 10;
+
+    sigma_v = 25;
+    R = sigma_v^2;
+
+    A = [1,  T/Area;
+        0,       1];
+
+    H = [ch, 0];
+
+    Q = zeros(2, 2); 
+
+    Sigma_init = [sigma_l^2, 0;
+                0,         sigma_q^2];
+
+    figure(1); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4); set(gca, 'XColor', 'k', 'YColor', 'k');
+    title('Fluid Level Estimation', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Level (cm)', 'Color', 'k');
+
+    figure(2); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4); set(gca, 'XColor', 'k', 'YColor', 'k');
+    title('Fluid Flow Estimation', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Flow (cm^3/s)', 'Color', 'k');
+
+    figure(3); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4); set(gca, 'XColor', 'k', 'YColor', 'k');
+    title('Std Dev of Estimation Error (\surd\Sigma_{n|n})', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Std Dev', 'Color', 'k');
+
+    colors = ['b', 'r'];
+
+    for k = 1:num_execs
+        s_hat_hist = zeros(2, N+1);
+        Sigma_hist_l = zeros(1, N+1);
+        Sigma_hist_q = zeros(1, N+1);
+        x_hist = zeros(1, N+1);
+        s_true_hist = zeros(2, N+1);
+        s_hat = [mu_l; mu_q];
+        Sigma = Sigma_init;
+        s_true = [l_true_init; q_true_val]; 
+        
+        for i = 1:(N+1)
+            t_min = (i-1) * T / 60;
+            
+            if i > 1
+                s_true = A * s_true; 
+            end
+            
+            x_n = H * s_true + sigma_v * randn;
+            
+            s_pred = A * s_hat;
+            Sigma_pred = A * Sigma * A' + Q;
+            
+            S = H * Sigma_pred * H' + R; 
+            K = Sigma_pred * H' / S; 
+            
+            s_hat = s_pred + K * (x_n - H * s_pred);
+            Sigma = (eye(2) - K * H) * Sigma_pred;
+            
+            s_hat_hist(:, i) = s_hat;
+            s_true_hist(:, i) = s_true;
+            x_hist(i) = x_n;
+            
+            Sigma_hist_l(i) = Sigma(1,1);
+            Sigma_hist_q(i) = Sigma(2,2);
+        end
+        
+        time_vec = (0:N) * T / 60;
+        
+        figure(1);
+        plot(time_vec, s_hat_hist(1,:), 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Est. Exec %d', k));
+        
+        figure(2);
+        plot(time_vec, s_hat_hist(2,:), 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Est. Exec %d', k));
+        
+        figure(3);
+        plot(time_vec, sqrt(Sigma_hist_l), [colors(k) '-'], 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Level Std (Exec %d)', k));
+        plot(time_vec, sqrt(Sigma_hist_q), [colors(k) '--'], 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Flow Std (Exec %d)', k));
+    end
+
+    time_vec = (0:N) * T / 60;
+    figure(1);
+    
+    plot(time_vec, x_hist/ch, '.', 'Color', [0.7 0.7 0.7], 'DisplayName', 'Measurements');
+    plot(time_vec, s_true_hist(1,:), 'k--', 'LineWidth', 1.5, 'DisplayName', 'True Level');
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+    figure(2);
+    plot(time_vec, s_true_hist(2,:), 'k--', 'LineWidth', 1.5, 'DisplayName', 'True Flow');
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+    ylim([-10 50]);
+    figure(3);
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+    title('Std Dev Error: Solid=Level (cm), Dashed=Flow (cm^3/s)', 'Color', 'k');    
+\end{lstlisting}
+
+\subsubsection{task5\_5.m}
+\begin{lstlisting}[language=Matlab]
+    clear; clc; close all;
+
+    rho_kgm3 = 874;
+    rho_gcm3 = rho_kgm3 / 1000;
+    ch = 0.98 * rho_gcm3;
+
+    T = 5;
+    diameter = 22;
+    radius = diameter / 2;
+    Area = pi * radius^2;
+
+    duration_min = 60;
+    N = (duration_min * 60) / T;
+    num_execs = 2;
+
+    l_true_init = 340;
+    q_true_val  = 33;
+
+    mu_l = 250;
+    sigma_l = 11;
+    
+    mu_q = 0;
+    sigma_q = 2;
+
+    sigma_v = 25;
+    R = sigma_v^2;
+
+    A = [1,  T/Area;
+        0,       1];
+
+    H = [ch, 0];
+
+    Q = zeros(2, 2); 
+
+    Sigma_init = [sigma_l^2, 0;
+                0,         sigma_q^2];
+
+
+    figure(1); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4); set(gca, 'XColor', 'k', 'YColor', 'k');
+    title('Fluid Level Estimation', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Level (cm)', 'Color', 'k');
+
+    figure(2); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4); set(gca, 'XColor', 'k', 'YColor', 'k');
+    title('Fluid Flow Estimation', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Flow (cm^3/s)', 'Color', 'k');
+
+    figure(3); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4); set(gca, 'XColor', 'k', 'YColor', 'k');
+    title('Std Dev of Estimation Error (\surd\Sigma_{n|n})', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Std Dev', 'Color', 'k');
+
+    colors = ['b', 'r'];
+
+    for k = 1:num_execs
+        
+        s_hat_hist = zeros(2, N+1);
+        Sigma_hist_l = zeros(1, N+1);
+        Sigma_hist_q = zeros(1, N+1);
+        x_hist = zeros(1, N+1);
+        s_true_hist = zeros(2, N+1);
+        
+        s_hat = [mu_l; mu_q];
+        Sigma = Sigma_init;
+        
+        s_true = [l_true_init; q_true_val]; 
+        
+        for i = 1:(N+1)
+            t_min = (i-1) * T / 60;
+            
+            if i > 1
+                s_true = A * s_true; 
+            end
+            
+            x_n = H * s_true + sigma_v * randn;
+            
+            
+            s_pred = A * s_hat;
+            Sigma_pred = A * Sigma * A' + Q;
+            
+            S = H * Sigma_pred * H' + R; 
+            K = Sigma_pred * H' / S;
+            
+            s_hat = s_pred + K * (x_n - H * s_pred);
+            Sigma = (eye(2) - K * H) * Sigma_pred;
+            
+            s_hat_hist(:, i) = s_hat;
+            s_true_hist(:, i) = s_true;
+            x_hist(i) = x_n;
+            
+            Sigma_hist_l(i) = Sigma(1,1);
+            Sigma_hist_q(i) = Sigma(2,2);
+        end
+        
+        time_vec = (0:N) * T / 60;
+        
+        figure(1);
+        plot(time_vec, s_hat_hist(1,:), 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Est. Exec %d', k));
+        
+        figure(2);
+        plot(time_vec, s_hat_hist(2,:), 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Est. Exec %d', k));
+        
+        figure(3);
+        plot(time_vec, sqrt(Sigma_hist_l), [colors(k) '-'], 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Level Std (Exec %d)', k));
+        plot(time_vec, sqrt(Sigma_hist_q), [colors(k) '--'], 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Flow Std (Exec %d)', k));
+    end
+
+
+    time_vec = (0:N) * T / 60;
+
+    figure(1);
+    plot(time_vec, x_hist/ch, '.', 'Color', [0.7 0.7 0.7], 'DisplayName', 'Measurements');
+    plot(time_vec, s_true_hist(1,:), 'k--', 'LineWidth', 1.5, 'DisplayName', 'True Level');
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+
+    figure(2);
+    plot(time_vec, s_true_hist(2,:), 'k--', 'LineWidth', 1.5, 'DisplayName', 'True Flow');
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+    ylim([-10 50]);
+
+    figure(3);
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+    title('Std Dev Error: Solid=Level (cm), Dashed=Flow (cm^3/s)', 'Color', 'k');
+\end{lstlisting}
+
+\subsection{Task 6}
+
+\subsubsection{task6\_2.m}
+\begin{lstlisting}[language=Matlab]
+    clear; clc; close all;
+
+    rho_kgm3 = 874;
+    rho_gcm3 = rho_kgm3 / 1000;     
+    ch = 0.98 * rho_gcm3;
+
+    T = 5;
+    diameter = 22;
+    radius = diameter / 2;
+    Area = pi * radius^2;
+
+    duration_min = 60;
+    N = (duration_min * 60) / T;
+    num_execs = 2;
+
+    l_true_init = 340;
+    q_true_val  = 33;
+
+    mu_l = 250;
+    sigma_l = 11;
+    mu_q = 0;
+    sigma_q = 10;
+
+    sigma_v1 = 20;
+    sigma_v2 = 80;
+    R = [sigma_v1^2,    0;
+        0,        sigma_v2^2];
+
+    A = [1,  T/Area;
+        0,       1];
+
+    H = [ch, 0;
+        ch, 0];
+
+    Q = zeros(2, 2);
+
+    Sigma_init = [sigma_l^2, 0;
+                0,         sigma_q^2];
+
+
+    figure(1); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4);
+    title('Fluid Level Estimation (TWO SENSORS)', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Level (cm)', 'Color', 'k');
+
+    figure(2); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4);
+    title('Fluid Flow Estimation (TWO SENSORS)', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Flow (cm^3/s)', 'Color', 'k');
+
+    figure(3); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4);
+    title('Std Dev of Estimation Error (TWO SENSORS)', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Std Dev', 'Color', 'k');
+
+    colors = ['b', 'r'];
+
+    for k = 1:num_execs
+        
+        s_hat_hist = zeros(2, N+1);
+        Sigma_hist_l = zeros(1, N+1);
+        Sigma_hist_q = zeros(1, N+1);
+        x_hist = zeros(2, N+1);
+        s_true_hist = zeros(2, N+1);
+        
+        s_hat = [mu_l; mu_q];
+        Sigma = Sigma_init;
+        s_true = [l_true_init; q_true_val];
+        
+        for i = 1:(N+1)
+            
+            if i > 1
+                s_true = A * s_true;
+            end
+            
+            x_n = H * s_true + [sigma_v1; sigma_v2] .* randn(2, 1);
+            
+            
+            s_pred = A * s_hat;
+            Sigma_pred = A * Sigma * A' + Q;
+            
+            S = H * Sigma_pred * H' + R;
+            K = Sigma_pred * H' / S;
+            
+            s_hat = s_pred + K * (x_n - H * s_pred);
+            Sigma = (eye(2) - K * H) * Sigma_pred;
+            
+            s_hat_hist(:, i) = s_hat;
+            s_true_hist(:, i) = s_true;
+            x_hist(:, i) = x_n;
+            
+            Sigma_hist_l(i) = Sigma(1,1);
+            Sigma_hist_q(i) = Sigma(2,2);
+        end
+        
+        time_vec = (0:N) * T / 60;
+        
+        figure(1);
+        plot(time_vec, s_hat_hist(1,:), 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Est. Exec %d', k));
+        
+        figure(2);
+        plot(time_vec, s_hat_hist(2,:), 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Est. Exec %d', k));
+        
+        figure(3);
+        plot(time_vec, sqrt(Sigma_hist_l), [colors(k) '-'], 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Level Std (Exec %d)', k));
+        plot(time_vec, sqrt(Sigma_hist_q), [colors(k) '--'], 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Flow Std (Exec %d)', k));
+    end
+
+
+    time_vec = (0:N) * T / 60;
+
+    figure(1);
+    plot(time_vec, x_hist(1,:)/ch, '*', 'Color', [0.5 0.5 0.5], 'MarkerSize', 3, ...
+        'DisplayName', 'Sensor 1');
+    plot(time_vec, x_hist(2,:)/ch, '*', 'Color', 'g', 'MarkerSize', 3, ...
+        'DisplayName', 'Sensor 2');
+    plot(time_vec, s_true_hist(1,:), 'k--', 'LineWidth', 1.5, 'DisplayName', 'True Level');
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+
+    figure(2);
+    plot(time_vec, s_true_hist(2,:), 'k--', 'LineWidth', 1.5, 'DisplayName', 'True Flow');
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+    ylim([-10 50]);
+
+    figure(3);
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+    title('Std Dev: Solid=Level (cm), Dashed=Flow (cm^3/s)', 'Color', 'k');
+    set(gca, 'YScale', 'log');
+
+\end{lstlisting}
+
+\subsection{Task 7}
+
+\subsubsection{task7.m}
+
+\begin{lstlisting}[language=Matlab]
+    clear; clc; close all;
+
+    rho_kgm3 = 874;
+    rho_gcm3 = rho_kgm3 / 1000;
+    ch = 0.98 * rho_gcm3;
+
+    T = 5;
+    diameter = 22;
+    radius = diameter / 2;
+    Area = pi * radius^2;
+
+    duration_min = 60;
+    N = (duration_min * 60) / T;
+    num_execs = 2;
+
+    l_true_init = 340;
+    q_true_init = 33;
+
+    mu_l = 250;
+    sigma_l = 11;
+    mu_q = 0;
+    sigma_q = 10;
+
+    sigma_v1 = 20;
+    sigma_v2 = 80;
+    R = [sigma_v1^2,    0;
+        0,        sigma_v2^2];
+
+    A = [1,  T/Area;
+        0,       1];
+
+    H = [ch, 0;
+        ch, 0];
+
+    sigma_flow_increment = 0.35;
+    Q = [0,                         0;
+        0,    sigma_flow_increment^2];
+
+    Sigma_init = [sigma_l^2, 0;
+        0,         sigma_q^2];
+
+
+    figure(1); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4);
+    title('Fluid Level Estimation (RANDOM FLOW)', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Level (cm)', 'Color', 'k');
+
+    figure(2); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4);
+    title('Fluid Flow Estimation (RANDOM FLOW)', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Flow (cm^3/s)', 'Color', 'k');
+
+    figure(3); set(gcf, 'Color', 'w'); set(gca, 'Color', 'w'); hold on; grid on;
+    set(gca, 'GridColor', 'k', 'GridAlpha', 0.4);
+    title('Std Dev of Estimation Error (RANDOM FLOW)', 'Color', 'k', 'FontWeight', 'bold');
+    xlabel('Time (minutes)', 'Color', 'k'); ylabel('Std Dev', 'Color', 'k');
+
+    colors = ['b', 'r'];
+
+    for k = 1:num_execs
+
+        s_hat_hist = zeros(2, N+1);
+        Sigma_hist_l = zeros(1, N+1);
+        Sigma_hist_q = zeros(1, N+1);
+        x_hist = zeros(2, N+1);
+        s_true_hist = zeros(2, N+1);
+
+        s_hat = [mu_l; mu_q];
+        Sigma = Sigma_init;
+        s_true = [l_true_init; q_true_init];
+
+        for i = 1:(N+1)
+
+            if i > 1
+                s_true = A * s_true;
+                s_true(2) = s_true(2) + sigma_flow_increment * randn;
+            end
+
+            x_n = H * s_true + [sigma_v1; sigma_v2] .* randn(2, 1);
+
+            s_pred = A * s_hat;
+            Sigma_pred = A * Sigma * A' + Q;
+
+            S = H * Sigma_pred * H' + R;
+            K = Sigma_pred * H' / S;
+
+            s_hat = s_pred + K * (x_n - H * s_pred);
+            Sigma = (eye(2) - K * H) * Sigma_pred;
+
+            s_hat_hist(:, i) = s_hat;
+            s_true_hist(:, i) = s_true;
+            x_hist(:, i) = x_n;
+
+            Sigma_hist_l(i) = Sigma(1,1);
+            Sigma_hist_q(i) = Sigma(2,2);
+        end
+
+        time_vec = (0:N) * T / 60;
+
+        figure(1);
+        plot(time_vec, s_hat_hist(1,:), 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Est. Exec %d', k));
+
+        figure(2);
+        plot(time_vec, s_hat_hist(2,:), 'Color', colors(k), 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Est. Exec %d', k));
+
+        figure(3);
+        plot(time_vec, sqrt(Sigma_hist_l), [colors(k) '-'], 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Level Std (Exec %d)', k));
+        plot(time_vec, sqrt(Sigma_hist_q), [colors(k) '--'], 'LineWidth', 1.5, ...
+            'DisplayName', sprintf('Flow Std (Exec %d)', k));
+
+        fprintf('\n=== Execution %d ===\n', k);
+        fprintf('Asymptotic Level Std: %.4f cm\n', mean(sqrt(Sigma_hist_l(end-70:end))));
+        fprintf('Asymptotic Flow Std: %.4f cm^3/s\n', mean(sqrt(Sigma_hist_q(end-70:end))));
+    end
+
+
+    time_vec = (0:N) * T / 60;
+
+    figure(1);
+    plot(time_vec, x_hist(1,:)/ch, '*', 'Color', [0.5 0.5 0.5], 'MarkerSize', 2, ...
+        'DisplayName', 'Sensor 1');
+    plot(time_vec, x_hist(2,:)/ch, '*', 'Color', [0 0.7 0], 'MarkerSize', 2, ...
+        'DisplayName', 'Sensor 2');
+    plot(time_vec, s_true_hist(1,:), 'k--', 'LineWidth', 1.5, 'DisplayName', 'True Level');
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+
+    figure(2);
+    plot(time_vec, s_true_hist(2,:), 'k--', 'LineWidth', 1.5, 'DisplayName', 'True Flow');
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+
+    figure(3);
+    legend('Location', 'best', 'TextColor', 'k', 'Color', 'w', 'EdgeColor', 'k');
+    title('Std Dev: Solid=Level (cm), Dashed=Flow (cm^3/s)', 'Color', 'k');
+    set(gca, 'YScale', 'log');
+
 \end{lstlisting}
