@@ -122,7 +122,7 @@ The estimate (red line, left panel top) converges to approximately the true valu
 
 \textbf{Case $p = 0.85$ (85\% failure rate) --- SEVERE DIVERGENCE:}
 
-\textbf{CRITICAL FAILURE:} The estimate (red line, left panel bottom) diverges dramatically. In the first few iterations, the filter receives mostly pure noise (failed measurements). Without knowing this, it interprets the noise as information about the state and updates accordingly. The estimate jumps erratically downward to approximately 50--100 cm (far from the true 340 cm) by sample $n \approx 10$ and remains stuck there.
+\textbf{Observed divergence due to model mismatch:} The estimate (red line, left panel bottom) diverges from the true level when p = 0.85. In the first iterations the filter receives mostly pure noise from failed measurements, but, since failures are not modelled, it interprets this noise as valid information about the state and updates accordingly. This produces a large bias while the internal covariance keeps decreasing, illustrating filter inconsistency.
 
 The standard deviation (right panel bottom) continues to \textit{decrease}, indicating increasing filter confidence. However, this is \textbf{unjustified}---the estimate is severely biased. This is \textbf{filter inconsistency}: the covariance does not reflect the actual error magnitude.
 
